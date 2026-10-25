@@ -74,10 +74,14 @@ function buildStaticUI() {
   $('#division').innerHTML = DIVISIONS.map((d) => `<option value="${d}">${d}</option>`).join('');
 
   $('#roles').innerHTML = ROLES.map((r) => `
-    <button type="button" class="role" data-role="${r.id}">
+    <div class="role" data-role="${r.id}">
       <img src="https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-static-assets/global/default/svg/position-${r.id}.svg" alt="">
-      <span>${r.label}</span><em></em>
-    </button>`).join('');
+      <span>${r.label}</span>
+      <div class="role-btns">
+        <button type="button" data-setrole="main" data-role-id="${r.id}">メイン</button>
+        <button type="button" data-setrole="sub" data-role-id="${r.id}">サブ</button>
+      </div>
+    </div>`).join('');
 
   $('#themes').innerHTML = THEMES.map((t) => `
     <button type="button" class="theme" data-theme="${t.id}" style="--a:${t.accent};--b:${t.bg1};--c:${t.bg2}">
@@ -103,7 +107,7 @@ function syncUI() {
     const id = b.dataset.role;
     const kind = id === state.mainRole ? 'main' : state.subRoles.includes(id) ? 'sub' : '';
     b.className = `role ${kind}`;
-    b.querySelector('em').textContent = kind === 'main' ? 'メイン' : kind === 'sub' ? 'サブ' : '';
+    for (const btn of b.querySelectorAll('[data-setrole]')) btn.classList.toggle('on', btn.dataset.setrole === kind);
   }
 
   renderTags();
@@ -228,18 +232,15 @@ form.addEventListener('click', (e) => {
     startAddTag(btn);
   } else if (btn.parentElement?.dataset.radio) {
     update({ [btn.parentElement.dataset.radio]: btn.dataset.value });
-  } else if (btn.dataset.role) {
-    const id = btn.dataset.role;
-    let { mainRole, subRoles } = state;
-    subRoles = subRoles.filter((r) => r !== id);
-    if (mainRole === id) {
-      mainRole = '';
-    } else if (state.subRoles.includes(id)) {
-      if (mainRole) subRoles.push(mainRole);
-      mainRole = id;
-    } else {
-      subRoles.push(id);
-    }
+  } else if (btn.dataset.setrole) {
+    // Pressing the active button again turns the role off. Only one main role.
+    const id = btn.dataset.roleId;
+    const wasMain = state.mainRole === id;
+    const wasSub = state.subRoles.includes(id);
+    let mainRole = wasMain ? '' : state.mainRole;
+    const subRoles = state.subRoles.filter((r) => r !== id);
+    if (btn.dataset.setrole === 'main' && !wasMain) mainRole = id;
+    if (btn.dataset.setrole === 'sub' && !wasSub) subRoles.push(id);
     update({ mainRole, subRoles });
   } else if (btn.dataset.tag) {
     const tag = btn.dataset.tag;
