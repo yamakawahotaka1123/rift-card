@@ -167,7 +167,7 @@ export async function renderCard(canvas, state, ctxData) {
   const theme = THEMES.find((t) => t.id === state.theme) || THEMES[0];
   const tier = TIERS.find((t) => t.id === state.tier) || TIERS[0];
   const champName = (id) => champions[id]?.name || id;
-  state = { ...state, _names: state.champs.map(champName) };
+  state = { ...state, _names: state.champs.map((c) => champName(c.id)) };
 
   const iconSrc = state.iconUpload
     || (state.iconId ? profileIconUrl(state.iconId) : null)
@@ -178,15 +178,12 @@ export async function renderCard(canvas, state, ctxData) {
       : state.splashChamp ? loadSplash(state.splashChamp, champions[state.splashChamp]?.key, state.splashSkin) : null,
     iconSrc ? loadImage(iconSrc) : null,
     tier.id !== 'UNRANKED' ? loadImage(emblemUrl(tier.id)) : null,
-    Promise.all(state.champs.map((id) => loadImage(champSquareUrl(version, id)))),
+    Promise.all(state.champs.map((c) => loadImage(champSquareUrl(version, c.id)))),
     Promise.all(ROLES.map((r) => {
       const active = r.id === state.mainRole || state.subRoles.includes(r.id);
       return loadRoleIcon(r.id, active ? theme.accent : theme.sub);
     })),
-    Promise.all(state.champs.map((id) => {
-      const role = state.champRoles?.[id];
-      return role ? loadRoleIcon(role, theme.accent) : null;
-    })),
+    Promise.all(state.champs.map((c) => (c.role ? loadRoleIcon(c.role, theme.accent) : null))),
     ensureFonts(state),
   ]);
 
@@ -409,7 +406,7 @@ export async function renderCard(canvas, state, ctxData) {
   const cs = 104, cgap = 20;
   for (let i = 0; i < 5; i++) {
     const x = cx0 + i * (cs + cgap);
-    const id = state.champs[i];
+    const id = state.champs[i]?.id;
     roundRect(ctx, x, ry - 6, cs, cs, 14);
     ctx.fillStyle = theme.panel;
     ctx.fill();

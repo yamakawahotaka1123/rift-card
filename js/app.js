@@ -17,7 +17,14 @@ let sortedChamps = [];
 function loadState() {
   try {
     const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null');
-    if (saved) return { ...DEFAULT_STATE, ...saved };
+    if (saved) {
+      // Older saves stored champs as ids with roles in a separate champRoles map.
+      if (Array.isArray(saved.champs)) {
+        saved.champs = saved.champs.map((c) => (typeof c === 'string' ? { id: c, role: saved.champRoles?.[c] || '' } : c));
+      }
+      delete saved.champRoles;
+      return { ...DEFAULT_STATE, ...saved };
+    }
   } catch { /* storage unavailable */ }
   return { ...DEFAULT_STATE };
 }
@@ -139,11 +146,11 @@ function syncUI() {
   const roleOptions = (selected) => `<option value="">ロールなし</option>`
     + ROLES.map((r) => `<option value="${r.id}"${r.id === selected ? ' selected' : ''}>${r.label}</option>`).join('');
   const list = $('#champ-list');
-  list.innerHTML = state.champs.map((id, i) => `
+  list.innerHTML = state.champs.map(({ id, role }, i) => `
     <div class="champ-item">
       <img src="${champSquareUrl(ctxData.version, id)}" alt="">
       <span>${ctxData.champions[id]?.name || id}</span>
-      <select class="champ-role" data-role-for="${id}">${roleOptions(state.champRoles[id])}</select>
+      <select class="champ-role" data-role-index="${i}">${roleOptions(role)}</select>
       <div class="champ-ops">
         <button type="button" data-move="${i}" title="左へ" ${i === 0 ? 'disabled' : ''}>←</button>
         <button type="button" data-remove="${i}" title="削除">×</button>
@@ -207,8 +214,9 @@ function champButton(btn, id, emptyLabel) {
 
 form.addEventListener('input', (e) => {
   const el = e.target;
-  if (el.dataset.roleFor) {
-    update({ champRoles: { ...state.champRoles, [el.dataset.roleFor]: el.value } });
+  if (el.dataset.roleIndex) {
+    const i = Number(el.dataset.roleIndex);
+    update({ champs: state.champs.map((c, j) => (j === i ? { ...c, role: el.value } : c)) });
     return;
   }
   if (!el.name) return;
@@ -256,10 +264,7 @@ form.addEventListener('click', (e) => {
   } else if (btn.dataset.pick) {
     openPicker(btn.dataset.pick);
   } else if (btn.dataset.remove) {
-    const champs = [...state.champs];
-    const [removed] = champs.splice(Number(btn.dataset.remove), 1);
-    const { [removed]: _, ...champRoles } = state.champRoles;
-    update({ champs, champRoles });
+    update({ champs: state.champs.filter((_, j) => j !== Number(btn.dataset.remove)) });
   } else if (btn.dataset.move) {
     const i = Number(btn.dataset.move);
     const champs = [...state.champs];
@@ -315,7 +320,7 @@ const SECTIONS = {
   basic: ['name', 'tag', 'level', 'iconChamp', 'iconId', 'iconTitle', 'iconUpload', 'iconShape'],
   rank: ['tier', 'division'],
   roles: ['mainRole', 'subRoles'],
-  champs: ['champs', 'champRoles'],
+  champs: ['champs'],
   tags: ['tags', 'customTags'],
   contact: ['hours', 'discord', 'x'],
   comment: ['comment'],
@@ -389,6 +394,7 @@ $('#picker-role-buttons').addEventListener('click', (e) => {
   if (!b) return;
   pickRole = b.dataset.pickrole;
   renderPickerRoles();
+  if (pickTarget === 'champs') renderPicker();
 });
 
 // Lets "あーり" match "アーリ" and "kda" match "K/DA".
@@ -443,16 +449,29 @@ function renderPicker() {
     return;
   }
   const q = normalize($('#picker-search').value);
-  const chosen = pickTarget === 'champs' ? state.champs : [pickTarget === 'icon' ? state.iconChamp : state.splashChamp];
   const items = sortedChamps.filter((c) => !q || c.search.includes(q));
   $('#picker-status').textContent = pickTarget === 'champs'
-    ? `${state.champs.length} / ${MAX_CHAMPS} 体選択中（上で選んだロールと一緒に登録されます）`
+    ? `${state.champs.length} / ${MAX_CHAMPS} 体選択中（上で選んだロールで登録。同じチャンプを別ロールで追加もできます）`
     : '';
-  $('#picker-grid').innerHTML = items.map((c) => `
-    <button type="button" class="${chosen.includes(c.id) ? 'on' : ''}" data-id="${c.id}">
+  const roleLabel = (id) => ROLES.find((r) => r.id === id)?.label || 'ロールなし';
+  $('#picker-grid').innerHTML = items.map((c) => {
+    let cls = '';
+    let note = '';
+    if (pickTarget === 'champs') {
+      const entries = state.champs.filter((e) => e.id === c.id);
+      // "on" = already added with the role selected above; "partial" = added with another role.
+      if (entries.some((e) => e.role === pickRole)) cls = 'on';
+      else if (entries.length) cls = 'partial';
+      if (entries.length) note = `<em>${entries.map((e) => roleLabel(e.role)).join('・')}</em>`;
+    } else if (c.id === (pickTarget === 'icon' ? state.iconChamp : state.splashChamp)) {
+      cls = 'on';
+    }
+    return `
+    <button type="button" class="${cls}" data-id="${c.id}">
       <img loading="lazy" src="${champSquareUrl(ctxData.version, c.id)}" alt="">
-      <span>${c.name}</span>
-    </button>`).join('') || '<p class="picker-empty">見つかりませんでした</p>';
+      <span>${c.name}</span>${note}
+    </button>`;
+  }).join('') || '<p class="picker-empty">見つかりませんでした</p>';
 }
 
 async function renderIconGrid() {
@@ -517,14 +536,14 @@ $('#picker-grid').addEventListener('click', (e) => {
   if (!btn) return;
   const id = btn.dataset.id;
   if (pickTarget === 'champs') {
-    if (state.champs.includes(id)) {
-      const { [id]: _, ...champRoles } = state.champRoles;
-      update({ champs: state.champs.filter((c) => c !== id), champRoles });
+    // Same champion + same role toggles off; a different role adds another entry.
+    if (state.champs.some((c) => c.id === id && c.role === pickRole)) {
+      update({ champs: state.champs.filter((c) => !(c.id === id && c.role === pickRole)) });
     } else if (state.champs.length >= MAX_CHAMPS) {
       toast(`得意チャンピオンは${MAX_CHAMPS}体まで選べます`);
       return;
     } else {
-      update({ champs: [...state.champs, id], champRoles: { ...state.champRoles, [id]: pickRole } });
+      update({ champs: [...state.champs, { id, role: pickRole }] });
     }
     renderPicker();
     if (state.champs.length >= MAX_CHAMPS) picker.close();
