@@ -47,6 +47,18 @@ export const THEMES = [
   { id: 'freljord', label: 'フレヨルド', bg1: '#08182a', bg2: '#123049', accent: '#8fd3ff', accent2: '#e8f6ff', text: '#eef8ff', sub: '#9bb6c9', panel: 'rgba(4,16,30,0.6)' },
   { id: 'shadow', label: 'シャドウアイル', bg1: '#06120f', bg2: '#0c2a22', accent: '#3ee6a8', accent2: '#b6ffe2', text: '#e4fff4', sub: '#8fb3a5', panel: 'rgba(2,14,10,0.62)' },
   { id: 'ionia', label: 'アイオニア', bg1: '#1c0e1d', bg2: '#341a35', accent: '#f4a6c6', accent2: '#ffe0ee', text: '#fff2f8', sub: '#c4a3b5', panel: 'rgba(24,8,22,0.6)' },
+  {
+    id: 'fairy', label: 'ゆめかわピンク', light: true, deco: 'fairy',
+    bg1: '#fbe3f0', bg2: '#dff0f4', bgStops: ['#fbd3e7', '#ecdcf8', '#dcf1f3'],
+    accent: '#e48ab8', accent2: '#a990e0', gold: '#d2a640', text: '#5b3d66', sub: '#a58fb0', panel: 'rgba(255,255,255,0.74)',
+    confetti: ['#f7a8c8', '#b9a4ec', '#9fdcd0', '#ffd98a', '#a9cff5'], leaf: '#a7d7b0', leaf2: '#c6e6c2', flower2: '#f6b6d2',
+  },
+  {
+    id: 'fairy-mint', label: 'ゆめかわミント', light: true, deco: 'fairy',
+    bg1: '#e2f5ef', bg2: '#fbe6f0', bgStops: ['#d6f2ea', '#e5e1fa', '#fbe3ee'],
+    accent: '#5dbcac', accent2: '#a990e0', gold: '#cfa443', text: '#3d5560', sub: '#8ba5aa', panel: 'rgba(255,255,255,0.74)',
+    confetti: ['#9fdcd0', '#b9a4ec', '#f7a8c8', '#ffd98a', '#a9cff5'], leaf: '#9fd3b0', leaf2: '#c6e6c2', flower2: '#bfdff7',
+  },
   { id: 'guardian', label: 'スターガーディアン', light: true, bg1: '#fff3fb', bg2: '#e7e8ff', accent: '#c45bd0', accent2: '#5b7cf0', text: '#2a1d3a', sub: '#6e6280', panel: 'rgba(255,255,255,0.72)' },
 ];
 
