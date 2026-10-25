@@ -112,8 +112,8 @@ export const DEFAULT_STATE = {
 
 export const SAMPLE_STATE = {
   ...DEFAULT_STATE,
-  name: 'ポロ大好き',
-  tag: 'JP1',
+  name: '山川穂高',
+  tag: '1123',
   level: '287',
   iconChamp: 'Ahri',
   tier: 'EMERALD',
