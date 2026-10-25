@@ -34,6 +34,7 @@ export const TAGS = [
   'デュオ募集', 'フルパ募集', 'カスタム募集', '社会人', '学生', '配信してます',
 ];
 export const MAX_TAGS = 6;
+export const MAX_TAG_LENGTH = 12;
 export const MAX_CHAMPS = 5;
 export const MAX_COMMENT = 80;
 
@@ -60,6 +61,7 @@ export const DEFAULT_STATE = {
   subRoles: [],
   champs: [],
   tags: [],
+  customTags: [],
   hours: '',
   discord: '',
   x: '',

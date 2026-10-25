@@ -257,6 +257,23 @@ input[type=range] { width: 100%; accent-color: var(--gold); }
   color: var(--muted);
 }
 .chip.on { border-color: var(--gold); background: rgba(200, 170, 110, 0.18); color: var(--gold2); }
+.chip.custom { padding-right: 8px; }
+.chip-del {
+  display: inline-block;
+  margin-left: 6px;
+  padding: 0 4px;
+  border-radius: 50%;
+  color: var(--muted);
+}
+.chip-del:hover { color: var(--gold2); background: rgba(255, 255, 255, 0.08); }
+.chip.add { border-style: dashed; border-color: var(--gold); color: var(--gold); }
+.editor .chip-input {
+  width: 150px;
+  padding: 6px 14px;
+  border-radius: 999px;
+  border-color: var(--gold);
+  font-size: 14px;
+}
 
 .themes { display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 8px; }
 .theme {

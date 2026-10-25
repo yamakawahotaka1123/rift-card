@@ -132,12 +132,16 @@ async function ensureFonts(state) {
   if (!document.fonts) return;
   const text = [state.name, state.tag, state.hours, state.discord, state.x, state.comment, ...state.tags, ...(state._names || [])].join('');
   const sample = `${text}0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ#.・〜`;
-  await Promise.all([
-    document.fonts.load(`500 24px "M PLUS 1p"`, sample),
-    document.fonts.load(`700 24px "M PLUS 1p"`, sample),
-    document.fonts.load(`800 24px "M PLUS 1p"`, sample),
-    document.fonts.load(`700 24px "Cinzel"`, 'ROLECHAMPIONSUNRANKEDLv0123456789'),
-  ]).catch(() => {});
+  // Don't let a slow font download block the preview; the app redraws when fonts finish loading.
+  await Promise.race([
+    Promise.all([
+      document.fonts.load(`500 24px "M PLUS 1p"`, sample),
+      document.fonts.load(`700 24px "M PLUS 1p"`, sample),
+      document.fonts.load(`800 24px "M PLUS 1p"`, sample),
+      document.fonts.load(`700 24px "Cinzel"`, 'ROLECHAMPIONSUNRANKEDLv0123456789'),
+    ]).catch(() => {}),
+    new Promise((resolve) => setTimeout(resolve, 1500)),
+  ]);
 }
 
 export async function renderCard(canvas, state, ctxData) {

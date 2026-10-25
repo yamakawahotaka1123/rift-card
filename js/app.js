@@ -1,5 +1,5 @@
 import {
-  CDRAGON_GAME, DDRAGON, DEFAULT_STATE, DIVISIONS, MAX_CHAMPS, MAX_COMMENT, MAX_TAGS,
+  CDRAGON_GAME, DDRAGON, DEFAULT_STATE, DIVISIONS, MAX_CHAMPS, MAX_COMMENT, MAX_TAG_LENGTH, MAX_TAGS,
   ROLES, SAMPLE_STATE, TAGS, THEMES, TIERS,
 } from './data.js';
 import { champSquareUrl, profileIconUrl, renderCard } from './card.js';
@@ -73,8 +73,6 @@ function buildStaticUI() {
       <span>${r.label}</span><em></em>
     </button>`).join('');
 
-  $('#tags').innerHTML = TAGS.map((t) => `<button type="button" class="chip" data-tag="${t}">${t}</button>`).join('');
-
   $('#themes').innerHTML = THEMES.map((t) => `
     <button type="button" class="theme" data-theme="${t.id}" style="--a:${t.accent};--b:${t.bg1};--c:${t.bg2}">
       <i></i><span>${t.label}</span>
@@ -102,7 +100,7 @@ function syncUI() {
     b.querySelector('em').textContent = kind === 'main' ? 'メイン' : kind === 'sub' ? 'サブ' : '';
   }
 
-  for (const b of $('#tags').children) b.classList.toggle('on', state.tags.includes(b.dataset.tag));
+  renderTags();
   for (const b of $('#themes').children) b.classList.toggle('on', b.dataset.theme === state.theme);
 
   if (state.iconId) {
@@ -128,6 +126,51 @@ function syncUI() {
     + (state.champs.length < MAX_CHAMPS ? '<button type="button" class="champ-add" data-pick="champs">＋ 追加</button>' : '');
 }
 
+const escapeHtml = (s) => s.replace(/[&<>"']/g, (c) => `&#${c.charCodeAt(0)};`);
+
+function renderTags() {
+  const chip = (t, custom) => `
+    <button type="button" class="chip${state.tags.includes(t) ? ' on' : ''}${custom ? ' custom' : ''}" data-tag="${escapeHtml(t)}">
+      ${escapeHtml(t)}${custom ? `<span class="chip-del" data-deltag="${escapeHtml(t)}" title="削除">×</span>` : ''}
+    </button>`;
+  $('#tags').innerHTML = TAGS.map((t) => chip(t, false)).join('')
+    + state.customTags.map((t) => chip(t, true)).join('')
+    + '<button type="button" class="chip add" data-addtag>＋ 自分で追加</button>';
+}
+
+// Swaps the "+" chip for a text box; Enter or leaving the box adds the tag.
+function startAddTag(btn) {
+  const input = document.createElement('input');
+  input.className = 'chip-input';
+  input.maxLength = MAX_TAG_LENGTH;
+  input.placeholder = `${MAX_TAG_LENGTH}文字まで`;
+  btn.replaceWith(input);
+  input.focus();
+  let done = false;
+  const finish = (save) => {
+    if (done) return;
+    done = true;
+    const tag = input.value.trim().replace(/\s+/g, ' ');
+    if (!save || !tag) {
+      renderTags();
+      return;
+    }
+    const customTags = TAGS.includes(tag) || state.customTags.includes(tag) ? state.customTags : [...state.customTags, tag];
+    let { tags } = state;
+    if (!tags.includes(tag)) {
+      if (tags.length >= MAX_TAGS) toast(`プレイスタイルは${MAX_TAGS}個まで選べます（追加だけしました）`);
+      else tags = [...tags, tag];
+    }
+    update({ customTags, tags });
+  };
+  input.addEventListener('keydown', (e) => {
+    if (e.isComposing) return;
+    if (e.key === 'Enter') finish(true);
+    if (e.key === 'Escape') finish(false);
+  });
+  input.addEventListener('blur', () => finish(true));
+}
+
 function champButton(btn, id, emptyLabel) {
   if (id && ctxData.version) {
     btn.innerHTML = `<img src="${champSquareUrl(ctxData.version, id)}" alt=""><span>${ctxData.champions[id]?.name || id}</span>`;
@@ -146,10 +189,18 @@ form.addEventListener('input', (e) => {
 });
 
 form.addEventListener('click', (e) => {
+  const del = e.target.closest('[data-deltag]');
+  if (del) {
+    const tag = del.dataset.deltag;
+    update({ customTags: state.customTags.filter((t) => t !== tag), tags: state.tags.filter((t) => t !== tag) });
+    return;
+  }
   const btn = e.target.closest('button');
   if (!btn) return;
 
-  if (btn.parentElement?.dataset.radio) {
+  if (btn.dataset.addtag !== undefined) {
+    startAddTag(btn);
+  } else if (btn.parentElement?.dataset.radio) {
     update({ [btn.parentElement.dataset.radio]: btn.dataset.value });
   } else if (btn.dataset.role) {
     const id = btn.dataset.role;
@@ -452,8 +503,9 @@ async function init() {
   syncUI();
   syncSkins();
   scheduleRender();
-  // Re-render once web fonts finish so the first preview isn't stuck on a fallback font.
+  // Re-render whenever web fonts finish loading so the preview isn't stuck on a fallback font.
   document.fonts?.ready.then(scheduleRender);
+  document.fonts?.addEventListener('loadingdone', scheduleRender);
 }
 
 init();
