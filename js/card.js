@@ -1,5 +1,5 @@
 // Draws the summoner card onto a canvas. Everything happens in the browser.
-import { CDRAGON, DDRAGON, ROLES, THEMES, TIERS } from './data.js';
+import { CDRAGON, CDRAGON_GAME, DDRAGON, ROLES, THEMES, TIERS } from './data.js';
 
 export const CARD_W = 1200;
 export const CARD_H = 675;
@@ -46,7 +46,8 @@ async function loadRoleIcon(role, color) {
 }
 
 export const champSquareUrl = (version, id) => `${DDRAGON}/cdn/${version}/img/champion/${id}.png`;
-export const profileIconUrl = (version, id) => `${DDRAGON}/cdn/${version}/img/profileicon/${id}.png`;
+// Community Dragon has every icon, including ones Data Dragon hasn't picked up yet.
+export const profileIconUrl = (id) => `${CDRAGON_GAME}/default/v1/profile-icons/${id}.jpg`;
 export const splashUrl = (id, num) => `${DDRAGON}/cdn/img/champion/splash/${id}_${num}.jpg`;
 const emblemUrl = (tier) => `${CDRAGON}/images/ranked-emblem/emblem-${tier.toLowerCase()}.png`;
 
@@ -147,7 +148,7 @@ export async function renderCard(canvas, state, ctxData) {
   state = { ...state, _names: state.champs.map(champName) };
 
   const iconSrc = state.iconId
-    ? profileIconUrl(version, state.iconId)
+    ? profileIconUrl(state.iconId)
     : state.iconChamp ? champSquareUrl(version, state.iconChamp) : null;
 
   const [splash, icon, emblem, champImgs, roleImgs] = await Promise.all([

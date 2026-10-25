@@ -54,9 +54,6 @@
           <div class="field grow">アイコン
             <div class="picker-row">
               <button type="button" class="champ-btn" id="icon-btn" data-pick="icon"></button>
-              <label class="inline">またはアイコンID
-                <input name="iconId" type="number" min="0" inputmode="numeric" placeholder="例：29">
-              </label>
             </div>
           </div>
         </div>
@@ -150,8 +147,12 @@
 
   <dialog id="picker">
     <div class="picker-head">
-      <input type="search" id="picker-search" placeholder="チャンピオンを検索（ひらがなOK）">
+      <input type="search" id="picker-search">
       <button type="button" class="btn ghost small" id="picker-close">閉じる</button>
+    </div>
+    <div class="picker-tabs" id="picker-tabs">
+      <button type="button" data-tab="profile">サモナーアイコン</button>
+      <button type="button" data-tab="champ">チャンピオン</button>
     </div>
     <p class="picker-status" id="picker-status"></p>
     <div class="picker-grid" id="picker-grid"></div>

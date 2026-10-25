@@ -182,7 +182,6 @@ input[type=range] { width: 100%; accent-color: var(--gold); }
 
 .picker-row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
 .picker-row select { flex: 1 1 160px; width: auto; }
-.inline { display: flex; flex-direction: column; gap: 4px; flex: 1 1 140px; font-size: 12px; }
 
 .champ-btn {
   display: flex;
@@ -300,6 +299,18 @@ dialog::backdrop { background: rgba(0, 0, 0, 0.7); }
   border-bottom: 1px solid var(--line);
   z-index: 1;
 }
+.picker-head .btn { white-space: nowrap; }
+.picker-tabs { display: flex; gap: 4px; padding: 10px 14px 0; }
+.picker-tabs button {
+  flex: 1;
+  border: 1px solid var(--line);
+  background: #061019;
+  border-radius: 6px;
+  padding: 8px;
+  color: var(--muted);
+  font-weight: 700;
+}
+.picker-tabs button.on { border-color: var(--gold); background: rgba(200, 170, 110, 0.18); color: var(--gold2); }
 .picker-status { margin: 8px 14px 0; font-size: 13px; color: var(--muted); }
 .picker-status:empty { display: none; }
 .picker-grid {
@@ -324,6 +335,13 @@ dialog::backdrop { background: rgba(0, 0, 0, 0.7); }
 .picker-grid img { width: 60px; height: 60px; border-radius: 8px; background: #061019; }
 .picker-grid span { width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; text-align: center; }
 .picker-empty { grid-column: 1 / -1; color: var(--muted); text-align: center; }
+.picker-grid .picker-more {
+  grid-column: 1 / -1;
+  padding: 12px;
+  border: 1px dashed var(--line);
+  color: var(--muted);
+  font-size: 14px;
+}
 
 .toast {
   position: fixed;

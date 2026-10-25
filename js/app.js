@@ -1,8 +1,8 @@
 import {
-  DDRAGON, DEFAULT_STATE, DIVISIONS, MAX_CHAMPS, MAX_COMMENT, MAX_TAGS,
+  CDRAGON_GAME, DDRAGON, DEFAULT_STATE, DIVISIONS, MAX_CHAMPS, MAX_COMMENT, MAX_TAGS,
   ROLES, SAMPLE_STATE, TAGS, THEMES, TIERS,
 } from './data.js';
-import { champSquareUrl, renderCard } from './card.js';
+import { champSquareUrl, profileIconUrl, renderCard } from './card.js';
 
 const STORAGE_KEY = 'riftcard:v1';
 const $ = (sel) => document.querySelector(sel);
@@ -105,7 +105,11 @@ function syncUI() {
   for (const b of $('#tags').children) b.classList.toggle('on', state.tags.includes(b.dataset.tag));
   for (const b of $('#themes').children) b.classList.toggle('on', b.dataset.theme === state.theme);
 
-  champButton($('#icon-btn'), state.iconChamp, 'チャンピオンから選ぶ');
+  if (state.iconId) {
+    $('#icon-btn').innerHTML = `<img src="${profileIconUrl(state.iconId)}" alt=""><span>${state.iconTitle || `アイコン #${state.iconId}`}</span>`;
+  } else {
+    champButton($('#icon-btn'), state.iconChamp, 'アイコンを選ぶ');
+  }
   champButton($('#splash-btn'), state.splashChamp, 'チャンピオンを選ぶ');
   $('#skin').hidden = !state.splashChamp;
   $('#splash-clear').hidden = !state.splashChamp;
@@ -213,19 +217,46 @@ async function syncSkins() {
   select.value = String(state.splashSkin);
 }
 
-// ---------- Champion picker ----------
+// ---------- Picker (champions / summoner icons) ----------
 
 const picker = $('#picker');
 let pickTarget = '';
+let pickTab = 'champ';
+const ICON_PAGE = 180;
+let iconLimit = ICON_PAGE;
+let iconList = null;
+let iconData = null;
 
-// Lets "あーり" match "アーリ".
+// Lets "あーり" match "アーリ" and "kda" match "K/DA".
 const normalize = (s) => s.normalize('NFKC').toLowerCase()
   .replace(/[ぁ-ゖ]/g, (c) => String.fromCharCode(c.charCodeAt(0) + 0x60))
-  .replace(/[\s・'.]/g, '');
+  .replace(/[\s・'./\-:]/g, '');
+
+// ~5,000 icons (320KB gzipped), so only fetch them when the icon tab is first opened.
+function loadIcons() {
+  if (!iconList) {
+    iconList = fetch(`${CDRAGON_GAME}/ja_jp/v1/summoner-icons.json`)
+      .then((r) => r.json())
+      .then((icons) => icons
+        .map((i) => {
+          const title = i.title.replace(/\s*アイコン$/, '');
+          return { id: String(i.id), title, year: i.yearReleased, search: normalize(`${title}${i.id}`) };
+        })
+        .sort((a, b) => b.year - a.year || Number(b.id) - Number(a.id)))
+      .then((list) => (iconData = list))
+      .catch(() => {
+        iconList = null;
+        return [];
+      });
+  }
+  return iconList;
+}
 
 function openPicker(target) {
   if (!sortedChamps.length) return;
   pickTarget = target;
+  pickTab = target === 'icon' && !state.iconChamp ? 'profile' : 'champ';
+  $('#picker-tabs').hidden = target !== 'icon';
   $('#picker-search').value = '';
   renderPicker();
   picker.showModal();
@@ -233,6 +264,15 @@ function openPicker(target) {
 }
 
 function renderPicker() {
+  iconLimit = ICON_PAGE;
+  for (const b of $('#picker-tabs').children) b.classList.toggle('on', b.dataset.tab === pickTab);
+  $('#picker-search').placeholder = pickTab === 'profile'
+    ? 'アイコンを検索（例：アーリ、K/DA、ポロ）'
+    : 'チャンピオンを検索（ひらがなOK）';
+  if (pickTab === 'profile') {
+    renderIconGrid();
+    return;
+  }
   const q = normalize($('#picker-search').value);
   const chosen = pickTarget === 'champs' ? state.champs : [pickTarget === 'icon' ? state.iconChamp : state.splashChamp];
   const items = sortedChamps.filter((c) => !q || c.search.includes(q));
@@ -246,13 +286,64 @@ function renderPicker() {
     </button>`).join('') || '<p class="picker-empty">見つかりませんでした</p>';
 }
 
+async function renderIconGrid() {
+  const grid = $('#picker-grid');
+  if (!iconData) {
+    $('#picker-status').textContent = 'アイコン一覧を読み込み中…';
+    grid.innerHTML = '';
+  }
+  const icons = await loadIcons();
+  if (pickTab !== 'profile' || !picker.open) return;
+  if (!icons.length) {
+    $('#picker-status').textContent = 'アイコン一覧を読み込めませんでした。閉じてもう一度開いてください。';
+    return;
+  }
+  const q = normalize($('#picker-search').value);
+  const items = icons.filter((i) => !q || i.search.includes(q));
+  $('#picker-status').textContent = `${items.length.toLocaleString()} 件（新しい順）`;
+  grid.innerHTML = items.slice(0, iconLimit).map((i) => `
+    <button type="button" class="${i.id === String(state.iconId) ? 'on' : ''}" data-icon="${i.id}" title="${i.title}">
+      <img loading="lazy" src="${profileIconUrl(i.id)}" alt="">
+      <span>${i.title}</span>
+    </button>`).join('')
+    + (items.length > iconLimit ? `<button type="button" class="picker-more" data-more>もっと見る（残り ${(items.length - iconLimit).toLocaleString()} 件）</button>` : '')
+    || '<p class="picker-empty">見つかりませんでした</p>';
+}
+
+// Load the next page automatically when scrolled near the bottom.
+picker.addEventListener('scroll', () => {
+  if (pickTab !== 'profile') return;
+  if (picker.scrollTop + picker.clientHeight < picker.scrollHeight - 400) return;
+  if (!$('#picker-grid [data-more]')) return;
+  iconLimit += ICON_PAGE;
+  renderIconGrid();
+});
+
 $('#picker-search').addEventListener('input', renderPicker);
 $('#picker-close').addEventListener('click', () => picker.close());
 picker.addEventListener('click', (e) => {
   if (e.target === picker) picker.close();
 });
+$('#picker-tabs').addEventListener('click', (e) => {
+  const tab = e.target.closest('[data-tab]')?.dataset.tab;
+  if (!tab || tab === pickTab) return;
+  pickTab = tab;
+  $('#picker-search').value = '';
+  renderPicker();
+});
 
 $('#picker-grid').addEventListener('click', (e) => {
+  if (e.target.closest('[data-more]')) {
+    iconLimit += ICON_PAGE;
+    renderIconGrid();
+    return;
+  }
+  const iconBtn = e.target.closest('button[data-icon]');
+  if (iconBtn) {
+    update({ iconId: iconBtn.dataset.icon, iconTitle: iconBtn.title, iconChamp: '' });
+    picker.close();
+    return;
+  }
   const btn = e.target.closest('button[data-id]');
   if (!btn) return;
   const id = btn.dataset.id;
@@ -268,7 +359,7 @@ $('#picker-grid').addEventListener('click', (e) => {
     renderPicker();
     if (state.champs.length >= MAX_CHAMPS) picker.close();
   } else if (pickTarget === 'icon') {
-    update({ iconChamp: id, iconId: '' });
+    update({ iconChamp: id, iconId: '', iconTitle: '' });
     picker.close();
   } else {
     update({ splashChamp: id, splashSkin: 0 });

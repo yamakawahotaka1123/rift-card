@@ -2,6 +2,7 @@
 
 export const DDRAGON = 'https://ddragon.leagueoflegends.com';
 export const CDRAGON = 'https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-static-assets/global/default';
+export const CDRAGON_GAME = 'https://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global';
 
 export const TIERS = [
   { id: 'UNRANKED', label: 'アンランク', divisions: false },
@@ -51,6 +52,7 @@ export const DEFAULT_STATE = {
   level: '',
   iconChamp: '',
   iconId: '',
+  iconTitle: '',
   iconShape: 'circle',
   tier: 'UNRANKED',
   division: 'IV',
