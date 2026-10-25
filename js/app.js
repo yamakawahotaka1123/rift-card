@@ -226,7 +226,7 @@ form.addEventListener('input', (e) => {
   if (!el.name) return;
   let value = el.value;
   if (el.type === 'range' || el.name === 'splashSkin') value = Number(value);
-  if (el.name === 'x') value = value.replace(/^@/, '');
+  if (el.name === 'x' || el.name === 'youtube') value = value.replace(/^@/, '');
   update({ [el.name]: value });
 });
 
@@ -330,7 +330,7 @@ const SECTIONS = {
   roles: ['mainRole', 'subRoles'],
   champs: ['champs'],
   tags: ['tags', 'customTags'],
-  contact: ['hours', 'discord', 'x'],
+  contact: ['hours', 'discord', 'x', 'twitch', 'youtube'],
   comment: ['comment'],
   design: ['theme', 'splashChamp', 'splashSkin', 'bgUpload', 'splashY', 'dim'],
 };

@@ -70,6 +70,8 @@ export const DEFAULT_STATE = {
   hours: '',
   discord: '',
   x: '',
+  twitch: '',
+  youtube: '',
   comment: '',
   splashChamp: '',
   splashSkin: 0,

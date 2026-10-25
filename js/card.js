@@ -148,7 +148,7 @@ function sectionLabel(ctx, text, x, y, theme) {
 // Make sure the web fonts (and the unicode-range subsets for the actual text) are ready.
 async function ensureFonts(state) {
   if (!document.fonts) return;
-  const text = [state.name, state.tag, state.hours, state.discord, state.x, state.comment, ...state.tags, ...(state._names || [])].join('');
+  const text = [state.name, state.tag, state.hours, state.discord, state.x, state.twitch, state.youtube, state.comment, ...state.tags, ...(state._names || [])].join('');
   const sample = `${text}0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ#.・〜`;
   // Don't let a slow font download block the preview; the app redraws when fonts finish loading.
   await Promise.race([
@@ -324,20 +324,33 @@ export async function renderCard(canvas, state, ctxData) {
   ctx.fillRect(nx, 138, nameMax, 2);
 
   // Info rows under the name
-  const info = [];
-  if (state.hours) info.push(['TIME', state.hours]);
-  if (state.discord) info.push(['DISCORD', state.discord]);
-  if (state.x) info.push(['X', `@${state.x.replace(/^@/, '')}`]);
-  let infoY = 180;
-  for (const [label, value] of info.slice(0, 3)) {
+  const contacts = [];
+  if (state.discord) contacts.push(['DISCORD', state.discord]);
+  if (state.x) contacts.push(['X', `@${state.x.replace(/^@/, '')}`]);
+  if (state.twitch) contacts.push(['TWITCH', state.twitch]);
+  if (state.youtube) contacts.push(['YOUTUBE', `@${state.youtube.replace(/^@/, '')}`]);
+  const drawInfo = (label, value, x, y, width) => {
     ctx.font = `700 15px ${FONT_EN}`;
     ctx.fillStyle = theme.accent;
-    ctx.fillText(label, nx, infoY);
+    ctx.fillText(label, x, y);
+    const labelW = Math.max(100, ctx.measureText(label).width + 14);
     ctx.fillStyle = theme.text;
-    const v = fitText(ctx, value, nameMax - 110, 700, 22, 16);
-    ctx.fillText(v, nx + 100, infoY + 1);
-    infoY += 32;
+    ctx.fillText(fitText(ctx, value, width - labelW - 10, 700, 22, 14), x + labelW, y + 1);
+  };
+  // Up to 3 rows fit here: one item per row when there's room, otherwise
+  // the time gets its own row and contacts go two per row.
+  const rows = [];
+  if (state.hours) rows.push([['TIME', state.hours]]);
+  if (rows.length + contacts.length <= 3) {
+    for (const c of contacts) rows.push([c]);
+  } else {
+    for (let i = 0; i < contacts.length; i += 2) rows.push(contacts.slice(i, i + 2));
   }
+  rows.slice(0, 3).forEach((row, r) => {
+    const y = 180 + r * 32;
+    const colW = nameMax / row.length;
+    row.forEach(([label, value], c) => drawInfo(label, value, nx + c * colW, y, colW));
+  });
 
   // Rank
   const rcx = 1010;
