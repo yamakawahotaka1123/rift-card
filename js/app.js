@@ -2,7 +2,7 @@ import {
   CDRAGON_GAME, DDRAGON, DEFAULT_STATE, DIVISIONS, MAX_CHAMPS, MAX_COMMENT, MAX_TAG_LENGTH, MAX_TAGS, NAME_PRESETS,
   ROLES, SAMPLE_STATE, TAGS, THEMES, TIERS,
 } from './data.js';
-import { CARD_H, CARD_W, champSquareUrl, profileIconUrl, renderCard } from './card.js';
+import { CARD_H, CARD_W, champSquareUrl, loadSplash, profileIconUrl, renderCard } from './card.js';
 import { cropImage } from './cropper.js';
 
 const STORAGE_KEY = 'riftcard:v1';
@@ -150,11 +150,14 @@ function syncUI() {
   const roleOptions = (selected) => `<option value="">ロールなし</option>`
     + ROLES.map((r) => `<option value="${r.id}"${r.id === selected ? ' selected' : ''}>${r.label}</option>`).join('');
   const list = $('#champ-list');
-  list.innerHTML = state.champs.map(({ id, role }, i) => `
+  $('#champ-legend').textContent = champLabelText();
+  list.innerHTML = state.champs.map(({ id, role, img }, i) => `
     <div class="champ-item">
-      <img src="${champSquareUrl(ctxData.version, id)}" alt="">
+      <img src="${img || champSquareUrl(ctxData.version, id)}" alt="">
       <span>${ctxData.champions[id]?.name || id}</span>
       <select class="champ-role" data-role-index="${i}">${roleOptions(role)}</select>
+      <button type="button" class="champ-img-btn" data-skinimg="${i}">スキン画像</button>
+      ${img ? `<button type="button" class="champ-img-btn" data-resetimg="${i}">元に戻す</button>` : ''}
       <div class="champ-ops">
         <button type="button" data-move="${i}" title="左へ" ${i === 0 ? 'disabled' : ''}>←</button>
         <button type="button" data-remove="${i}" title="削除">×</button>
@@ -162,6 +165,8 @@ function syncUI() {
     </div>`).join('')
     + (state.champs.length < MAX_CHAMPS ? '<button type="button" class="champ-add" data-pick="champs">＋ 追加</button>' : '');
 }
+
+const champLabelText = () => (state.champLabel === 'fav' ? '好きなチャンピオン' : '得意チャンピオン');
 
 const escapeHtml = (s) => s.replace(/[&<>"']/g, (c) => `&#${c.charCodeAt(0)};`);
 
@@ -271,6 +276,11 @@ form.addEventListener('click', (e) => {
     update({ theme: btn.dataset.theme });
   } else if (btn.dataset.pick) {
     openPicker(btn.dataset.pick);
+  } else if (btn.dataset.skinimg) {
+    openSkinPicker(Number(btn.dataset.skinimg));
+  } else if (btn.dataset.resetimg) {
+    const i = Number(btn.dataset.resetimg);
+    update({ champs: state.champs.map((c, j) => (j === i ? { id: c.id, role: c.role } : c)) });
   } else if (btn.dataset.remove) {
     update({ champs: state.champs.filter((_, j) => j !== Number(btn.dataset.remove)) });
   } else if (btn.dataset.move) {
@@ -328,7 +338,7 @@ const SECTIONS = {
   basic: ['name', 'tag', 'level', 'iconChamp', 'iconId', 'iconTitle', 'iconUpload', 'iconShape'],
   rank: ['tier', 'division'],
   roles: ['mainRole', 'subRoles'],
-  champs: ['champs'],
+  champs: ['champs', 'champLabel'],
   tags: ['tags', 'customTags'],
   contact: ['hours', 'discord', 'x', 'twitch', 'youtube'],
   comment: ['comment'],
@@ -378,6 +388,52 @@ async function syncSkins() {
   select.innerHTML = skins.map((s) => `<option value="${s.num}">${s.name === 'default' ? 'デフォルト' : s.name}</option>`).join('');
   select.value = String(state.splashSkin);
 }
+
+// ---------- Favorite champion image from a skin ----------
+
+const skinPicker = $('#skin-picker');
+let skinTarget = -1;
+
+async function openSkinPicker(index) {
+  skinTarget = index;
+  const { id } = state.champs[index];
+  $('#skin-picker-title').textContent = `${ctxData.champions[id]?.name || id} のスキンを選ぶ`;
+  $('#skin-grid').innerHTML = '<p class="picker-empty">読み込み中…</p>';
+  skinPicker.showModal();
+  const skins = await loadSkins(id);
+  if (skinTarget !== index) return;
+  // Tiles use the same file names as splashes; if one is missing, show the champion portrait instead.
+  $('#skin-grid').innerHTML = skins.map((s) => `
+    <button type="button" data-skin-num="${s.num}">
+      <img loading="lazy" src="${DDRAGON}/cdn/img/champion/tiles/${id}_${s.num}.jpg" alt=""
+        onerror="this.onerror=null;this.src='${champSquareUrl(ctxData.version, id)}'">
+      <span>${s.name === 'default' ? 'デフォルト' : s.name}</span>
+    </button>`).join('');
+}
+
+$('#skin-picker-close').addEventListener('click', () => skinPicker.close());
+skinPicker.addEventListener('click', (e) => {
+  if (e.target === skinPicker) skinPicker.close();
+});
+
+$('#skin-grid').addEventListener('click', async (e) => {
+  const btn = e.target.closest('[data-skin-num]');
+  if (!btn) return;
+  const index = skinTarget;
+  const entry = state.champs[index];
+  skinPicker.close();
+  try {
+    const splash = await loadSplash(entry.id, ctxData.champions[entry.id]?.key, btn.dataset.skinNum);
+    if (!splash) throw new Error('no splash');
+    const blob = await fetch(splash.src).then((r) => r.blob());
+    const data = await cropImage(blob, { aspect: 1, outW: 240, outH: 240, title: `${ctxData.champions[entry.id]?.name || entry.id} のアイコンをトリミング` });
+    if (!data) return;
+    // The list may have changed while cropping; match on the same entry object.
+    update({ champs: state.champs.map((c) => (c === entry ? { ...c, img: data } : c)) });
+  } catch {
+    toast('このスキンの画像を読み込めませんでした');
+  }
+});
 
 // ---------- Picker (champions / summoner icons) ----------
 
@@ -548,7 +604,7 @@ $('#picker-grid').addEventListener('click', (e) => {
     if (state.champs.some((c) => c.id === id && c.role === pickRole)) {
       update({ champs: state.champs.filter((c) => !(c.id === id && c.role === pickRole)) });
     } else if (state.champs.length >= MAX_CHAMPS) {
-      toast(`得意チャンピオンは${MAX_CHAMPS}体まで選べます`);
+      toast(`${champLabelText()}は${MAX_CHAMPS}体まで選べます`);
       return;
     } else {
       update({ champs: [...state.champs, { id, role: pickRole }] });

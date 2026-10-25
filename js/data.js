@@ -63,8 +63,10 @@ export const DEFAULT_STATE = {
   division: 'IV',
   mainRole: '',
   subRoles: [],
-  // Each entry is { id, role }; the same champion may appear with different roles.
+  // Each entry is { id, role, img? }; the same champion may appear with different roles.
+  // img is an optional data URL cropped from a skin splash.
   champs: [],
+  champLabel: 'main',
   tags: [],
   customTags: [],
   hours: '',

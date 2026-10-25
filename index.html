@@ -94,8 +94,14 @@
       </fieldset>
 
       <fieldset>
-        <legend>得意チャンピオン <small>最大5体</small></legend>
+        <legend><span id="champ-legend">得意チャンピオン</span> <small>最大5体</small></legend>
         <button type="button" class="section-clear" data-clear="champs">クリア</button>
+        <div class="field">見出し
+          <div class="segmented" data-radio="champLabel">
+            <button type="button" data-value="main">得意チャンピオン</button>
+            <button type="button" data-value="fav">好きなチャンピオン</button>
+          </div>
+        </div>
         <div class="champ-list" id="champ-list"></div>
       </fieldset>
 
@@ -191,6 +197,15 @@
     </div>
     <p class="picker-status" id="picker-status"></p>
     <div class="picker-grid" id="picker-grid"></div>
+  </dialog>
+
+  <dialog id="skin-picker">
+    <div class="picker-head">
+      <strong id="skin-picker-title">スキンを選ぶ</strong>
+      <button type="button" class="btn ghost small" id="skin-picker-close">閉じる</button>
+    </div>
+    <p class="picker-status">選んだスキンの画像からアイコンをトリミングできます</p>
+    <div class="skin-grid" id="skin-grid"></div>
   </dialog>
 
   <dialog id="cropper">

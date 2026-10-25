@@ -53,7 +53,7 @@ export const splashUrl = (id, num) => `${DDRAGON}/cdn/img/champion/splash/${id}_
 // A few Data Dragon splashes live under a different file name (e.g. "FiddleSticks_27"),
 // so fall back to the path Community Dragon lists for that skin.
 const cdragonChampCache = new Map();
-async function loadSplash(id, key, num) {
+export async function loadSplash(id, key, num) {
   const img = await loadImage(splashUrl(id, num));
   if (img || !key) return img;
   if (!cdragonChampCache.has(key)) {
@@ -178,7 +178,7 @@ export async function renderCard(canvas, state, ctxData) {
       : state.splashChamp ? loadSplash(state.splashChamp, champions[state.splashChamp]?.key, state.splashSkin) : null,
     iconSrc ? loadImage(iconSrc) : null,
     tier.id !== 'UNRANKED' ? loadImage(emblemUrl(tier.id)) : null,
-    Promise.all(state.champs.map((c) => loadImage(champSquareUrl(version, c.id)))),
+    Promise.all(state.champs.map((c) => loadImage(c.img || champSquareUrl(version, c.id)))),
     Promise.all(ROLES.map((r) => {
       const active = r.id === state.mainRole || state.subRoles.includes(r.id);
       return loadRoleIcon(r.id, active ? theme.accent : theme.sub);
@@ -415,7 +415,7 @@ export async function renderCard(canvas, state, ctxData) {
 
   // Champions
   const cx0 = 480;
-  sectionLabel(ctx, 'CHAMPIONS', cx0, 276, theme);
+  sectionLabel(ctx, state.champLabel === 'fav' ? 'FAVORITE CHAMPIONS' : 'MAIN CHAMPIONS', cx0, 276, theme);
   const cs = 104, cgap = 20;
   for (let i = 0; i < 5; i++) {
     const x = cx0 + i * (cs + cgap);
@@ -427,7 +427,9 @@ export async function renderCard(canvas, state, ctxData) {
       ctx.save();
       roundRect(ctx, x, ry - 6, cs, cs, 14);
       ctx.clip();
-      ctx.drawImage(champImgs[i], x - 4, ry - 10, cs + 8, cs + 8);
+      // Data Dragon squares have a thin dark border, so overscan them slightly; crops are drawn as-is.
+      if (state.champs[i].img) ctx.drawImage(champImgs[i], x, ry - 6, cs, cs);
+      else ctx.drawImage(champImgs[i], x - 4, ry - 10, cs + 8, cs + 8);
       ctx.restore();
     }
     roundRect(ctx, x, ry - 6, cs, cs, 14);
