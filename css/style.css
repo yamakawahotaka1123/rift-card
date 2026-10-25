@@ -194,7 +194,11 @@ input[type=range] { width: 100%; accent-color: var(--gold); }
   border-radius: 8px;
   color: var(--text);
 }
-.champ-btn img { width: 40px; height: 40px; border-radius: 6px; }
+.champ-btn img { width: 40px; height: 40px; border-radius: 6px; object-fit: cover; }
+.champ-btn img.wide { width: 72px; }
+.btn.upload { display: inline-flex; align-items: center; cursor: pointer; }
+.btn.upload:focus-within { outline: 2px solid var(--gold); }
+.field .picker-row + .picker-row { margin-top: 8px; }
 .champ-btn .empty { padding-left: 10px; color: var(--gold); }
 
 .segmented { display: inline-flex; border: 1px solid var(--line); border-radius: 6px; overflow: hidden; align-self: flex-start; }
@@ -234,6 +238,7 @@ input[type=range] { width: 100%; accent-color: var(--gold); }
 }
 .champ-item img { width: 60px; height: 60px; border-radius: 8px; border: 1px solid var(--gold); }
 .champ-item span { width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.editor .champ-role { padding: 4px 6px; font-size: 13px; }
 .champ-ops { display: flex; gap: 4px; }
 .champ-ops button {
   border: 1px solid var(--line);
@@ -317,6 +322,8 @@ dialog::backdrop { background: rgba(0, 0, 0, 0.7); }
   z-index: 1;
 }
 .picker-head .btn { white-space: nowrap; }
+.picker-roles { display: flex; align-items: center; gap: 10px; padding: 10px 14px 0; font-size: 13px; color: var(--muted); flex-wrap: wrap; }
+.picker-roles .segmented button { padding: 6px 12px; font-weight: 700; }
 .picker-tabs { display: flex; gap: 4px; padding: 10px 14px 0; }
 .picker-tabs button {
   flex: 1;

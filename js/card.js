@@ -49,6 +49,24 @@ export const champSquareUrl = (version, id) => `${DDRAGON}/cdn/${version}/img/ch
 // Community Dragon has every icon, including ones Data Dragon hasn't picked up yet.
 export const profileIconUrl = (id) => `${CDRAGON_GAME}/default/v1/profile-icons/${id}.jpg`;
 export const splashUrl = (id, num) => `${DDRAGON}/cdn/img/champion/splash/${id}_${num}.jpg`;
+
+// A few Data Dragon splashes live under a different file name (e.g. "FiddleSticks_27"),
+// so fall back to the path Community Dragon lists for that skin.
+const cdragonChampCache = new Map();
+async function loadSplash(id, key, num) {
+  const img = await loadImage(splashUrl(id, num));
+  if (img || !key) return img;
+  if (!cdragonChampCache.has(key)) {
+    cdragonChampCache.set(key, fetch(`${CDRAGON_GAME}/default/v1/champions/${key}.json`)
+      .then((r) => r.json())
+      .catch(() => null));
+  }
+  const data = await cdragonChampCache.get(key);
+  const skin = data?.skins?.find((s) => s.id === Number(key) * 1000 + Number(num));
+  const path = skin?.uncenteredSplashPath || skin?.splashPath;
+  if (!path) return null;
+  return loadImage(`${CDRAGON_GAME}/default/${path.replace('/lol-game-data/assets/', '').toLowerCase()}`);
+}
 const emblemUrl = (tier) => `${CDRAGON}/images/ranked-emblem/emblem-${tier.toLowerCase()}.png`;
 
 function hexToRgba(hex, alpha) {
@@ -151,18 +169,23 @@ export async function renderCard(canvas, state, ctxData) {
   const champName = (id) => champions[id]?.name || id;
   state = { ...state, _names: state.champs.map(champName) };
 
-  const iconSrc = state.iconId
-    ? profileIconUrl(state.iconId)
-    : state.iconChamp ? champSquareUrl(version, state.iconChamp) : null;
+  const iconSrc = state.iconUpload
+    || (state.iconId ? profileIconUrl(state.iconId) : null)
+    || (state.iconChamp ? champSquareUrl(version, state.iconChamp) : null);
 
-  const [splash, icon, emblem, champImgs, roleImgs] = await Promise.all([
-    state.splashChamp ? loadImage(splashUrl(state.splashChamp, state.splashSkin)) : null,
+  const [splash, icon, emblem, champImgs, roleImgs, badgeImgs] = await Promise.all([
+    state.bgUpload ? loadImage(state.bgUpload)
+      : state.splashChamp ? loadSplash(state.splashChamp, champions[state.splashChamp]?.key, state.splashSkin) : null,
     iconSrc ? loadImage(iconSrc) : null,
     tier.id !== 'UNRANKED' ? loadImage(emblemUrl(tier.id)) : null,
     Promise.all(state.champs.map((id) => loadImage(champSquareUrl(version, id)))),
     Promise.all(ROLES.map((r) => {
       const active = r.id === state.mainRole || state.subRoles.includes(r.id);
       return loadRoleIcon(r.id, active ? theme.accent : theme.sub);
+    })),
+    Promise.all(state.champs.map((id) => {
+      const role = state.champRoles?.[id];
+      return role ? loadRoleIcon(role, theme.accent) : null;
     })),
     ensureFonts(state),
   ]);
@@ -401,6 +424,17 @@ export async function renderCard(canvas, state, ctxData) {
     ctx.strokeStyle = id ? theme.accent : hexToRgba(theme.accent, 0.25);
     ctx.lineWidth = id ? 2 : 1.5;
     ctx.stroke();
+    if (id && badgeImgs[i]) {
+      const bx = x + cs - 8, by = ry - 6 + cs - 8;
+      ctx.beginPath();
+      ctx.arc(bx, by, 18, 0, Math.PI * 2);
+      ctx.fillStyle = theme.bg1;
+      ctx.fill();
+      ctx.strokeStyle = theme.accent;
+      ctx.lineWidth = 2;
+      ctx.stroke();
+      ctx.drawImage(badgeImgs[i], bx - 12, by - 12, 24, 24);
+    }
     if (id) {
       ctx.fillStyle = theme.text;
       ctx.textAlign = 'center';

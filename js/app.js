@@ -24,7 +24,10 @@ function loadState() {
 function saveState() {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-  } catch { /* storage unavailable */ }
+    return true;
+  } catch {
+    return false;
+  }
 }
 
 function toast(message) {
@@ -56,7 +59,9 @@ function scheduleRender() {
 
 function update(patch) {
   state = { ...state, ...patch };
-  saveState();
+  if (!saveState() && (state.iconUpload || state.bgUpload)) {
+    toast('画像が大きすぎてブラウザに保存できませんでした（ページを閉じると消えます）');
+  }
   syncUI();
   scheduleRender();
 }
@@ -103,21 +108,33 @@ function syncUI() {
   renderTags();
   for (const b of $('#themes').children) b.classList.toggle('on', b.dataset.theme === state.theme);
 
-  if (state.iconId) {
+  if (state.iconUpload) {
+    $('#icon-btn').innerHTML = `<img src="${state.iconUpload}" alt=""><span>アップロード画像</span>`;
+  } else if (state.iconId) {
     $('#icon-btn').innerHTML = `<img src="${profileIconUrl(state.iconId)}" alt=""><span>${state.iconTitle || `アイコン #${state.iconId}`}</span>`;
   } else {
     champButton($('#icon-btn'), state.iconChamp, 'アイコンを選ぶ');
   }
-  champButton($('#splash-btn'), state.splashChamp, 'チャンピオンを選ぶ');
-  $('#skin').hidden = !state.splashChamp;
-  $('#splash-clear').hidden = !state.splashChamp;
-  $('#splash-controls').hidden = !state.splashChamp;
+  $('#icon-clear').hidden = !(state.iconUpload || state.iconId || state.iconChamp);
 
+  if (state.bgUpload) {
+    $('#splash-btn').innerHTML = `<img src="${state.bgUpload}" alt="" class="wide"><span>アップロード画像</span>`;
+  } else {
+    champButton($('#splash-btn'), state.splashChamp, 'スキンから選ぶ');
+  }
+  const hasBg = Boolean(state.splashChamp || state.bgUpload);
+  $('#skin').hidden = !state.splashChamp || Boolean(state.bgUpload);
+  $('#splash-clear').hidden = !hasBg;
+  $('#splash-controls').hidden = !hasBg;
+
+  const roleOptions = (selected) => `<option value="">ロールなし</option>`
+    + ROLES.map((r) => `<option value="${r.id}"${r.id === selected ? ' selected' : ''}>${r.label}</option>`).join('');
   const list = $('#champ-list');
   list.innerHTML = state.champs.map((id, i) => `
     <div class="champ-item">
       <img src="${champSquareUrl(ctxData.version, id)}" alt="">
       <span>${ctxData.champions[id]?.name || id}</span>
+      <select class="champ-role" data-role-for="${id}">${roleOptions(state.champRoles[id])}</select>
       <div class="champ-ops">
         <button type="button" data-move="${i}" title="左へ" ${i === 0 ? 'disabled' : ''}>←</button>
         <button type="button" data-remove="${i}" title="削除">×</button>
@@ -181,6 +198,10 @@ function champButton(btn, id, emptyLabel) {
 
 form.addEventListener('input', (e) => {
   const el = e.target;
+  if (el.dataset.roleFor) {
+    update({ champRoles: { ...state.champRoles, [el.dataset.roleFor]: el.value } });
+    return;
+  }
   if (!el.name) return;
   let value = el.value;
   if (el.type === 'range' || el.name === 'splashSkin') value = Number(value);
@@ -230,17 +251,69 @@ form.addEventListener('click', (e) => {
     openPicker(btn.dataset.pick);
   } else if (btn.dataset.remove) {
     const champs = [...state.champs];
-    champs.splice(Number(btn.dataset.remove), 1);
-    update({ champs });
+    const [removed] = champs.splice(Number(btn.dataset.remove), 1);
+    const { [removed]: _, ...champRoles } = state.champRoles;
+    update({ champs, champRoles });
   } else if (btn.dataset.move) {
     const i = Number(btn.dataset.move);
     const champs = [...state.champs];
     [champs[i - 1], champs[i]] = [champs[i], champs[i - 1]];
     update({ champs });
   } else if (btn.id === 'splash-clear') {
-    update({ splashChamp: '', splashSkin: 0 });
+    update({ splashChamp: '', splashSkin: 0, bgUpload: '' });
+  } else if (btn.id === 'icon-clear') {
+    update({ iconChamp: '', iconId: '', iconTitle: '', iconUpload: '' });
   }
 });
+
+// ---------- Uploads ----------
+
+// Downscales an uploaded image so it fits comfortably in localStorage.
+// square: center-crop to size x size; otherwise scale to cover maxW x maxH.
+function readImage(file, { square, size, maxW, maxH }) {
+  return new Promise((resolve, reject) => {
+    const url = URL.createObjectURL(file);
+    const img = new Image();
+    img.onload = () => {
+      URL.revokeObjectURL(url);
+      const c = document.createElement('canvas');
+      const g = c.getContext('2d');
+      if (square) {
+        const s = Math.min(img.width, img.height);
+        c.width = c.height = Math.min(size, s);
+        g.drawImage(img, (img.width - s) / 2, (img.height - s) / 2, s, s, 0, 0, c.width, c.height);
+      } else {
+        const scale = Math.min(1, Math.max(maxW / img.width, maxH / img.height));
+        c.width = Math.round(img.width * scale);
+        c.height = Math.round(img.height * scale);
+        g.drawImage(img, 0, 0, c.width, c.height);
+      }
+      resolve(c.toDataURL('image/jpeg', 0.88));
+    };
+    img.onerror = () => {
+      URL.revokeObjectURL(url);
+      reject(new Error('unsupported image'));
+    };
+    img.src = url;
+  });
+}
+
+async function handleUpload(input, opts, apply) {
+  const file = input.files?.[0];
+  input.value = '';
+  if (!file) return;
+  try {
+    apply(await readImage(file, opts));
+  } catch {
+    toast('この画像は読み込めませんでした。JPEGかPNGを試してください');
+  }
+}
+
+$('#icon-upload').addEventListener('change', (e) => handleUpload(e.target, { square: true, size: 300 },
+  (data) => update({ iconUpload: data, iconId: '', iconTitle: '', iconChamp: '' })));
+
+$('#bg-upload').addEventListener('change', (e) => handleUpload(e.target, { maxW: 1600, maxH: 900 },
+  (data) => update({ bgUpload: data, splashY: 0.5 })));
 
 // ---------- Skins ----------
 
@@ -249,7 +322,8 @@ async function loadSkins(id) {
   if (!skinCache.has(id)) {
     skinCache.set(id, fetch(`${DDRAGON}/cdn/${ctxData.version}/data/ja_JP/champion/${id}.json`)
       .then((r) => r.json())
-      .then((json) => json.data[id].skins)
+      // Chromas are listed as skins with a parentSkin but have no splash art of their own.
+      .then((json) => json.data[id].skins.filter((s) => s.parentSkin === undefined))
       .catch(() => [{ num: 0, name: 'default' }]));
   }
   return skinCache.get(id);
@@ -277,6 +351,21 @@ const ICON_PAGE = 180;
 let iconLimit = ICON_PAGE;
 let iconList = null;
 let iconData = null;
+let pickRole = '';
+
+// Role that newly added favorite champions get; starts at the main role.
+function renderPickerRoles() {
+  $('#picker-role-buttons').innerHTML = [{ id: '', label: 'なし' }, ...ROLES]
+    .map((r) => `<button type="button" data-pickrole="${r.id}" class="${r.id === pickRole ? 'on' : ''}">${r.label}</button>`)
+    .join('');
+}
+
+$('#picker-role-buttons').addEventListener('click', (e) => {
+  const b = e.target.closest('[data-pickrole]');
+  if (!b) return;
+  pickRole = b.dataset.pickrole;
+  renderPickerRoles();
+});
 
 // Lets "あーり" match "アーリ" and "kda" match "K/DA".
 const normalize = (s) => s.normalize('NFKC').toLowerCase()
@@ -308,6 +397,11 @@ function openPicker(target) {
   pickTarget = target;
   pickTab = target === 'icon' && !state.iconChamp ? 'profile' : 'champ';
   $('#picker-tabs').hidden = target !== 'icon';
+  $('#picker-roles').hidden = target !== 'champs';
+  if (target === 'champs') {
+    pickRole = state.mainRole || '';
+    renderPickerRoles();
+  }
   $('#picker-search').value = '';
   renderPicker();
   picker.showModal();
@@ -328,7 +422,7 @@ function renderPicker() {
   const chosen = pickTarget === 'champs' ? state.champs : [pickTarget === 'icon' ? state.iconChamp : state.splashChamp];
   const items = sortedChamps.filter((c) => !q || c.search.includes(q));
   $('#picker-status').textContent = pickTarget === 'champs'
-    ? `${state.champs.length} / ${MAX_CHAMPS} 体選択中`
+    ? `${state.champs.length} / ${MAX_CHAMPS} 体選択中（上で選んだロールと一緒に登録されます）`
     : '';
   $('#picker-grid').innerHTML = items.map((c) => `
     <button type="button" class="${chosen.includes(c.id) ? 'on' : ''}" data-id="${c.id}">
@@ -400,20 +494,21 @@ $('#picker-grid').addEventListener('click', (e) => {
   const id = btn.dataset.id;
   if (pickTarget === 'champs') {
     if (state.champs.includes(id)) {
-      update({ champs: state.champs.filter((c) => c !== id) });
+      const { [id]: _, ...champRoles } = state.champRoles;
+      update({ champs: state.champs.filter((c) => c !== id), champRoles });
     } else if (state.champs.length >= MAX_CHAMPS) {
       toast(`得意チャンピオンは${MAX_CHAMPS}体まで選べます`);
       return;
     } else {
-      update({ champs: [...state.champs, id] });
+      update({ champs: [...state.champs, id], champRoles: { ...state.champRoles, [id]: pickRole } });
     }
     renderPicker();
     if (state.champs.length >= MAX_CHAMPS) picker.close();
   } else if (pickTarget === 'icon') {
-    update({ iconChamp: id, iconId: '', iconTitle: '' });
+    update({ iconChamp: id, iconId: '', iconTitle: '', iconUpload: '' });
     picker.close();
   } else {
-    update({ splashChamp: id, splashSkin: 0 });
+    update({ splashChamp: id, splashSkin: 0, bgUpload: '' });
     syncSkins();
     picker.close();
   }

@@ -54,6 +54,8 @@
           <div class="field grow">アイコン
             <div class="picker-row">
               <button type="button" class="champ-btn" id="icon-btn" data-pick="icon"></button>
+              <label class="btn ghost small upload">画像をアップ<input type="file" accept="image/*" id="icon-upload" hidden></label>
+              <button type="button" class="btn ghost small" id="icon-clear">削除</button>
             </div>
           </div>
         </div>
@@ -121,11 +123,14 @@
         <div class="field">テーマ
           <div class="themes" id="themes"></div>
         </div>
-        <div class="field">背景スキン
+        <div class="field">背景
           <div class="picker-row">
             <button type="button" class="champ-btn" id="splash-btn" data-pick="splash"></button>
             <select name="splashSkin" id="skin" class="grow"></select>
-            <button type="button" class="btn ghost small" id="splash-clear">なし</button>
+          </div>
+          <div class="picker-row">
+            <label class="btn ghost small upload">自分の画像をアップ<input type="file" accept="image/*" id="bg-upload" hidden></label>
+            <button type="button" class="btn ghost small" id="splash-clear">背景なし</button>
           </div>
         </div>
         <div class="row" id="splash-controls">
@@ -149,6 +154,10 @@
     <div class="picker-head">
       <input type="search" id="picker-search">
       <button type="button" class="btn ghost small" id="picker-close">閉じる</button>
+    </div>
+    <div class="picker-roles" id="picker-roles">
+      <span>ロール</span>
+      <div class="segmented" id="picker-role-buttons"></div>
     </div>
     <div class="picker-tabs" id="picker-tabs">
       <button type="button" data-tab="profile">サモナーアイコン</button>
