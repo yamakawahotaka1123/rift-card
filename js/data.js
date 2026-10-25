@@ -102,9 +102,10 @@ export const DEFAULT_STATE = {
   splashChamp: '',
   splashSkin: 0,
   bgUpload: '',
-  bgX: 0.5,
+  // Background shift as a fraction of the card size (-1..1), and zoom relative to "cover".
+  bgOffX: 0,
+  bgOffY: 0,
   bgZoom: 1,
-  splashY: 0.3,
   dim: 0.6,
   theme: 'hextech',
 };
@@ -132,7 +133,7 @@ export const SAMPLE_STATE = {
   comment: 'ミッドメインです！一緒にランク回せる方、気軽に声かけてください。',
   splashChamp: 'Ahri',
   splashSkin: 0,
-  splashY: 0.25,
+  bgOffY: 0.05,
   dim: 0.6,
   theme: 'hextech',
 };

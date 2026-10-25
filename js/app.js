@@ -30,6 +30,9 @@ function loadState() {
       }
       delete saved.mainRole;
       delete saved.subRoles;
+      // Older saves positioned the background with bgX/splashY focus values; start centered instead.
+      delete saved.bgX;
+      delete saved.splashY;
       return { ...DEFAULT_STATE, ...saved };
     }
   } catch { /* storage unavailable */ }
@@ -57,7 +60,6 @@ function toast(message) {
 
 let renderToken = 0;
 let renderQueued = false;
-let lastBgMetrics = null; // overflow of the background image, used to map drags to position
 function scheduleRender() {
   if (renderQueued) return;
   renderQueued = true;
@@ -66,9 +68,8 @@ function scheduleRender() {
     if (!ctxData.version) return;
     const token = ++renderToken;
     const scratch = document.createElement('canvas');
-    const result = await renderCard(scratch, state, ctxData);
+    await renderCard(scratch, state, ctxData);
     if (token !== renderToken) return;
-    lastBgMetrics = result?.bg || null;
     canvas.getContext('2d').drawImage(scratch, 0, 0);
     $('#loading').hidden = true;
   });
@@ -87,23 +88,24 @@ function update(patch, { save = true } = {}) {
 // ---------- Drag the background on the preview ----------
 
 const hasBackground = () => Boolean(state.splashChamp || state.bgUpload);
-const clamp01 = (v) => Math.min(1, Math.max(0, v));
+const clampOffset = (v) => Math.round(Math.min(1, Math.max(-1, v)) * 1000) / 1000;
+const MIN_ZOOM = 0.5;
+const MAX_ZOOM = 4;
 let bgDrag = null;
 
 canvas.addEventListener('pointerdown', (e) => {
-  if (!hasBackground() || !lastBgMetrics) return;
+  if (!hasBackground()) return;
   canvas.setPointerCapture(e.pointerId);
-  bgDrag = { x: e.clientX, y: e.clientY, bgX: Number(state.bgX), bgY: Number(state.splashY) };
+  bgDrag = { x: e.clientX, y: e.clientY, offX: Number(state.bgOffX), offY: Number(state.bgOffY) };
 });
 
 canvas.addEventListener('pointermove', (e) => {
-  if (!bgDrag || !lastBgMetrics) return;
-  // Screen pixels -> card pixels -> focus change. Dragging right moves the image right.
-  const k = CARD_W / canvas.clientWidth;
-  const { overflowX, overflowY } = lastBgMetrics;
+  if (!bgDrag) return;
+  // The image follows the pointer 1:1 (offsets are fractions of the card size).
+  const rect = canvas.getBoundingClientRect();
   update({
-    bgX: overflowX > 1 ? clamp01(bgDrag.bgX - ((e.clientX - bgDrag.x) * k) / overflowX) : 0.5,
-    splashY: overflowY > 1 ? clamp01(bgDrag.bgY - ((e.clientY - bgDrag.y) * k) / overflowY) : 0.5,
+    bgOffX: clampOffset(bgDrag.offX + (e.clientX - bgDrag.x) / rect.width),
+    bgOffY: clampOffset(bgDrag.offY + (e.clientY - bgDrag.y) / rect.height),
   }, { save: false });
 });
 
@@ -118,7 +120,7 @@ canvas.addEventListener('pointercancel', endBgDrag);
 canvas.addEventListener('wheel', (e) => {
   if (!hasBackground()) return;
   e.preventDefault();
-  const zoom = Math.min(3, Math.max(1, Number(state.bgZoom || 1) * Math.exp(-e.deltaY * 0.0015)));
+  const zoom = Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, Number(state.bgZoom || 1) * Math.exp(-e.deltaY * 0.0015)));
   update({ bgZoom: Math.round(zoom * 100) / 100 });
 }, { passive: false });
 
@@ -340,7 +342,7 @@ form.addEventListener('click', (e) => {
     [champs[i - 1], champs[i]] = [champs[i], champs[i - 1]];
     update({ champs });
   } else if (btn.id === 'bg-pos-reset') {
-    update({ bgX: 0.5, splashY: DEFAULT_STATE.splashY, bgZoom: 1 });
+    update({ bgOffX: 0, bgOffY: 0, bgZoom: 1 });
   } else if (btn.id === 'splash-clear') {
     update({ splashChamp: '', splashSkin: 0, bgUpload: '' });
   } else if (btn.id === 'icon-clear') {
@@ -358,7 +360,7 @@ const CROP = {
 };
 const APPLY = {
   icon: (data) => update({ iconUpload: data, iconId: '', iconTitle: '', iconChamp: '' }),
-  bg: (data) => update({ bgUpload: data, splashChamp: '', splashSkin: 0, bgX: 0.5, splashY: 0.5, bgZoom: 1 }),
+  bg: (data) => update({ bgUpload: data, splashChamp: '', splashSkin: 0, bgOffX: 0, bgOffY: 0, bgZoom: 1 }),
 };
 
 async function cropAndApply(kind) {
@@ -395,7 +397,7 @@ const SECTIONS = {
   tags: ['tags', 'customTags'],
   contact: ['hours', 'discord', 'x', 'twitch', 'youtube'],
   comment: ['comment'],
-  design: ['theme', 'splashChamp', 'splashSkin', 'bgUpload', 'bgX', 'splashY', 'bgZoom', 'dim'],
+  design: ['theme', 'splashChamp', 'splashSkin', 'bgUpload', 'bgOffX', 'bgOffY', 'bgZoom', 'dim'],
 };
 
 form.addEventListener('click', (e) => {
@@ -668,7 +670,7 @@ $('#picker-grid').addEventListener('click', (e) => {
     update({ iconChamp: id, iconId: '', iconTitle: '', iconUpload: '' });
     picker.close();
   } else {
-    update({ splashChamp: id, splashSkin: 0, bgUpload: '', bgX: 0.5, splashY: DEFAULT_STATE.splashY, bgZoom: 1 });
+    update({ splashChamp: id, splashSkin: 0, bgUpload: '', bgOffX: 0, bgOffY: 0, bgZoom: 1 });
     syncSkins();
     picker.close();
   }

@@ -142,16 +142,14 @@ function wrapLines(ctx, text, maxWidth, maxLines) {
   return lines;
 }
 
-// Fills w x h with the image (cover), zoomed by `zoom` and panned by focus 0..1.
-// Returns how far the scaled image overflows the area, so callers can map drags to focus.
-function drawCover(ctx, img, x, y, w, h, focusX, focusY, zoom = 1) {
+// Draws the image at "cover" size times `zoom`, centered and then shifted by
+// offX/offY (fractions of the card's width/height). The image may move past the
+// card edges, leaving the theme background visible.
+function drawPlaced(ctx, img, w, h, offX, offY, zoom = 1) {
   const scale = Math.max(w / img.width, h / img.height) * zoom;
-  const sw = w / scale;
-  const sh = h / scale;
-  const sx = (img.width - sw) * focusX;
-  const sy = (img.height - sh) * focusY;
-  ctx.drawImage(img, sx, sy, sw, sh, x, y, w, h);
-  return { overflowX: img.width * scale - w, overflowY: img.height * scale - h };
+  const dw = img.width * scale;
+  const dh = img.height * scale;
+  ctx.drawImage(img, (w - dw) / 2 + offX * w, (h - dh) / 2 + offY * h, dw, dh);
 }
 
 function sectionLabel(ctx, text, x, y, theme) {
@@ -244,9 +242,8 @@ export async function renderCard(canvas, state, ctxData) {
   stops.forEach((c, i) => bgGrad.addColorStop(i / (stops.length - 1), c));
   ctx.fillStyle = bgGrad;
   ctx.fillRect(0, 0, CARD_W, CARD_H);
-  let bgMetrics = null;
   if (splash) {
-    bgMetrics = drawCover(ctx, splash, 0, 0, CARD_W, CARD_H, Number(state.bgX ?? 0.5), Number(state.splashY), Number(state.bgZoom || 1));
+    drawPlaced(ctx, splash, CARD_W, CARD_H, Number(state.bgOffX || 0), Number(state.bgOffY || 0), Number(state.bgZoom || 1));
     const d = Number(state.dim);
     const shade = ctx.createLinearGradient(0, 0, CARD_W, 0);
     shade.addColorStop(0, hexToRgba(theme.bg1, Math.min(1, d + 0.3)));
@@ -599,5 +596,4 @@ export async function renderCard(canvas, state, ctxData) {
   canvas.width = CARD_W;
   canvas.height = CARD_H;
   canvas.getContext('2d').drawImage(off, 0, 0);
-  return { bg: bgMetrics };
 }
