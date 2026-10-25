@@ -1,5 +1,5 @@
 // Draws the summoner card onto a canvas. Everything happens in the browser.
-import { CDRAGON, CDRAGON_GAME, DDRAGON, ROLES, THEMES, TIERS } from './data.js';
+import { CDRAGON, CDRAGON_GAME, DDRAGON, ROLE_LEVELS, ROLES, THEMES, TIERS } from './data.js';
 import { drawFairyBackdrop, drawFairyCorners, drawFairyFrame, drawUnicornHorn, drawWings } from './fairy.js';
 
 export const CARD_W = 1200;
@@ -215,7 +215,8 @@ export async function renderCard(canvas, state, ctxData) {
     tier.id !== 'UNRANKED' ? loadImage(emblemUrl(tier.id)) : null,
     Promise.all(state.champs.map((c) => loadImage(c.img || champSquareUrl(version, c.id)))),
     Promise.all(ROLES.map((r) => {
-      const active = r.id === state.mainRole || state.subRoles.includes(r.id);
+      const level = state.roleLevels?.[r.id];
+      const active = level === 'main' || level === 'sub' || level === 'normal';
       return loadRoleIcon(r.id, active ? theme.accent : theme.sub);
     })),
     Promise.all(state.champs.map((c) => (c.role ? loadRoleIcon(c.role, theme.accent) : null))),
@@ -438,32 +439,59 @@ export async function renderCard(canvas, state, ctxData) {
   // Roles
   const ry = 300;
   sectionLabel(ctx, 'ROLE', 60, 276, theme);
+  const NG_COLOR = '#d9605a';
+  // Box opacity, fill, border and badge style for each willingness level.
+  const ROLE_STYLE = {
+    main: { alpha: 1, fill: hexToRgba(theme.accent, 0.22), stroke: theme.accent, width: 2.5 },
+    sub: { alpha: 1, fill: theme.panel, stroke: hexToRgba(theme.accent, 0.65), width: 1.8 },
+    normal: { alpha: 0.8, fill: theme.panel, stroke: hexToRgba(theme.accent, 0.35), width: 1.5 },
+    ng: { alpha: 0.6, fill: theme.panel, stroke: hexToRgba(NG_COLOR, 0.5), width: 1.5 },
+    none: { alpha: 0.3, fill: theme.panel, stroke: hexToRgba(theme.accent, 0.3), width: 1.5 },
+  };
   ROLES.forEach((r, i) => {
     const x = 60 + i * 74;
-    const isMain = r.id === state.mainRole;
-    const isSub = state.subRoles.includes(r.id);
-    ctx.globalAlpha = isMain || isSub ? 1 : 0.35;
+    const levelId = state.roleLevels?.[r.id] || 'none';
+    const level = ROLE_LEVELS.find((l) => l.id === levelId);
+    const style = ROLE_STYLE[levelId];
+    ctx.globalAlpha = style.alpha;
     roundRect(ctx, x, ry, 62, 62, 12);
-    ctx.fillStyle = isMain ? hexToRgba(theme.accent, 0.22) : theme.panel;
+    ctx.fillStyle = style.fill;
     ctx.fill();
-    ctx.strokeStyle = isMain ? theme.accent : hexToRgba(theme.accent, isSub ? 0.6 : 0.3);
-    ctx.lineWidth = isMain ? 2.5 : 1.5;
+    ctx.strokeStyle = style.stroke;
+    ctx.lineWidth = style.width;
     ctx.stroke();
     if (roleImgs[i]) ctx.drawImage(roleImgs[i], x + 11, ry + 11, 40, 40);
+    if (levelId === 'ng') {
+      ctx.strokeStyle = hexToRgba(NG_COLOR, 0.85);
+      ctx.lineWidth = 3;
+      ctx.lineCap = 'round';
+      ctx.beginPath();
+      ctx.moveTo(x + 12, ry + 50);
+      ctx.lineTo(x + 50, ry + 12);
+      ctx.stroke();
+      ctx.lineCap = 'butt';
+    }
     ctx.font = `700 15px ${FONT_EN}`;
-    ctx.fillStyle = isMain || isSub ? theme.text : theme.sub;
+    ctx.fillStyle = levelId === 'main' || levelId === 'sub' ? theme.text : theme.sub;
     ctx.textAlign = 'center';
     ctx.fillText(r.label, x + 31, ry + 86);
-    if (isMain) {
-      ctx.font = `800 12px ${FONT_JP}`;
-      const bw = 40;
-      roundRect(ctx, x + 31 - bw / 2, ry - 9, bw, 18, 9);
-      ctx.fillStyle = theme.accent;
-      ctx.fill();
-      ctx.fillStyle = theme.bg1;
-      ctx.fillText('MAIN', x + 31, ry + 4);
-    }
     ctx.globalAlpha = 1;
+    if (level) {
+      ctx.font = `800 12px ${FONT_JP}`;
+      const bw = Math.max(36, ctx.measureText(level.badge).width + 14);
+      roundRect(ctx, x + 31 - bw / 2, ry - 9, bw, 18, 9);
+      const filled = levelId === 'main' || levelId === 'ng';
+      const color = levelId === 'ng' ? NG_COLOR : levelId === 'normal' ? theme.sub : theme.accent;
+      ctx.fillStyle = filled ? color : theme.bg1;
+      ctx.fill();
+      if (!filled) {
+        ctx.strokeStyle = color;
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+      }
+      ctx.fillStyle = filled ? (levelId === 'ng' ? '#ffffff' : theme.bg1) : color;
+      ctx.fillText(level.badge, x + 31, ry + 4);
+    }
   });
 
   // Champions

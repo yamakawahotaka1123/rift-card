@@ -296,6 +296,11 @@ input[type=range] { width: 100%; accent-color: var(--gold); }
 }
 .role-btns button:hover { border-color: rgba(200, 170, 110, 0.6); }
 .role-btns button.on { border-color: var(--gold); background: rgba(200, 170, 110, 0.22); color: var(--gold2); font-weight: 700; }
+.role-btns button { font-size: 11px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.role-btns button[data-setrole="normal"].on { border-color: #8d97a3; background: rgba(141, 151, 163, 0.18); color: var(--text); }
+.role-btns button[data-setrole="ng"].on { border-color: #d9605a; background: rgba(217, 96, 90, 0.2); color: #ffb3ae; }
+.role.normal img, .role.normal span { opacity: 0.8; }
+.role.ng { border-color: rgba(217, 96, 90, 0.5); }
 
 .champ-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); gap: 10px; }
 .champ-item, .champ-add {

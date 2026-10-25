@@ -31,6 +31,16 @@ export const ROLES = [
 // For people who'd rather not show their Riot ID on the card.
 export const NAME_PRESETS = ['非公開', 'やるとき教えます', 'DMで教えます', '仲良くなったら教えます'];
 
+// How willing someone is to play each role, strongest first.
+export const ROLE_LEVELS = [
+  { id: 'main', label: 'メイン', badge: 'MAIN' },
+  { id: 'sub', label: 'サブ', badge: 'SUB' },
+  { id: 'normal', label: 'ノマなら可', badge: 'ノマ可' },
+  { id: 'ng', label: '無理', badge: 'NG' },
+];
+
+export const mainRoleOf = (state) => Object.keys(state.roleLevels || {}).find((r) => state.roleLevels[r] === 'main') || '';
+
 export const TAGS = [
   'エンジョイ勢', 'ランク勢', 'ノーマル', 'ARAM', 'アリーナ', 'スイフトプレイ',
   '初心者', '初心者歓迎', '復帰勢', 'VCあり', '聞き専OK', 'チャットのみ',
@@ -75,8 +85,8 @@ export const DEFAULT_STATE = {
   iconShape: 'circle',
   tier: 'UNRANKED',
   division: 'IV',
-  mainRole: '',
-  subRoles: [],
+  // role id -> 'main' | 'sub' | 'normal' | 'ng'. Only one role can be 'main'.
+  roleLevels: {},
   // Each entry is { id, role, img? }; the same champion may appear with different roles.
   // img is an optional data URL cropped from a skin splash.
   champs: [],
@@ -107,8 +117,7 @@ export const SAMPLE_STATE = {
   iconChamp: 'Ahri',
   tier: 'EMERALD',
   division: 'II',
-  mainRole: 'middle',
-  subRoles: ['utility'],
+  roleLevels: { middle: 'main', utility: 'sub', top: 'normal', bottom: 'ng' },
   champs: [
     { id: 'Ahri', role: 'middle' },
     { id: 'Syndra', role: 'middle' },

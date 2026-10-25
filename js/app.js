@@ -1,6 +1,6 @@
 import {
   CDRAGON_GAME, DDRAGON, DEFAULT_STATE, DIVISIONS, MAX_CHAMPS, MAX_COMMENT, MAX_TAG_LENGTH, MAX_TAGS, NAME_PRESETS,
-  ROLES, SAMPLE_STATE, TAGS, THEMES, TIERS,
+  ROLE_LEVELS, ROLES, SAMPLE_STATE, TAGS, THEMES, TIERS, mainRoleOf,
 } from './data.js';
 import { CARD_H, CARD_W, champSquareUrl, loadSplash, profileIconUrl, renderCard } from './card.js';
 import { cropImage } from './cropper.js';
@@ -23,6 +23,13 @@ function loadState() {
         saved.champs = saved.champs.map((c) => (typeof c === 'string' ? { id: c, role: saved.champRoles?.[c] || '' } : c));
       }
       delete saved.champRoles;
+      // Older saves stored roles as mainRole + subRoles.
+      if (!saved.roleLevels && (saved.mainRole || saved.subRoles)) {
+        saved.roleLevels = Object.fromEntries((saved.subRoles || []).map((r) => [r, 'sub']));
+        if (saved.mainRole) saved.roleLevels[saved.mainRole] = 'main';
+      }
+      delete saved.mainRole;
+      delete saved.subRoles;
       return { ...DEFAULT_STATE, ...saved };
     }
   } catch { /* storage unavailable */ }
@@ -126,8 +133,7 @@ function buildStaticUI() {
       <img src="https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-static-assets/global/default/svg/position-${r.id}.svg" alt="">
       <span>${r.label}</span>
       <div class="role-btns">
-        <button type="button" data-setrole="main" data-role-id="${r.id}">メイン</button>
-        <button type="button" data-setrole="sub" data-role-id="${r.id}">サブ</button>
+        ${ROLE_LEVELS.map((l) => `<button type="button" data-setrole="${l.id}" data-role-id="${r.id}">${l.label}</button>`).join('')}
       </div>
     </div>`).join('');
 
@@ -156,7 +162,7 @@ function syncUI() {
 
   for (const b of $('#roles').children) {
     const id = b.dataset.role;
-    const kind = id === state.mainRole ? 'main' : state.subRoles.includes(id) ? 'sub' : '';
+    const kind = state.roleLevels[id] || '';
     b.className = `role ${kind}`;
     for (const btn of b.querySelectorAll('[data-setrole]')) btn.classList.toggle('on', btn.dataset.setrole === kind);
   }
@@ -294,15 +300,20 @@ form.addEventListener('click', (e) => {
   } else if (btn.parentElement?.dataset.radio) {
     update({ [btn.parentElement.dataset.radio]: btn.dataset.value });
   } else if (btn.dataset.setrole) {
-    // Pressing the active button again turns the role off. Only one main role.
+    // Pressing the active button again turns the role off. Only one main role:
+    // choosing a new main clears the previous one.
     const id = btn.dataset.roleId;
-    const wasMain = state.mainRole === id;
-    const wasSub = state.subRoles.includes(id);
-    let mainRole = wasMain ? '' : state.mainRole;
-    const subRoles = state.subRoles.filter((r) => r !== id);
-    if (btn.dataset.setrole === 'main' && !wasMain) mainRole = id;
-    if (btn.dataset.setrole === 'sub' && !wasSub) subRoles.push(id);
-    update({ mainRole, subRoles });
+    const level = btn.dataset.setrole;
+    const roleLevels = { ...state.roleLevels };
+    if (roleLevels[id] === level) {
+      delete roleLevels[id];
+    } else {
+      if (level === 'main') {
+        for (const r of Object.keys(roleLevels)) if (roleLevels[r] === 'main') delete roleLevels[r];
+      }
+      roleLevels[id] = level;
+    }
+    update({ roleLevels });
   } else if (btn.dataset.tag) {
     const tag = btn.dataset.tag;
     if (state.tags.includes(tag)) {
@@ -379,7 +390,7 @@ for (const kind of ['icon', 'bg']) {
 const SECTIONS = {
   basic: ['name', 'tag', 'level', 'iconChamp', 'iconId', 'iconTitle', 'iconUpload', 'iconShape'],
   rank: ['tier', 'division'],
-  roles: ['mainRole', 'subRoles'],
+  roles: ['roleLevels'],
   champs: ['champs', 'champLabel'],
   tags: ['tags', 'customTags'],
   contact: ['hours', 'discord', 'x', 'twitch', 'youtube'],
@@ -535,7 +546,7 @@ function openPicker(target) {
   $('#picker-tabs').hidden = target !== 'icon';
   $('#picker-roles').hidden = target !== 'champs';
   if (target === 'champs') {
-    pickRole = state.mainRole || '';
+    pickRole = mainRoleOf(state);
     renderPickerRoles();
   }
   $('#picker-search').value = '';
