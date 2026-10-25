@@ -1,5 +1,5 @@
 import {
-  CDRAGON_GAME, DDRAGON, DEFAULT_STATE, DIVISIONS, MAX_CHAMPS, MAX_COMMENT, MAX_TAG_LENGTH, MAX_TAGS,
+  CDRAGON_GAME, DDRAGON, DEFAULT_STATE, DIVISIONS, MAX_CHAMPS, MAX_COMMENT, MAX_TAG_LENGTH, MAX_TAGS, NAME_PRESETS,
   ROLES, SAMPLE_STATE, TAGS, THEMES, TIERS,
 } from './data.js';
 import { CARD_H, CARD_W, champSquareUrl, profileIconUrl, renderCard } from './card.js';
@@ -90,6 +90,9 @@ function buildStaticUI() {
       </div>
     </div>`).join('');
 
+  $('#name-presets').innerHTML = NAME_PRESETS
+    .map((p) => `<button type="button" class="chip" data-name-preset="${p}">${p}</button>`).join('');
+
   $('#themes').innerHTML = THEMES.map((t) => `
     <button type="button" class="theme" data-theme="${t.id}" style="--a:${t.accent};--b:${t.bg1};--c:${t.bg2}">
       <i></i><span>${t.label}</span>
@@ -118,6 +121,7 @@ function syncUI() {
   }
 
   renderTags();
+  for (const b of $('#name-presets').children) b.classList.toggle('on', b.dataset.namePreset === state.name);
   for (const b of $('#themes').children) b.classList.toggle('on', b.dataset.theme === state.theme);
 
   if (state.iconUpload) {
@@ -236,7 +240,11 @@ form.addEventListener('click', (e) => {
   const btn = e.target.closest('button');
   if (!btn) return;
 
-  if (btn.dataset.addtag !== undefined) {
+  if (btn.dataset.namePreset) {
+    // A preset replaces the Riot ID, so the tag is cleared too. Pressing it again clears the name.
+    const preset = btn.dataset.namePreset;
+    update(state.name === preset ? { name: '' } : { name: preset, tag: '' });
+  } else if (btn.dataset.addtag !== undefined) {
     startAddTag(btn);
   } else if (btn.parentElement?.dataset.radio) {
     update({ [btn.parentElement.dataset.radio]: btn.dataset.value });

@@ -28,6 +28,9 @@ export const ROLES = [
   { id: 'utility', label: 'SUP' },
 ];
 
+// For people who'd rather not show their Riot ID on the card.
+export const NAME_PRESETS = ['非公開', 'やるとき教えます', 'DMで教えます', '仲良くなったら教えます'];
+
 export const TAGS = [
   'エンジョイ勢', 'ランク勢', 'ノーマル', 'ARAM', 'アリーナ', 'スイフトプレイ',
   '初心者', '初心者歓迎', '復帰勢', 'VCあり', '聞き専OK', 'チャットのみ',
