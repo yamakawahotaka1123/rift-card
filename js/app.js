@@ -50,6 +50,7 @@ function toast(message) {
 
 let renderToken = 0;
 let renderQueued = false;
+let lastBgMetrics = null; // overflow of the background image, used to map drags to position
 function scheduleRender() {
   if (renderQueued) return;
   renderQueued = true;
@@ -58,21 +59,61 @@ function scheduleRender() {
     if (!ctxData.version) return;
     const token = ++renderToken;
     const scratch = document.createElement('canvas');
-    await renderCard(scratch, state, ctxData);
+    const result = await renderCard(scratch, state, ctxData);
     if (token !== renderToken) return;
+    lastBgMetrics = result?.bg || null;
     canvas.getContext('2d').drawImage(scratch, 0, 0);
     $('#loading').hidden = true;
   });
 }
 
-function update(patch) {
+// save: false skips localStorage while dragging; the final position is saved on release.
+function update(patch, { save = true } = {}) {
   state = { ...state, ...patch };
-  if (!saveState() && (state.iconUpload || state.bgUpload)) {
+  if (save && !saveState() && (state.iconUpload || state.bgUpload)) {
     toast('画像が大きすぎてブラウザに保存できませんでした（ページを閉じると消えます）');
   }
   syncUI();
   scheduleRender();
 }
+
+// ---------- Drag the background on the preview ----------
+
+const hasBackground = () => Boolean(state.splashChamp || state.bgUpload);
+const clamp01 = (v) => Math.min(1, Math.max(0, v));
+let bgDrag = null;
+
+canvas.addEventListener('pointerdown', (e) => {
+  if (!hasBackground() || !lastBgMetrics) return;
+  canvas.setPointerCapture(e.pointerId);
+  bgDrag = { x: e.clientX, y: e.clientY, bgX: Number(state.bgX), bgY: Number(state.splashY) };
+});
+
+canvas.addEventListener('pointermove', (e) => {
+  if (!bgDrag || !lastBgMetrics) return;
+  // Screen pixels -> card pixels -> focus change. Dragging right moves the image right.
+  const k = CARD_W / canvas.clientWidth;
+  const { overflowX, overflowY } = lastBgMetrics;
+  update({
+    bgX: overflowX > 1 ? clamp01(bgDrag.bgX - ((e.clientX - bgDrag.x) * k) / overflowX) : 0.5,
+    splashY: overflowY > 1 ? clamp01(bgDrag.bgY - ((e.clientY - bgDrag.y) * k) / overflowY) : 0.5,
+  }, { save: false });
+});
+
+const endBgDrag = () => {
+  if (!bgDrag) return;
+  bgDrag = null;
+  saveState();
+};
+canvas.addEventListener('pointerup', endBgDrag);
+canvas.addEventListener('pointercancel', endBgDrag);
+
+canvas.addEventListener('wheel', (e) => {
+  if (!hasBackground()) return;
+  e.preventDefault();
+  const zoom = Math.min(3, Math.max(1, Number(state.bgZoom || 1) * Math.exp(-e.deltaY * 0.0015)));
+  update({ bgZoom: Math.round(zoom * 100) / 100 });
+}, { passive: false });
 
 // ---------- Form ----------
 
@@ -134,8 +175,6 @@ function syncUI() {
   $('#icon-clear').hidden = !(state.iconUpload || state.iconId || state.iconChamp);
   $('#icon-recrop').hidden = !(state.iconUpload && uploadedFiles.icon);
   $('#bg-recrop').hidden = !(state.bgUpload && uploadedFiles.bg);
-  // An uploaded background is already cropped to the card's shape, so the position slider does nothing.
-  $('#splash-y-field').hidden = Boolean(state.bgUpload);
 
   if (state.bgUpload) {
     $('#splash-btn').innerHTML = `<img src="${state.bgUpload}" alt="" class="wide"><span>アップロード画像</span>`;
@@ -146,6 +185,7 @@ function syncUI() {
   $('#skin').hidden = !state.splashChamp || Boolean(state.bgUpload);
   $('#splash-clear').hidden = !hasBg;
   $('#splash-controls').hidden = !hasBg;
+  canvas.classList.toggle('draggable', hasBg);
 
   const roleOptions = (selected) => `<option value="">ロールなし</option>`
     + ROLES.map((r) => `<option value="${r.id}"${r.id === selected ? ' selected' : ''}>${r.label}</option>`).join('');
@@ -288,6 +328,8 @@ form.addEventListener('click', (e) => {
     const champs = [...state.champs];
     [champs[i - 1], champs[i]] = [champs[i], champs[i - 1]];
     update({ champs });
+  } else if (btn.id === 'bg-pos-reset') {
+    update({ bgX: 0.5, splashY: DEFAULT_STATE.splashY, bgZoom: 1 });
   } else if (btn.id === 'splash-clear') {
     update({ splashChamp: '', splashSkin: 0, bgUpload: '' });
   } else if (btn.id === 'icon-clear') {
@@ -305,7 +347,7 @@ const CROP = {
 };
 const APPLY = {
   icon: (data) => update({ iconUpload: data, iconId: '', iconTitle: '', iconChamp: '' }),
-  bg: (data) => update({ bgUpload: data, splashChamp: '', splashSkin: 0 }),
+  bg: (data) => update({ bgUpload: data, splashChamp: '', splashSkin: 0, bgX: 0.5, splashY: 0.5, bgZoom: 1 }),
 };
 
 async function cropAndApply(kind) {
@@ -342,7 +384,7 @@ const SECTIONS = {
   tags: ['tags', 'customTags'],
   contact: ['hours', 'discord', 'x', 'twitch', 'youtube'],
   comment: ['comment'],
-  design: ['theme', 'splashChamp', 'splashSkin', 'bgUpload', 'splashY', 'dim'],
+  design: ['theme', 'splashChamp', 'splashSkin', 'bgUpload', 'bgX', 'splashY', 'bgZoom', 'dim'],
 };
 
 form.addEventListener('click', (e) => {
@@ -615,7 +657,7 @@ $('#picker-grid').addEventListener('click', (e) => {
     update({ iconChamp: id, iconId: '', iconTitle: '', iconUpload: '' });
     picker.close();
   } else {
-    update({ splashChamp: id, splashSkin: 0, bgUpload: '' });
+    update({ splashChamp: id, splashSkin: 0, bgUpload: '', bgX: 0.5, splashY: DEFAULT_STATE.splashY, bgZoom: 1 });
     syncSkins();
     picker.close();
   }

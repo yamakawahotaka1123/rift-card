@@ -74,6 +74,11 @@ button { cursor: pointer; }
   height: auto;
   aspect-ratio: 1200 / 675;
 }
+#card.draggable { cursor: grab; touch-action: none; }
+#card.draggable:active { cursor: grabbing; }
+.bg-tools { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: 10px; }
+.bg-tools .hint { margin: 0; }
+.bg-tools .btn { white-space: nowrap; flex-shrink: 0; }
 .loading {
   position: absolute;
   inset: 0;

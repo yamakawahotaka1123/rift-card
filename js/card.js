@@ -1,6 +1,6 @@
 // Draws the summoner card onto a canvas. Everything happens in the browser.
 import { CDRAGON, CDRAGON_GAME, DDRAGON, ROLES, THEMES, TIERS } from './data.js';
-import { drawFairyBackdrop, drawFairyCorners, drawFairyFrame } from './fairy.js';
+import { drawFairyBackdrop, drawFairyCorners, drawFairyFrame, drawUnicornHorn, drawWings } from './fairy.js';
 
 export const CARD_W = 1200;
 export const CARD_H = 675;
@@ -140,13 +140,16 @@ function wrapLines(ctx, text, maxWidth, maxLines) {
   return lines;
 }
 
-function drawCover(ctx, img, x, y, w, h, focusY) {
-  const scale = Math.max(w / img.width, h / img.height);
+// Fills w x h with the image (cover), zoomed by `zoom` and panned by focus 0..1.
+// Returns how far the scaled image overflows the area, so callers can map drags to focus.
+function drawCover(ctx, img, x, y, w, h, focusX, focusY, zoom = 1) {
+  const scale = Math.max(w / img.width, h / img.height) * zoom;
   const sw = w / scale;
   const sh = h / scale;
-  const sx = (img.width - sw) / 2;
+  const sx = (img.width - sw) * focusX;
   const sy = (img.height - sh) * focusY;
   ctx.drawImage(img, sx, sy, sw, sh, x, y, w, h);
+  return { overflowX: img.width * scale - w, overflowY: img.height * scale - h };
 }
 
 function sectionLabel(ctx, text, x, y, theme) {
@@ -238,8 +241,9 @@ export async function renderCard(canvas, state, ctxData) {
   stops.forEach((c, i) => bgGrad.addColorStop(i / (stops.length - 1), c));
   ctx.fillStyle = bgGrad;
   ctx.fillRect(0, 0, CARD_W, CARD_H);
+  let bgMetrics = null;
   if (splash) {
-    drawCover(ctx, splash, 0, 0, CARD_W, CARD_H, state.splashY);
+    bgMetrics = drawCover(ctx, splash, 0, 0, CARD_W, CARD_H, Number(state.bgX ?? 0.5), Number(state.splashY), Number(state.bgZoom || 1));
     const d = Number(state.dim);
     const shade = ctx.createLinearGradient(0, 0, CARD_W, 0);
     shade.addColorStop(0, hexToRgba(theme.bg1, Math.min(1, d + 0.3)));
@@ -326,6 +330,7 @@ export async function renderCard(canvas, state, ctxData) {
     roundRect(ctx, ix, iy, is, is, 18);
   }
   ctx.stroke();
+  if (fairy) drawUnicornHorn(ctx, ix + is / 2, iy + 8, theme);
 
   if (state.level) {
     const label = `Lv.${state.level}`;
@@ -401,6 +406,7 @@ export async function renderCard(canvas, state, ctxData) {
 
   // Rank
   const rcx = 1010;
+  if (fairy) drawWings(ctx, rcx, 130, theme);
   if (emblem) {
     // The emblem PNG is 1280x720 with lots of transparent padding; crop tightly around the crest.
     const src = Math.min(emblem.width, emblem.height) * 0.5;
@@ -560,4 +566,5 @@ export async function renderCard(canvas, state, ctxData) {
   canvas.width = CARD_W;
   canvas.height = CARD_H;
   canvas.getContext('2d').drawImage(off, 0, 0);
+  return { bg: bgMetrics };
 }
