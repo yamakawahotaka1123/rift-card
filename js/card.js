@@ -1,7 +1,7 @@
 // Draws the summoner card onto a canvas. Everything happens in the browser.
 import { CDRAGON, CDRAGON_GAME, DDRAGON, ROLE_LEVELS, ROLES, THEMES, TIERS } from './data.js';
 import {
-  drawFairyBackdrop, drawFairyCorners, drawFairyFrame, drawIconBandage, drawRankHeart, drawUnicornHorn,
+  drawFairyBackdrop, drawFairyCorners, drawFairyFrame, drawIconBandage, drawUnicornHorn,
 } from './fairy.js';
 
 export const CARD_W = 1200;
@@ -412,7 +412,6 @@ export async function renderCard(canvas, state, ctxData) {
 
   // Rank
   const rcx = 1010;
-  if (fairy) drawRankHeart(ctx, rcx, 120, theme);
   if (emblem) {
     // The emblem PNG is 1280x720 with lots of transparent padding; crop tightly around the crest.
     const src = Math.min(emblem.width, emblem.height) * 0.5;

@@ -339,21 +339,3 @@ export function drawUnicornHorn(ctx, cx, baseY, theme) {
 export function drawIconBandage(ctx, cx, cy, r, theme) {
   bandage(ctx, theme, cx - r * 0.72, cy + r * 0.62, 52, -0.75);
 }
-
-// Striped heart behind the rank crest.
-export function drawRankHeart(ctx, cx, cy, theme) {
-  heartPath(ctx, cx, cy + 20, 120);
-  ctx.save();
-  ctx.globalAlpha = 0.9;
-  ink(ctx, theme, theme.clouds[0], 3);
-  ctx.clip();
-  ctx.strokeStyle = 'rgba(255,255,255,0.6)';
-  ctx.lineWidth = 9;
-  for (let x = cx - 160; x < cx + 160; x += 22) {
-    ctx.beginPath();
-    ctx.moveTo(x, cy - 120);
-    ctx.lineTo(x + 100, cy + 160);
-    ctx.stroke();
-  }
-  ctx.restore();
-}
