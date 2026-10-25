@@ -39,6 +39,7 @@
     <form class="editor" id="form" autocomplete="off" onsubmit="return false">
       <fieldset>
         <legend>基本情報</legend>
+        <button type="button" class="section-clear" data-clear="basic">クリア</button>
         <div class="row">
           <label class="field grow">サモナーネーム
             <input name="name" maxlength="16" placeholder="例：ポロ大好き">
@@ -55,6 +56,7 @@
             <div class="picker-row">
               <button type="button" class="champ-btn" id="icon-btn" data-pick="icon"></button>
               <label class="btn ghost small upload">画像をアップ<input type="file" accept="image/*" id="icon-upload" hidden></label>
+              <button type="button" class="btn ghost small" id="icon-recrop">トリミング</button>
               <button type="button" class="btn ghost small" id="icon-clear">削除</button>
             </div>
           </div>
@@ -69,6 +71,7 @@
 
       <fieldset>
         <legend>ランク</legend>
+        <button type="button" class="section-clear" data-clear="rank">クリア</button>
         <div class="row">
           <label class="field grow">ティア
             <select name="tier" id="tier"></select>
@@ -81,22 +84,26 @@
 
       <fieldset>
         <legend>ロール</legend>
+        <button type="button" class="section-clear" data-clear="roles">クリア</button>
         <p class="hint">タップで「サブ」→「メイン」→「なし」と切り替わります（メインは1つ）。</p>
         <div class="roles" id="roles"></div>
       </fieldset>
 
       <fieldset>
         <legend>得意チャンピオン <small>最大5体</small></legend>
+        <button type="button" class="section-clear" data-clear="champs">クリア</button>
         <div class="champ-list" id="champ-list"></div>
       </fieldset>
 
       <fieldset>
         <legend>プレイスタイル <small>最大6個</small></legend>
+        <button type="button" class="section-clear" data-clear="tags">クリア</button>
         <div class="chips" id="tags"></div>
       </fieldset>
 
       <fieldset>
         <legend>活動時間・連絡先</legend>
+        <button type="button" class="section-clear" data-clear="contact">クリア</button>
         <label class="field">活動時間
           <input name="hours" maxlength="30" placeholder="例：平日22時〜深夜 / 休日いつでも">
         </label>
@@ -112,6 +119,7 @@
 
       <fieldset>
         <legend>ひとこと</legend>
+        <button type="button" class="section-clear" data-clear="comment">クリア</button>
         <label class="field">
           <textarea name="comment" rows="3" maxlength="80" placeholder="例：ミッドメインです！一緒にランク回せる方募集中"></textarea>
           <span class="counter" id="comment-count">0 / 80</span>
@@ -120,6 +128,7 @@
 
       <fieldset>
         <legend>デザイン</legend>
+        <button type="button" class="section-clear" data-clear="design">クリア</button>
         <div class="field">テーマ
           <div class="themes" id="themes"></div>
         </div>
@@ -130,11 +139,12 @@
           </div>
           <div class="picker-row">
             <label class="btn ghost small upload">自分の画像をアップ<input type="file" accept="image/*" id="bg-upload" hidden></label>
+            <button type="button" class="btn ghost small" id="bg-recrop">トリミング</button>
             <button type="button" class="btn ghost small" id="splash-clear">背景なし</button>
           </div>
         </div>
         <div class="row" id="splash-controls">
-          <label class="field grow">背景の位置
+          <label class="field grow" id="splash-y-field">背景の位置
             <input name="splashY" type="range" min="0" max="1" step="0.01">
           </label>
           <label class="field grow">背景の暗さ
@@ -142,6 +152,10 @@
           </label>
         </div>
       </fieldset>
+
+      <div class="form-footer">
+        <button type="button" class="btn ghost" id="btn-reset-all">すべてリセット</button>
+      </div>
     </form>
   </main>
 
@@ -165,6 +179,24 @@
     </div>
     <p class="picker-status" id="picker-status"></p>
     <div class="picker-grid" id="picker-grid"></div>
+  </dialog>
+
+  <dialog id="cropper">
+    <div class="crop-head">
+      <strong id="crop-title">トリミング</strong>
+      <span class="hint">ドラッグで移動・ホイール／ピンチ／スライダーで拡大</span>
+    </div>
+    <div class="crop-stage" id="crop-stage">
+      <img id="crop-img" alt="" draggable="false">
+      <div class="crop-mask" id="crop-mask"></div>
+    </div>
+    <label class="field crop-zoom">拡大
+      <input type="range" id="crop-zoom" min="1" max="5" step="0.01" value="1">
+    </label>
+    <div class="actions">
+      <button type="button" class="btn primary" id="crop-ok">決定</button>
+      <button type="button" class="btn ghost" id="crop-cancel">キャンセル</button>
+    </div>
   </dialog>
 
   <div class="toast" id="toast" role="status" aria-live="polite"></div>

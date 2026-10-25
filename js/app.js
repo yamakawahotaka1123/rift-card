@@ -2,7 +2,8 @@ import {
   CDRAGON_GAME, DDRAGON, DEFAULT_STATE, DIVISIONS, MAX_CHAMPS, MAX_COMMENT, MAX_TAG_LENGTH, MAX_TAGS,
   ROLES, SAMPLE_STATE, TAGS, THEMES, TIERS,
 } from './data.js';
-import { champSquareUrl, profileIconUrl, renderCard } from './card.js';
+import { CARD_H, CARD_W, champSquareUrl, profileIconUrl, renderCard } from './card.js';
+import { cropImage } from './cropper.js';
 
 const STORAGE_KEY = 'riftcard:v1';
 const $ = (sel) => document.querySelector(sel);
@@ -116,6 +117,10 @@ function syncUI() {
     champButton($('#icon-btn'), state.iconChamp, 'アイコンを選ぶ');
   }
   $('#icon-clear').hidden = !(state.iconUpload || state.iconId || state.iconChamp);
+  $('#icon-recrop').hidden = !(state.iconUpload && uploadedFiles.icon);
+  $('#bg-recrop').hidden = !(state.bgUpload && uploadedFiles.bg);
+  // An uploaded background is already cropped to the card's shape, so the position slider does nothing.
+  $('#splash-y-field').hidden = Boolean(state.bgUpload);
 
   if (state.bgUpload) {
     $('#splash-btn').innerHTML = `<img src="${state.bgUpload}" alt="" class="wide"><span>アップロード画像</span>`;
@@ -268,52 +273,70 @@ form.addEventListener('click', (e) => {
 
 // ---------- Uploads ----------
 
-// Downscales an uploaded image so it fits comfortably in localStorage.
-// square: center-crop to size x size; otherwise scale to cover maxW x maxH.
-function readImage(file, { square, size, maxW, maxH }) {
-  return new Promise((resolve, reject) => {
-    const url = URL.createObjectURL(file);
-    const img = new Image();
-    img.onload = () => {
-      URL.revokeObjectURL(url);
-      const c = document.createElement('canvas');
-      const g = c.getContext('2d');
-      if (square) {
-        const s = Math.min(img.width, img.height);
-        c.width = c.height = Math.min(size, s);
-        g.drawImage(img, (img.width - s) / 2, (img.height - s) / 2, s, s, 0, 0, c.width, c.height);
-      } else {
-        const scale = Math.min(1, Math.max(maxW / img.width, maxH / img.height));
-        c.width = Math.round(img.width * scale);
-        c.height = Math.round(img.height * scale);
-        g.drawImage(img, 0, 0, c.width, c.height);
-      }
-      resolve(c.toDataURL('image/jpeg', 0.88));
-    };
-    img.onerror = () => {
-      URL.revokeObjectURL(url);
-      reject(new Error('unsupported image'));
-    };
-    img.src = url;
-  });
-}
+// Originals stay in memory (not localStorage) so the user can re-crop during this visit.
+const uploadedFiles = { icon: null, bg: null };
+const CROP = {
+  icon: () => ({ aspect: 1, round: state.iconShape === 'circle', outW: 300, outH: 300, title: 'アイコンをトリミング' }),
+  bg: () => ({ aspect: CARD_W / CARD_H, outW: 1600, outH: 900, title: '背景をトリミング' }),
+};
+const APPLY = {
+  icon: (data) => update({ iconUpload: data, iconId: '', iconTitle: '', iconChamp: '' }),
+  bg: (data) => update({ bgUpload: data, splashChamp: '', splashSkin: 0 }),
+};
 
-async function handleUpload(input, opts, apply) {
-  const file = input.files?.[0];
-  input.value = '';
+async function cropAndApply(kind) {
+  const file = uploadedFiles[kind];
   if (!file) return;
   try {
-    apply(await readImage(file, opts));
+    const data = await cropImage(file, CROP[kind]());
+    if (data) APPLY[kind](data);
   } catch {
+    uploadedFiles[kind] = null;
     toast('この画像は読み込めませんでした。JPEGかPNGを試してください');
   }
+  syncUI();
 }
 
-$('#icon-upload').addEventListener('change', (e) => handleUpload(e.target, { square: true, size: 300 },
-  (data) => update({ iconUpload: data, iconId: '', iconTitle: '', iconChamp: '' })));
+for (const kind of ['icon', 'bg']) {
+  $(`#${kind}-upload`).addEventListener('change', (e) => {
+    const file = e.target.files?.[0];
+    e.target.value = '';
+    if (!file) return;
+    uploadedFiles[kind] = file;
+    cropAndApply(kind);
+  });
+  $(`#${kind}-recrop`).addEventListener('click', () => cropAndApply(kind));
+}
 
-$('#bg-upload').addEventListener('change', (e) => handleUpload(e.target, { maxW: 1600, maxH: 900 },
-  (data) => update({ bgUpload: data, splashY: 0.5 })));
+// ---------- Reset ----------
+
+const SECTIONS = {
+  basic: ['name', 'tag', 'level', 'iconChamp', 'iconId', 'iconTitle', 'iconUpload', 'iconShape'],
+  rank: ['tier', 'division'],
+  roles: ['mainRole', 'subRoles'],
+  champs: ['champs', 'champRoles'],
+  tags: ['tags', 'customTags'],
+  contact: ['hours', 'discord', 'x'],
+  comment: ['comment'],
+  design: ['theme', 'splashChamp', 'splashSkin', 'bgUpload', 'splashY', 'dim'],
+};
+
+form.addEventListener('click', (e) => {
+  const section = e.target.closest('[data-clear]')?.dataset.clear;
+  if (!section) return;
+  const patch = Object.fromEntries(SECTIONS[section].map((k) => [k, DEFAULT_STATE[k]]));
+  if (section === 'basic') uploadedFiles.icon = null;
+  if (section === 'design') uploadedFiles.bg = null;
+  update(patch);
+  syncSkins();
+});
+
+function resetAll() {
+  if (!confirm('入力内容をすべてリセットしますか？')) return;
+  uploadedFiles.icon = uploadedFiles.bg = null;
+  update({ ...DEFAULT_STATE });
+  syncSkins();
+}
 
 // ---------- Skins ----------
 
@@ -572,11 +595,8 @@ $('#btn-sample').addEventListener('click', () => {
   syncSkins();
 });
 
-$('#btn-reset').addEventListener('click', () => {
-  if (!confirm('入力内容をすべてリセットしますか？')) return;
-  update({ ...DEFAULT_STATE });
-  syncSkins();
-});
+$('#btn-reset').addEventListener('click', resetAll);
+$('#btn-reset-all').addEventListener('click', resetAll);
 
 // ---------- Boot ----------
 
