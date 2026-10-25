@@ -1,6 +1,8 @@
 // Draws the summoner card onto a canvas. Everything happens in the browser.
 import { CDRAGON, CDRAGON_GAME, DDRAGON, ROLE_LEVELS, ROLES, THEMES, TIERS } from './data.js';
-import { drawFairyBackdrop, drawFairyCorners, drawFairyFrame, drawUnicornHorn, drawWings } from './fairy.js';
+import {
+  drawFairyBackdrop, drawFairyCorners, drawFairyFrame, drawIconBandage, drawRankHeart, drawUnicornHorn,
+} from './fairy.js';
 
 export const CARD_W = 1200;
 export const CARD_H = 675;
@@ -331,7 +333,10 @@ export async function renderCard(canvas, state, ctxData) {
     roundRect(ctx, ix, iy, is, is, 18);
   }
   ctx.stroke();
-  if (fairy) drawUnicornHorn(ctx, ix + is / 2, iy + 8, theme);
+  if (fairy) {
+    drawUnicornHorn(ctx, ix + is / 2, iy + 8, theme);
+    drawIconBandage(ctx, ix + is / 2, iy + is / 2, is / 2, theme);
+  }
 
   if (state.level) {
     const label = `Lv.${state.level}`;
@@ -407,7 +412,7 @@ export async function renderCard(canvas, state, ctxData) {
 
   // Rank
   const rcx = 1010;
-  if (fairy) drawWings(ctx, rcx, 130, theme);
+  if (fairy) drawRankHeart(ctx, rcx, 120, theme);
   if (emblem) {
     // The emblem PNG is 1280x720 with lots of transparent padding; crop tightly around the crest.
     const src = Math.min(emblem.width, emblem.height) * 0.5;
@@ -561,7 +566,8 @@ export async function renderCard(canvas, state, ctxData) {
 
   // Comment
   if (state.comment) {
-    const bx = 60, by = 512, bw = CARD_W - 120, bh = 112;
+    // The pastel themes leave the bottom-right corner for their lollipop and syringe.
+    const bx = 60, by = 512, bw = CARD_W - (fairy ? 330 : 120), bh = 112;
     roundRect(ctx, bx, by, bw, bh, 14);
     ctx.fillStyle = theme.panel;
     ctx.fill();
@@ -582,7 +588,7 @@ export async function renderCard(canvas, state, ctxData) {
     ctx.font = `700 24px ${FONT_TITLE}`;
     ctx.fillStyle = theme.gold;
     ctx.textAlign = 'right';
-    ctx.fillText('Summoner Card', CARD_W - 170, CARD_H - 32);
+    ctx.fillText('Summoner Card', CARD_W - 270, CARD_H - 30);
   } else {
     // Watermark
     ctx.font = `700 13px ${FONT_EN}`;
