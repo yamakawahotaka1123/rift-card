@@ -4,6 +4,7 @@ import {
 } from './data.js';
 import { CARD_H, CARD_W, champSquareUrl, loadSplash, profileIconUrl, renderCard } from './card.js';
 import { cropImage } from './cropper.js';
+import { initAnalytics, track } from './analytics.js';
 
 const STORAGE_KEY = 'riftcard:v1';
 const $ = (sel) => document.querySelector(sel);
@@ -252,6 +253,7 @@ function startAddTag(btn) {
       else tags = [...tags, tag];
     }
     update({ customTags, tags });
+    track('custom_tag_add');
   };
   input.addEventListener('keydown', (e) => {
     if (e.isComposing) return;
@@ -296,7 +298,9 @@ form.addEventListener('click', (e) => {
   if (btn.dataset.namePreset) {
     // A preset replaces the Riot ID, so the tag is cleared too. Pressing it again clears the name.
     const preset = btn.dataset.namePreset;
-    update(state.name === preset ? { name: '' } : { name: preset, tag: '' });
+    const turningOn = state.name !== preset;
+    update(turningOn ? { name: preset, tag: '' } : { name: '' });
+    if (turningOn) track('name_preset', { preset });
   } else if (btn.dataset.addtag !== undefined) {
     startAddTag(btn);
   } else if (btn.parentElement?.dataset.radio) {
@@ -327,6 +331,7 @@ form.addEventListener('click', (e) => {
     }
   } else if (btn.dataset.theme) {
     update({ theme: btn.dataset.theme });
+    track('theme_select', { theme: btn.dataset.theme });
   } else if (btn.dataset.pick) {
     openPicker(btn.dataset.pick);
   } else if (btn.dataset.skinimg) {
@@ -368,7 +373,10 @@ async function cropAndApply(kind) {
   if (!file) return;
   try {
     const data = await cropImage(file, CROP[kind]());
-    if (data) APPLY[kind](data);
+    if (data) {
+      APPLY[kind](data);
+      track('image_upload', { target: kind });
+    }
   } catch {
     uploadedFiles[kind] = null;
     toast('この画像は読み込めませんでした。JPEGかPNGを試してください');
@@ -408,6 +416,7 @@ form.addEventListener('click', (e) => {
   if (section === 'design') uploadedFiles.bg = null;
   update(patch);
   syncSkins();
+  track('section_clear', { section });
 });
 
 function resetAll() {
@@ -415,6 +424,7 @@ function resetAll() {
   uploadedFiles.icon = uploadedFiles.bg = null;
   update({ ...DEFAULT_STATE });
   syncSkins();
+  track('reset_all');
 }
 
 // ---------- Skins ----------
@@ -485,6 +495,7 @@ $('#skin-grid').addEventListener('click', async (e) => {
     if (!data) return;
     // The list may have changed while cropping; match on the same entry object.
     update({ champs: state.champs.map((c) => (c === entry ? { ...c, img: data } : c)) });
+    track('champ_skin_icon', { champion: entry.id });
   } catch {
     toast('このスキンの画像を読み込めませんでした');
   }
@@ -679,6 +690,25 @@ $('#picker-grid').addEventListener('click', (e) => {
 // ---------- Export ----------
 
 const cardBlob = () => new Promise((resolve) => canvas.toBlob(resolve, 'image/png'));
+
+// What the exported card used, attached to save/copy/share events.
+function cardSummary() {
+  const levels = Object.values(state.roleLevels);
+  return {
+    theme: state.theme,
+    background: state.bgUpload ? 'upload' : state.splashChamp ? 'skin' : 'none',
+    icon: state.iconUpload ? 'upload' : state.iconId ? 'summoner_icon' : state.iconChamp ? 'champion' : 'none',
+    tier: state.tier,
+    champ_count: state.champs.length,
+    skin_icons: state.champs.filter((c) => c.img).length,
+    tag_count: state.tags.length,
+    custom_tags: state.customTags.length,
+    role_levels: ROLE_LEVELS.filter((l) => levels.includes(l.id)).map((l) => l.id).join(',') || 'none',
+    name_hidden: NAME_PRESETS.includes(state.name),
+    has_comment: Boolean(state.comment),
+    has_stream: Boolean(state.twitch || state.youtube),
+  };
+}
 const fileName = () => `summoner-card-${(state.name || 'card').replace(/[\\/:*?"<>|\s]/g, '_')}.png`;
 
 $('#btn-download').addEventListener('click', async () => {
@@ -689,6 +719,7 @@ $('#btn-download').addEventListener('click', async () => {
   a.download = fileName();
   a.click();
   setTimeout(() => URL.revokeObjectURL(url), 1000);
+  track('card_download', cardSummary());
 });
 
 async function copyImage() {
@@ -702,7 +733,9 @@ async function copyImage() {
 }
 
 $('#btn-copy').addEventListener('click', async () => {
-  toast(await copyImage() ? '画像をコピーしました' : 'このブラウザではコピーできません。「画像を保存」を使ってください');
+  const copied = await copyImage();
+  toast(copied ? '画像をコピーしました' : 'このブラウザではコピーできません。「画像を保存」を使ってください');
+  if (copied) track('card_copy', cardSummary());
 });
 
 $('#btn-share').addEventListener('click', async () => {
@@ -716,6 +749,7 @@ $('#btn-share').addEventListener('click', async () => {
   if (matchMedia('(pointer: coarse)').matches && navigator.canShare?.({ files: [file] })) {
     try {
       await navigator.share({ files: [file], text: `${text}\n${hashtags.map((h) => `#${h}`).join(' ')}\n${pageUrl}` });
+      track('card_share', { method: 'share_sheet', ...cardSummary() });
       return;
     } catch (err) {
       if (err.name === 'AbortError') return;
@@ -726,12 +760,14 @@ $('#btn-share').addEventListener('click', async () => {
   const copied = await copyImage();
   const intent = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(pageUrl)}&hashtags=${encodeURIComponent(hashtags.join(','))}`;
   window.open(intent, '_blank', 'noopener');
+  track('card_share', { method: 'x', ...cardSummary() });
   toast(copied ? '画像をコピーしました。投稿欄に貼り付け（Ctrl+V）てください' : '保存した画像を投稿に添付してください');
 });
 
 $('#btn-sample').addEventListener('click', () => {
   update({ ...SAMPLE_STATE });
   syncSkins();
+  track('sample_load');
 });
 
 $('#btn-reset').addEventListener('click', resetAll);
@@ -740,6 +776,7 @@ $('#btn-reset-all').addEventListener('click', resetAll);
 // ---------- Boot ----------
 
 async function init() {
+  initAnalytics();
   buildStaticUI();
   syncUI();
   try {
