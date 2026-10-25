@@ -2,7 +2,7 @@ import {
   CDRAGON_GAME, DDRAGON, DEFAULT_STATE, DIVISIONS, MAX_CHAMPS, MAX_COMMENT, MAX_TAG_LENGTH, MAX_TAGS, NAME_PRESETS,
   ROLE_LEVELS, ROLES, SAMPLE_STATE, TAGS, THEMES, TIERS, mainRoleOf,
 } from './data.js';
-import { CARD_H, CARD_W, champSquareUrl, loadSplash, profileIconUrl, renderCard } from './card.js';
+import { CARD_H, CARD_W, SITE_URL, champSquareUrl, loadSplash, profileIconUrl, renderCard } from './card.js';
 import { cropImage } from './cropper.js';
 import { initAnalytics, track } from './analytics.js';
 
@@ -195,6 +195,7 @@ function syncUI() {
   $('#splash-clear').hidden = !hasBg;
   $('#splash-controls').hidden = !hasBg;
   canvas.classList.toggle('draggable', hasBg);
+  $('#show-credit').checked = state.showCredit !== false;
 
   const roleOptions = (selected) => `<option value="">ロールなし</option>`
     + ROLES.map((r) => `<option value="${r.id}"${r.id === selected ? ' selected' : ''}>${r.label}</option>`).join('');
@@ -720,6 +721,7 @@ $('#btn-download').addEventListener('click', async () => {
   a.click();
   setTimeout(() => URL.revokeObjectURL(url), 1000);
   track('card_download', cardSummary());
+  showSpread();
 });
 
 async function copyImage() {
@@ -735,21 +737,27 @@ async function copyImage() {
 $('#btn-copy').addEventListener('click', async () => {
   const copied = await copyImage();
   toast(copied ? '画像をコピーしました' : 'このブラウザではコピーできません。「画像を保存」を使ってください');
-  if (copied) track('card_copy', cardSummary());
+  if (copied) {
+    track('card_copy', cardSummary());
+    showSpread();
+  }
 });
 
+const SHARE_HASHTAGS = ['LoL自己紹介カード', 'サモナーカード', 'LoLフレンド募集', 'RIFTCARD'];
+const xIntent = (text, hashtags) => `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`
+  + `&url=${encodeURIComponent(SITE_URL)}&hashtags=${encodeURIComponent(hashtags.join(','))}`;
+
 $('#btn-share').addEventListener('click', async () => {
-  const text = 'LoLの自己紹介カードを作りました！';
-  const hashtags = ['LoL自己紹介カード', 'サモナーカード', 'LoLフレンド募集'];
-  const pageUrl = location.href.split('#')[0];
+  const text = 'LoLの自己紹介カードを作りました！\n作成はこちら👉';
 
   // Phones: hand the image straight to the OS share sheet (X, LINE, Discord…).
   const blob = await cardBlob();
   const file = new File([blob], fileName(), { type: 'image/png' });
   if (matchMedia('(pointer: coarse)').matches && navigator.canShare?.({ files: [file] })) {
     try {
-      await navigator.share({ files: [file], text: `${text}\n${hashtags.map((h) => `#${h}`).join(' ')}\n${pageUrl}` });
+      await navigator.share({ files: [file], text: `${text}${SITE_URL}\n${SHARE_HASHTAGS.map((h) => `#${h}`).join(' ')}` });
       track('card_share', { method: 'share_sheet', ...cardSummary() });
+      showSpread();
       return;
     } catch (err) {
       if (err.name === 'AbortError') return;
@@ -758,16 +766,54 @@ $('#btn-share').addEventListener('click', async () => {
 
   // Desktop: X's intent URL can't attach images, so copy the image for pasting.
   const copied = await copyImage();
-  const intent = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(pageUrl)}&hashtags=${encodeURIComponent(hashtags.join(','))}`;
-  window.open(intent, '_blank', 'noopener');
+  window.open(xIntent(text, SHARE_HASHTAGS), '_blank', 'noopener');
   track('card_share', { method: 'x', ...cardSummary() });
   toast(copied ? '画像をコピーしました。投稿欄に貼り付け（Ctrl+V）てください' : '保存した画像を投稿に添付してください');
+  showSpread();
+});
+
+// ---------- "Please spread the word" panel ----------
+
+// Shown after the first save/copy/share; once closed it stays closed on this browser.
+const SPREAD_KEY = 'riftcard:spread-dismissed';
+function showSpread() {
+  try {
+    if (localStorage.getItem(SPREAD_KEY)) return;
+  } catch { /* storage unavailable: still show it */ }
+  $('#spread').hidden = false;
+}
+
+$('#spread-close').addEventListener('click', () => {
+  $('#spread').hidden = true;
+  try {
+    localStorage.setItem(SPREAD_KEY, '1');
+  } catch { /* storage unavailable */ }
+});
+
+$('#spread-share').addEventListener('click', () => {
+  window.open(xIntent('LoLの自己紹介カード（サモナーカード）が無料で作れるサイト見つけた！\nランク・ロール・得意チャンプを入れるだけ🎮\n', SHARE_HASHTAGS), '_blank', 'noopener');
+  track('site_share', { method: 'x' });
+});
+
+$('#spread-copy').addEventListener('click', async () => {
+  try {
+    await navigator.clipboard.writeText(SITE_URL);
+    toast('サイトのURLをコピーしました。DiscordやLINEで貼り付けてね');
+    track('site_share', { method: 'copy_url' });
+  } catch {
+    toast(SITE_URL);
+  }
 });
 
 $('#btn-sample').addEventListener('click', () => {
   update({ ...SAMPLE_STATE });
   syncSkins();
   track('sample_load');
+});
+
+$('#show-credit').addEventListener('change', (e) => {
+  update({ showCredit: e.target.checked });
+  track('credit_toggle', { on: e.target.checked });
 });
 
 $('#btn-reset').addEventListener('click', resetAll);

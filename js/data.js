@@ -108,6 +108,7 @@ export const DEFAULT_STATE = {
   bgZoom: 1,
   dim: 0.6,
   theme: 'hextech',
+  showCredit: true, // show the site URL in the card's watermark
 };
 
 // A parody sample (clearly marked as a joke in the comment). Contact fields stay empty

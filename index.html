@@ -36,6 +36,14 @@
         <button type="button" class="btn" id="btn-copy">画像をコピー</button>
         <button type="button" class="btn x" id="btn-share">Xでシェア</button>
       </div>
+      <div class="spread" id="spread" hidden>
+        <button type="button" class="spread-close" id="spread-close" aria-label="閉じる">×</button>
+        <p><strong>カードができました🎉</strong><br>このサイトはできたばかりです。よければ友だちやフレンドにも教えてもらえると嬉しいです🙏</p>
+        <div class="spread-actions">
+          <button type="button" class="btn x small" id="spread-share">Xで広める</button>
+          <button type="button" class="btn ghost small" id="spread-copy">サイトのURLをコピー</button>
+        </div>
+      </div>
       <div class="actions sub">
         <button type="button" class="btn ghost" id="btn-sample">サンプルを入れる</button>
         <button type="button" class="btn ghost" id="btn-reset">入力をリセット</button>
@@ -190,6 +198,11 @@
           </div>
         </div>
       </fieldset>
+
+      <label class="credit-toggle">
+        <input type="checkbox" id="show-credit">
+        カード右下にサイトのURLを入れる（入れてもらえると広まって嬉しいです）
+      </label>
 
       <div class="form-footer">
         <button type="button" class="btn ghost" id="btn-reset-all">すべてリセット</button>

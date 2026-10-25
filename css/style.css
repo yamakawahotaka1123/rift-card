@@ -151,6 +151,29 @@ legend small { color: var(--muted); font-weight: 500; margin-left: 6px; }
 }
 .section-clear:hover { border-color: var(--gold); color: var(--gold2); }
 .form-footer { display: flex; justify-content: flex-end; }
+.credit-toggle { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--muted); cursor: pointer; }
+.credit-toggle input { width: 16px; height: 16px; accent-color: var(--gold); }
+
+.spread {
+  position: relative;
+  margin-top: 14px;
+  padding: 14px 40px 14px 16px;
+  border: 1px solid var(--gold);
+  border-radius: var(--radius);
+  background: rgba(200, 170, 110, 0.1);
+  font-size: 14px;
+}
+.spread p { margin: 0 0 10px; }
+.spread-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.spread-close {
+  position: absolute;
+  top: 6px;
+  right: 8px;
+  border: 0;
+  background: transparent;
+  color: var(--muted);
+  font-size: 18px;
+}
 
 dialog#cropper {
   width: min(640px, calc(100vw - 24px));
