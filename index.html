@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>RIFT CARD｜LoL自己紹介カードメーカー</title>
+  <meta name="description" content="League of Legendsの自己紹介カード（サモナーカード）を無料で作成。ランク・ロール・得意チャンピオン・スキンの背景を選んで画像を保存、Xやディスコードでシェアできます。">
+  <meta property="og:title" content="RIFT CARD｜LoL自己紹介カードメーカー">
+  <meta property="og:description" content="ランク・ロール・得意チャンプを入れて、LoLの自己紹介カードを無料で作成。">
+  <meta property="og:type" content="website">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=M+PLUS+1p:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="site-header">
+    <h1 class="logo">RIFT CARD <span>LoL自己紹介カードメーカー</span></h1>
+  </header>
+
+  <main class="layout">
+    <section class="preview" aria-label="プレビュー">
+      <div class="canvas-wrap">
+        <canvas id="card" width="1200" height="675"></canvas>
+        <div class="loading" id="loading">読み込み中…</div>
+      </div>
+      <div class="actions">
+        <button type="button" class="btn primary" id="btn-download">画像を保存</button>
+        <button type="button" class="btn" id="btn-copy">画像をコピー</button>
+        <button type="button" class="btn x" id="btn-share">Xでシェア</button>
+      </div>
+      <div class="actions sub">
+        <button type="button" class="btn ghost" id="btn-sample">サンプルを入れる</button>
+        <button type="button" class="btn ghost" id="btn-reset">入力をリセット</button>
+      </div>
+    </section>
+
+    <form class="editor" id="form" autocomplete="off" onsubmit="return false">
+      <fieldset>
+        <legend>基本情報</legend>
+        <div class="row">
+          <label class="field grow">サモナーネーム
+            <input name="name" maxlength="16" placeholder="例：ポロ大好き">
+          </label>
+          <label class="field tag">タグ
+            <span class="prefix"><input name="tag" maxlength="5" placeholder="JP1"></span>
+          </label>
+        </div>
+        <div class="row">
+          <label class="field small">レベル
+            <input name="level" type="number" min="1" max="9999" inputmode="numeric" placeholder="287">
+          </label>
+          <div class="field grow">アイコン
+            <div class="picker-row">
+              <button type="button" class="champ-btn" id="icon-btn" data-pick="icon"></button>
+              <label class="inline">またはアイコンID
+                <input name="iconId" type="number" min="0" inputmode="numeric" placeholder="例：29">
+              </label>
+            </div>
+          </div>
+        </div>
+        <div class="field">アイコンの形
+          <div class="segmented" data-radio="iconShape">
+            <button type="button" data-value="circle">丸</button>
+            <button type="button" data-value="square">四角</button>
+          </div>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>ランク</legend>
+        <div class="row">
+          <label class="field grow">ティア
+            <select name="tier" id="tier"></select>
+          </label>
+          <label class="field small" id="division-field">ディビジョン
+            <select name="division" id="division"></select>
+          </label>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>ロール</legend>
+        <p class="hint">タップで「サブ」→「メイン」→「なし」と切り替わります（メインは1つ）。</p>
+        <div class="roles" id="roles"></div>
+      </fieldset>
+
+      <fieldset>
+        <legend>得意チャンピオン <small>最大5体</small></legend>
+        <div class="champ-list" id="champ-list"></div>
+      </fieldset>
+
+      <fieldset>
+        <legend>プレイスタイル <small>最大6個</small></legend>
+        <div class="chips" id="tags"></div>
+      </fieldset>
+
+      <fieldset>
+        <legend>活動時間・連絡先</legend>
+        <label class="field">活動時間
+          <input name="hours" maxlength="30" placeholder="例：平日22時〜深夜 / 休日いつでも">
+        </label>
+        <div class="row">
+          <label class="field grow">Discord
+            <input name="discord" maxlength="32" placeholder="ユーザー名">
+          </label>
+          <label class="field grow">X
+            <span class="prefix at"><input name="x" maxlength="15" placeholder="ID"></span>
+          </label>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>ひとこと</legend>
+        <label class="field">
+          <textarea name="comment" rows="3" maxlength="80" placeholder="例：ミッドメインです！一緒にランク回せる方募集中"></textarea>
+          <span class="counter" id="comment-count">0 / 80</span>
+        </label>
+      </fieldset>
+
+      <fieldset>
+        <legend>デザイン</legend>
+        <div class="field">テーマ
+          <div class="themes" id="themes"></div>
+        </div>
+        <div class="field">背景スキン
+          <div class="picker-row">
+            <button type="button" class="champ-btn" id="splash-btn" data-pick="splash"></button>
+            <select name="splashSkin" id="skin" class="grow"></select>
+            <button type="button" class="btn ghost small" id="splash-clear">なし</button>
+          </div>
+        </div>
+        <div class="row" id="splash-controls">
+          <label class="field grow">背景の位置
+            <input name="splashY" type="range" min="0" max="1" step="0.01">
+          </label>
+          <label class="field grow">背景の暗さ
+            <input name="dim" type="range" min="0.2" max="0.85" step="0.01">
+          </label>
+        </div>
+      </fieldset>
+    </form>
+  </main>
+
+  <footer class="site-footer">
+    <p>入力内容はこのブラウザにだけ保存され、サーバーには送信されません。作成した画像はSNS投稿などに自由に使えます。</p>
+    <p class="legal">RIFT CARD isn't endorsed by Riot Games and doesn't reflect the views or opinions of Riot Games or anyone officially involved in producing or managing Riot Games properties. Riot Games, and all associated properties are trademarks or registered trademarks of Riot Games, Inc.</p>
+  </footer>
+
+  <dialog id="picker">
+    <div class="picker-head">
+      <input type="search" id="picker-search" placeholder="チャンピオンを検索（ひらがなOK）">
+      <button type="button" class="btn ghost small" id="picker-close">閉じる</button>
+    </div>
+    <p class="picker-status" id="picker-status"></p>
+    <div class="picker-grid" id="picker-grid"></div>
+  </dialog>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
