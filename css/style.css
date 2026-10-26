@@ -534,6 +534,33 @@ dialog::backdrop { background: rgba(0, 0, 0, 0.7); }
 }
 .toast.show { opacity: 1; transform: translate(-50%, 0); }
 
+.guide {
+  max-width: 1000px;
+  margin: 40px auto 0;
+  padding: 0 24px;
+  line-height: 1.8;
+}
+.guide section { margin-bottom: 40px; }
+.guide h2 {
+  margin: 0 0 12px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--line);
+  color: var(--gold);
+  font-size: 20px;
+}
+.guide p { margin: 0 0 10px; }
+.guide strong { color: var(--gold2); }
+.steps { margin: 0; padding-left: 1.4em; }
+.steps li { margin-bottom: 12px; }
+.gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; margin-top: 16px; }
+.gallery figure { margin: 0; }
+.gallery img { display: block; width: 100%; height: auto; border-radius: 8px; border: 1px solid var(--line); }
+.gallery figcaption { margin-top: 6px; font-size: 13px; color: var(--muted); text-align: center; }
+.faq dt { margin-top: 14px; font-weight: 700; color: var(--gold2); }
+.faq dt::before { content: "Q. "; color: var(--gold); }
+.faq dd { margin: 4px 0 0; color: var(--text); }
+.faq dd::before { content: "A. "; color: var(--muted); }
+
 .site-footer {
   max-width: 1400px;
   margin: 20px auto 0;
