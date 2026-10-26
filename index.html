@@ -3,13 +3,17 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script>
+    // Backup for GitHub's own HTTPS redirect: never stay on plain http.
+    if (location.protocol === 'http:' && location.hostname !== 'localhost') location.replace(`https://${location.host}${location.pathname}${location.search}${location.hash}`);
+  </script>
   <title>SUMMONER CARD｜LoL自己紹介カード作成</title>
   <meta name="description" content="League of Legendsの自己紹介カード（サモナーカード）を無料で作成。ランク・ロール・得意チャンピオン・スキンの背景を選んで画像を保存、Xやディスコードでシェアできます。">
   <meta property="og:title" content="SUMMONER CARD｜LoL自己紹介カード作成">
   <meta property="og:description" content="ランク・ロール・得意チャンプを入れて、LoLの自己紹介カードを無料で作成。">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://summonercard.com/">
-  <meta property="og:image" content="https://summonercard.com/og-card.jpg">
+  <meta property="og:image" content="https://summonercard.com/og.jpg">
   <meta property="og:image:type" content="image/jpeg">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="675">
@@ -19,7 +23,7 @@
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="SUMMONER CARD｜LoL自己紹介カード作成">
   <meta name="twitter:description" content="ランク・ロール・得意チャンプを入れて、LoLの自己紹介カードを無料で作成。">
-  <meta name="twitter:image" content="https://summonercard.com/og-card.jpg">
+  <meta name="twitter:image" content="https://summonercard.com/og.jpg">
   <meta name="twitter:image:alt" content="SUMMONER CARDで作ったLoL自己紹介カードの例">
   <meta name="theme-color" content="#c8aa6e">
   <link rel="preconnect" href="https://fonts.googleapis.com">
