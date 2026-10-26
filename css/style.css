@@ -27,6 +27,33 @@ button, input, select, textarea { font: inherit; color: inherit; }
 button { cursor: pointer; }
 [hidden] { display: none !important; }
 
+.inapp-banner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 16px;
+  background: #3a2a0a;
+  border-bottom: 1px solid var(--gold);
+  font-size: 13px;
+  color: var(--gold2);
+}
+.inapp-banner p { margin: 0; flex: 1; }
+.inapp-banner .btn { flex-shrink: 0; white-space: nowrap; }
+
+dialog#save-dialog {
+  width: min(900px, calc(100vw - 24px));
+  padding: 16px;
+  border: 1px solid var(--gold);
+  border-radius: 12px;
+  background: var(--bg2);
+  color: var(--text);
+}
+dialog#save-dialog::backdrop { background: rgba(0, 0, 0, 0.8); }
+.save-hint { margin: 0 0 12px; font-size: 14px; }
+.save-hint strong { color: var(--gold); }
+.save-hint a { color: var(--gold); font-weight: 700; }
+#save-img { display: block; width: 100%; height: auto; border-radius: 8px; -webkit-touch-callout: default; user-select: auto; }
+
 .site-header {
   padding: 18px 24px;
   border-bottom: 1px solid var(--line);

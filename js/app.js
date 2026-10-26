@@ -712,7 +712,41 @@ function cardSummary() {
 }
 const fileName = () => `summoner-card-${(state.name || 'card').replace(/[\\/:*?"<>|\s]/g, '_')}.png`;
 
+// In-app browsers (X, LINE, Instagram, Discord…) often can't download files, copy images or
+// open the share sheet. iOS in-app views lack the "Safari/" token; Android WebViews carry "; wv)".
+const UA = navigator.userAgent;
+const IS_IOS = /iPhone|iPad|iPod/.test(UA) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+const IN_APP = /Twitter|TwitterAndroid|FBAN|FBAV|Instagram|Line\/|Discord|; wv\)/i.test(UA)
+  || (IS_IOS && !/Safari\//.test(UA) && !/CriOS|FxiOS|EdgiOS/.test(UA));
+
+// Shows the card as a plain image so it can be saved with a long press, which works everywhere.
+function showSaveDialog(hint) {
+  $('#save-img').src = canvas.toDataURL('image/png');
+  $('#save-dialog .save-hint').innerHTML = hint
+    || '<strong>画像を長押し</strong>して「写真に保存」「画像を保存」などを選んでください';
+  $('#save-dialog').showModal();
+}
+$('#save-close').addEventListener('click', () => $('#save-dialog').close());
+
+if (IN_APP) $('#inapp-banner').hidden = false;
+$('#inapp-copy').addEventListener('click', async () => {
+  try {
+    await navigator.clipboard.writeText(SITE_URL);
+    toast('URLをコピーしました。SafariやChromeに貼り付けて開いてください');
+  } catch {
+    toast(SITE_URL);
+  }
+});
+
 $('#btn-download').addEventListener('click', async () => {
+  // iPhone downloads go to the Files app, and in-app browsers often can't download at all,
+  // so offer a long-press save there instead.
+  if (IN_APP || IS_IOS) {
+    showSaveDialog();
+    track('card_download', { method: 'long_press', ...cardSummary() });
+    showSpread();
+    return;
+  }
   const blob = await cardBlob();
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
@@ -736,10 +770,14 @@ async function copyImage() {
 
 $('#btn-copy').addEventListener('click', async () => {
   const copied = await copyImage();
-  toast(copied ? '画像をコピーしました' : 'このブラウザではコピーできません。「画像を保存」を使ってください');
   if (copied) {
+    toast('画像をコピーしました');
     track('card_copy', cardSummary());
     showSpread();
+  } else if (matchMedia('(pointer: coarse)').matches) {
+    showSaveDialog('このブラウザでは自動でコピーできません。<strong>画像を長押し</strong>して「コピー」や「保存」を選んでください');
+  } else {
+    toast('このブラウザではコピーできません。「画像を保存」を使ってください');
   }
 });
 
@@ -749,6 +787,14 @@ const xIntent = (text, hashtags) => `https://twitter.com/intent/tweet?text=${enc
 
 $('#btn-share').addEventListener('click', async () => {
   const text = 'LoLの自己紹介カードを作りました！\n作成はこちら👉';
+
+  // In-app browsers can't attach the image anywhere: let the user save it first, then post.
+  if (IN_APP) {
+    showSaveDialog(`<strong>画像を長押しして保存</strong>してから、Xの投稿に添付してください。<br><a href="${xIntent(text, SHARE_HASHTAGS)}" target="_blank" rel="noopener">投稿画面を開く →</a>`);
+    track('card_share', { method: 'in_app', ...cardSummary() });
+    showSpread();
+    return;
+  }
 
   // Phones: hand the image straight to the OS share sheet (X, LINE, Discord…).
   const blob = await cardBlob();
@@ -823,6 +869,7 @@ $('#btn-reset-all').addEventListener('click', resetAll);
 
 async function init() {
   initAnalytics();
+  if (IN_APP) track('in_app_browser');
   buildStaticUI();
   syncUI();
   try {

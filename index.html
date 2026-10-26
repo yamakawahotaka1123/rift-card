@@ -67,6 +67,10 @@
   </script>
 </head>
 <body>
+  <div class="inapp-banner" id="inapp-banner" hidden>
+    <p>アプリ内ブラウザで開いています。画像の保存やシェアがうまくいかないときは、右上の「…」から<strong>「ブラウザで開く」</strong>を選んでください。</p>
+    <button type="button" class="btn small" id="inapp-copy">URLをコピー</button>
+  </div>
   <header class="site-header">
     <h1 class="logo">SUMMONER CARD <span>サモナーカード作成メーカー｜LoL自己紹介カード</span></h1>
   </header>
@@ -354,6 +358,14 @@
     <div class="actions">
       <button type="button" class="btn primary" id="crop-ok">決定</button>
       <button type="button" class="btn ghost" id="crop-cancel">キャンセル</button>
+    </div>
+  </dialog>
+
+  <dialog id="save-dialog">
+    <p class="save-hint"><strong>画像を長押し</strong>して「写真に保存」「画像を保存」などを選んでください</p>
+    <img id="save-img" alt="作成したサモナーカード">
+    <div class="actions">
+      <button type="button" class="btn ghost" id="save-close">閉じる</button>
     </div>
   </dialog>
 
