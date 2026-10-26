@@ -743,7 +743,7 @@ $('#btn-copy').addEventListener('click', async () => {
   }
 });
 
-const SHARE_HASHTAGS = ['LoL自己紹介カード', 'サモナーカード', 'LoLフレンド募集', 'RIFTCARD'];
+const SHARE_HASHTAGS = ['LoL自己紹介カード', 'サモナーカード', 'LoLフレンド募集'];
 const xIntent = (text, hashtags) => `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`
   + `&url=${encodeURIComponent(SITE_URL)}&hashtags=${encodeURIComponent(hashtags.join(','))}`;
 

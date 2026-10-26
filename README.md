@@ -1,4 +1,4 @@
-# RIFT CARD — LoL自己紹介カードメーカー
+# SUMMONER CARD — LoL自己紹介カード作成
 
 League of Legends の自己紹介カード（サモナーカード）をブラウザだけで作れるツールです。
 
@@ -29,4 +29,4 @@ npx serve .
 
 ## 免責
 
-RIFT CARD isn't endorsed by Riot Games and doesn't reflect the views or opinions of Riot Games or anyone officially involved in producing or managing Riot Games properties. Riot Games, and all associated properties are trademarks or registered trademarks of Riot Games, Inc.
+SUMMONER CARD isn't endorsed by Riot Games and doesn't reflect the views or opinions of Riot Games or anyone officially involved in producing or managing Riot Games properties. Riot Games, and all associated properties are trademarks or registered trademarks of Riot Games, Inc.

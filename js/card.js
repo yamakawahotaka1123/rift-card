@@ -6,8 +6,8 @@ import {
 
 export const CARD_W = 1200;
 export const CARD_H = 675;
-export const SITE_URL = 'https://yamakawahotaka1123.github.io/rift-card/';
-const SITE_URL_SHORT = 'yamakawahotaka1123.github.io/rift-card';
+export const SITE_URL = 'https://summonercard.com/';
+const SITE_URL_SHORT = 'summonercard.com';
 
 // Font sets per theme style. FONT_EN is for small labels, FONT_TITLE for section titles.
 const FONT_SETS = {
@@ -588,9 +588,9 @@ export async function renderCard(canvas, state, ctxData) {
     const right = CARD_W - 270;
     ctx.font = `700 24px ${FONT_TITLE}`;
     ctx.fillStyle = theme.gold;
-    ctx.fillText('Rift Card', right, CARD_H - 30);
+    ctx.fillText('Summoner Card', right, CARD_H - 30);
     if (state.showCredit !== false) {
-      const w = ctx.measureText('Rift Card').width;
+      const w = ctx.measureText('Summoner Card').width;
       ctx.font = `700 12px ${FONT_JP}`;
       ctx.fillStyle = hexToRgba(theme.text, 0.6);
       ctx.fillText(SITE_URL_SHORT, right - w - 10, CARD_H - 32);
@@ -598,7 +598,7 @@ export async function renderCard(canvas, state, ctxData) {
   } else {
     ctx.font = `700 13px ${FONT_EN}`;
     ctx.fillStyle = hexToRgba(theme.text, 0.5);
-    const label = state.showCredit !== false ? `RIFT CARD · ${SITE_URL_SHORT}` : 'RIFT CARD';
+    const label = state.showCredit !== false ? `SUMMONER CARD · ${SITE_URL_SHORT}` : 'SUMMONER CARD';
     ctx.fillText(label, CARD_W - 32, CARD_H - 30);
   }
 
