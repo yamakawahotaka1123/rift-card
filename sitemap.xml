@@ -7,12 +7,40 @@
     <image:image><image:loc>https://summonercard.com/img/banner.jpg</image:loc></image:image>
     <image:image><image:loc>https://summonercard.com/img/banner-pastel.jpg</image:loc></image:image>
     <image:image><image:loc>https://summonercard.com/img/theme-hextech.jpg</image:loc></image:image>
-    <image:image><image:loc>https://summonercard.com/img/theme-fairy.jpg</image:loc></image:image>
-    <image:image><image:loc>https://summonercard.com/img/theme-fairy-mint.jpg</image:loc></image:image>
-    <image:image><image:loc>https://summonercard.com/img/theme-guardian.jpg</image:loc></image:image>
     <image:image><image:loc>https://summonercard.com/img/theme-noxus.jpg</image:loc></image:image>
     <image:image><image:loc>https://summonercard.com/img/theme-freljord.jpg</image:loc></image:image>
     <image:image><image:loc>https://summonercard.com/img/theme-shadow.jpg</image:loc></image:image>
     <image:image><image:loc>https://summonercard.com/img/theme-ionia.jpg</image:loc></image:image>
+    <image:image><image:loc>https://summonercard.com/img/theme-fairy.jpg</image:loc></image:image>
+    <image:image><image:loc>https://summonercard.com/img/theme-fairy-mint.jpg</image:loc></image:image>
+    <image:image><image:loc>https://summonercard.com/img/theme-guardian.jpg</image:loc></image:image>
+  </url>
+  <url>
+    <loc>https://summonercard.com/guide/</loc>
+    <lastmod>2026-10-29</lastmod>
+  </url>
+  <url>
+    <loc>https://summonercard.com/templates/</loc>
+    <lastmod>2026-10-29</lastmod>
+  </url>
+  <url>
+    <loc>https://summonercard.com/banner/</loc>
+    <lastmod>2026-10-29</lastmod>
+  </url>
+  <url>
+    <loc>https://summonercard.com/faq/</loc>
+    <lastmod>2026-10-29</lastmod>
+  </url>
+  <url>
+    <loc>https://summonercard.com/privacy/</loc>
+    <lastmod>2026-10-29</lastmod>
+  </url>
+  <url>
+    <loc>https://summonercard.com/terms/</loc>
+    <lastmod>2026-10-29</lastmod>
+  </url>
+  <url>
+    <loc>https://summonercard.com/about/</loc>
+    <lastmod>2026-10-29</lastmod>
   </url>
 </urlset>

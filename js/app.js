@@ -935,6 +935,14 @@ async function init() {
     $('#loading').textContent = 'チャンピオンデータを読み込めませんでした。再読み込みしてください。';
     return;
   }
+  // "/?theme=fairy" (from the template page) preselects a theme, then the URL is cleaned up.
+  const themeParam = new URLSearchParams(location.search).get('theme');
+  if (themeParam && THEMES.some((t) => t.id === themeParam)) {
+    state = { ...state, theme: themeParam };
+    saveState();
+    track('theme_from_link', { theme: themeParam });
+    history.replaceState(null, '', location.pathname);
+  }
   syncUI();
   syncSkins();
   scheduleRender();

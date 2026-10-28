@@ -1,27 +1,43 @@
-# SUMMONER CARD — LoL自己紹介カード作成
+# SUMMONER CARD — サモナーカード作成メーカー
 
-League of Legends の自己紹介カード（サモナーカード）をブラウザだけで作れるツールです。
+https://summonercard.com/
 
-- サモナーネーム / タグ / レベル / アイコン
-- ランク（ティア・ディビジョン）
-- ロール（メイン・サブ）
-- 得意チャンピオン（最大5体）
-- プレイスタイルタグ、活動時間、Discord / X
-- テーマ6種 + 好きなスキンのスプラッシュアートを背景に
-- PNG保存 / クリップボードにコピー / Xシェア（スマホは共有シートから画像ごと）
+League of Legends の自己紹介カード（サモナーカード）をブラウザだけで作れる無料ツールです。
+
+- サモナーネーム / タグ / レベル / アイコン（サモナーアイコン・チャンピオン・画像アップ＋トリミング）
+- ランク、ロール4段階（メイン / サブ / ノマなら可 / NG）
+- 得意チャンピオン最大5体（ロール付き、スキン画像からアイコン切り抜き）
+- プレイスタイルタグ（自作も可）、活動時間、Discord / X / Twitch / YouTube
+- テーマ8種、スキンや自分の画像を背景に（位置・拡大・暗さを調整）
+- PNG保存 / コピー / Xシェア、宣伝バナー（1800×600）の生成
 
 入力内容はブラウザの localStorage にだけ保存され、サーバーには送信されません。
 
-## 仕組み
+## 構成
 
-ビルド不要の静的サイト（HTML / CSS / ES Modules）です。カード画像は Canvas でブラウザ内で描画します。
+ビルド不要の静的サイト（HTML / CSS / ES Modules）を GitHub Pages で配信しています。カード画像は Canvas でブラウザ内で描画します。
 
-- チャンピオン・アイコン・スプラッシュ: [Data Dragon](https://developer.riotgames.com/docs/lol#data-dragon)
-- ランクエンブレム・ロールアイコン: [Community Dragon](https://www.communitydragon.org/)
+| パス | 内容 |
+|---|---|
+| `index.html`, `js/app.js` | カード作成ツール本体 |
+| `js/card.js`, `js/fairy.js` | カードの描画（ゆめかわ系テーマの飾りは `fairy.js`） |
+| `js/banner.js` | 宣伝バナーの描画 |
+| `js/cropper.js` | 画像のトリミング |
+| `js/analytics.js` | Google Analytics（`GA_ID` が空の間はオフ） |
+| `guide/` `templates/` `banner/` `faq/` `privacy/` `terms/` `about/` | 説明ページ（生成物） |
+| `tools/build-pages.mjs` | 説明ページと `sitemap.xml` の生成スクリプト |
+
+説明ページの文章を変えるときは `tools/build-pages.mjs` を編集して、次を実行してください。
+
+```sh
+node tools/build-pages.mjs
+```
+
+素材：Riot Games「Data Dragon」、[Community Dragon](https://www.communitydragon.org/)、Google Fonts
 
 ## ローカルで動かす
 
-ES Modules を使うため `file://` では動きません。適当な静的サーバーで開いてください。
+ES Modules を使うため `file://` では動きません。静的サーバーで開いてください。
 
 ```sh
 npx serve .

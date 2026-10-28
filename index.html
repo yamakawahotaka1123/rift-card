@@ -36,34 +36,30 @@
   <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Dancing+Script:wght@700&family=M+PLUS+1p:wght@400;500;700;800&family=M+PLUS+Rounded+1c:wght@500;700;800&display=swap"></noscript>
   <link rel="stylesheet" href="css/style.css">
   <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@graph": [
-      {
-        "@type": "WebApplication",
-        "name": "SUMMONER CARD（サモナーカード作成メーカー）",
-        "alternateName": ["サモナーカードジェネレーター", "LoL自己紹介カードメーカー"],
-        "url": "https://summonercard.com/",
-        "description": "LoL（League of Legends）のサモナーカード・自己紹介カードを無料で作成できるWebアプリ。",
-        "applicationCategory": "DesignApplication",
-        "operatingSystem": "Web",
-        "inLanguage": "ja",
-        "image": "https://summonercard.com/og.jpg",
-        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "JPY" }
-      },
-      {
-        "@type": "FAQPage",
-        "mainEntity": [
-          { "@type": "Question", "name": "サモナーカードとは何ですか？", "acceptedAnswer": { "@type": "Answer", "text": "LoL（League of Legends）のプレイヤーが、ランク・ロール・得意チャンピオン・活動時間などをまとめた自己紹介画像です。Xのフレンド募集やDiscordの自己紹介でよく使われます。" } },
-          { "@type": "Question", "name": "無料で使えますか？登録は必要ですか？", "acceptedAnswer": { "@type": "Answer", "text": "完全無料で、会員登録やログインも不要です。" } },
-          { "@type": "Question", "name": "スマホでも作れますか？", "acceptedAnswer": { "@type": "Answer", "text": "スマホのブラウザでそのまま作れます。完成した画像は共有ボタンからX・LINE・Discordに送れます。" } },
-          { "@type": "Question", "name": "テンプレ画像を編集しないといけませんか？", "acceptedAnswer": { "@type": "Answer", "text": "いいえ。画像編集アプリは不要で、項目を入力してテーマを選ぶだけでカードが完成します。" } },
-          { "@type": "Question", "name": "サモナーネームを出したくない場合は？", "acceptedAnswer": { "@type": "Answer", "text": "「非公開」「DMで教えます」などの定型文を選べます。" } },
-          { "@type": "Question", "name": "入力した内容はどこかに送信されますか？", "acceptedAnswer": { "@type": "Answer", "text": "入力内容や画像はお使いのブラウザ内だけで処理・保存され、サーバーには送信されません。" } }
-        ]
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebApplication",
+      "name": "SUMMONER CARD（サモナーカード作成メーカー）",
+      "alternateName": [
+        "サモナーカードジェネレーター",
+        "LoL自己紹介カードメーカー"
+      ],
+      "url": "https://summonercard.com/",
+      "description": "LoL（League of Legends）のサモナーカード・自己紹介カードを無料で作成できるWebアプリ。",
+      "applicationCategory": "DesignApplication",
+      "operatingSystem": "Web",
+      "inLanguage": "ja",
+      "image": "https://summonercard.com/og.jpg",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "JPY"
       }
-    ]
-  }
+    }
+  ]
+}
   </script>
 </head>
 <body>
@@ -72,7 +68,8 @@
     <button type="button" class="btn small" id="inapp-copy">URLをコピー</button>
   </div>
   <header class="site-header">
-    <h1 class="logo">SUMMONER CARD <span>サモナーカード作成メーカー｜LoL自己紹介カード</span></h1>
+    <h1 class="logo"><a href="/">SUMMONER CARD <span>サモナーカード作成メーカー｜LoL自己紹介カード</span></a></h1>
+    <nav class="site-nav" aria-label="メニュー"><a href="/" aria-current="page">カードを作る</a><a href="/guide/">使い方</a><a href="/templates/">テンプレ</a><a href="/banner/">宣伝バナー</a><a href="/faq/">よくある質問</a></nav>
   </header>
 
   <main class="layout">
@@ -265,7 +262,7 @@
     <section>
       <h2>サモナーカードとは？</h2>
       <p>サモナーカードは、LoL（League of Legends）のプレイヤーが<strong>ランク・ロール・得意チャンピオン・活動時間</strong>などをまとめた自己紹介画像です。Xの「#LoLフレンド募集」や「#サモナーカード」、Discordサーバーの自己紹介チャンネルなどでよく使われています。</p>
-      <p>これまでは配布されているテンプレ画像をダウンロードして、画像編集アプリで文字を書き込むのが一般的でした。SUMMONER CARD なら<strong>テンプレの編集は不要</strong>。項目を入力するだけで、チャンピオンやランクのアイコン入りのサモナーカードが自動で完成します。</p>
+      <p>これまでは配布されているテンプレ画像をダウンロードして、画像編集アプリで文字を書き込むのが一般的でした。SUMMONER CARD なら<strong>テンプレの編集は不要</strong>。項目を入力するだけで、チャンピオンやランクのアイコン入りのサモナーカードが自動で完成します。無料・登録不要で、スマホでも作れます。</p>
     </section>
 
     <section>
@@ -275,60 +272,27 @@
         <li><strong>得意チャンピオンとプレイスタイル</strong><br>得意チャンプを最大5体、エンジョイ勢・ランク勢・VCありなどのタグ、活動時間やDiscord・Xを入力します。</li>
         <li><strong>テーマを選んで保存</strong><br>好きなテーマとスキンの背景を選んで「画像を保存」。そのままXやDiscordにシェアできます。</li>
       </ol>
+      <p>各項目の詳しい説明は<a href="/guide/">使い方ガイド</a>をご覧ください。</p>
     </section>
 
     <section>
-      <h2>サモナーカードのテンプレ（テーマ）一覧</h2>
-      <p>8種類のテンプレから選べます。どのテーマでも、好きなチャンピオンのスキン画像や自分でアップした画像を背景にできます。</p>
-      <div class="gallery">
-        <figure><img src="img/theme-hextech.jpg" width="600" height="338" loading="lazy" alt="サモナーカード テンプレ ヘクステック（金と紺のLoL風デザイン）"><figcaption>ヘクステック</figcaption></figure>
-        <figure><img src="img/theme-noxus.jpg" width="600" height="338" loading="lazy" alt="サモナーカード テンプレ ノクサス（赤のデザイン）"><figcaption>ノクサス</figcaption></figure>
-        <figure><img src="img/theme-freljord.jpg" width="600" height="338" loading="lazy" alt="サモナーカード テンプレ フレヨルド（水色のデザイン）"><figcaption>フレヨルド</figcaption></figure>
-        <figure><img src="img/theme-shadow.jpg" width="600" height="338" loading="lazy" alt="サモナーカード テンプレ シャドウアイル（緑のデザイン）"><figcaption>シャドウアイル</figcaption></figure>
-        <figure><img src="img/theme-ionia.jpg" width="600" height="338" loading="lazy" alt="サモナーカード テンプレ アイオニア（ピンクのデザイン）"><figcaption>アイオニア</figcaption></figure>
-        <figure><img src="img/theme-fairy.jpg" width="600" height="338" loading="lazy" alt="サモナーカード テンプレ ゆめかわピンク（かわいいパステルデザイン）"><figcaption>ゆめかわピンク</figcaption></figure>
-        <figure><img src="img/theme-fairy-mint.jpg" width="600" height="338" loading="lazy" alt="サモナーカード テンプレ ゆめかわブルー（かわいいパステルデザイン）"><figcaption>ゆめかわブルー</figcaption></figure>
-        <figure><img src="img/theme-guardian.jpg" width="600" height="338" loading="lazy" alt="サモナーカード テンプレ スターガーディアン（明るいデザイン）"><figcaption>スターガーディアン</figcaption></figure>
+      <h2>もっと見る</h2>
+      <div class="link-cards">
+        <a href="/guide/"><strong>使い方ガイド</strong><span>入力項目ごとの説明と、フレンド募集で伝わるコツ</span></a>
+        <a href="/templates/"><strong>テンプレ一覧</strong><span>8種類のテーマの見本。選んでそのまま作成</span></a>
+        <a href="/banner/"><strong>宣伝バナー</strong><span>配信やブログに自由に貼れるバナー素材</span></a>
+        <a href="/faq/"><strong>よくある質問</strong><span>スマホでの保存方法、Xのアプリで保存できないとき など</span></a>
       </div>
-    </section>
-
-    <section id="banners">
-      <h2>宣伝バナー（ご自由にお使いください）</h2>
-      <p>配信画面・Twitchのパネル・YouTubeの概要欄・ブログや個人サイトなどに、<strong>許可なく自由に</strong>貼っていただけます。リンク先は <code>https://summonercard.com/</code> にしてもらえると嬉しいです。</p>
-      <p>ツール上の「🎨 自分のカードで宣伝バナーを作る」から、<strong>自分のカード入りのバナー</strong>も作れます。</p>
-      <div class="gallery banners">
-        <figure><img src="img/banner.jpg" width="1800" height="600" loading="lazy" alt="SUMMONER CARD サモナーカード作成メーカーの宣伝バナー"><figcaption>通常版（1800×600）</figcaption></figure>
-        <figure><img src="img/banner-pastel.jpg" width="1800" height="600" loading="lazy" alt="SUMMONER CARD サモナーカード作成メーカーの宣伝バナー（パステル）"><figcaption>パステル版（1800×600）</figcaption></figure>
-      </div>
-      <p>ブログや個人サイトに貼る場合のHTML：</p>
-      <pre class="embed-code" id="embed-code">&lt;a href="https://summonercard.com/" target="_blank" rel="noopener"&gt;&lt;img src="https://summonercard.com/img/banner.jpg" alt="SUMMONER CARD｜サモナーカード作成メーカー" width="600" height="200"&gt;&lt;/a&gt;</pre>
-      <button type="button" class="btn ghost small" data-copy-target="embed-code">HTMLをコピー</button>
-    </section>
-
-    <section>
-      <h2>よくある質問</h2>
-      <dl class="faq">
-        <dt>無料で使えますか？登録は必要ですか？</dt>
-        <dd>完全無料で、会員登録やログインも不要です。</dd>
-        <dt>スマホでも作れますか？</dt>
-        <dd>スマホのブラウザでそのまま作れます。完成した画像は共有ボタンからX・LINE・Discordに送れます。</dd>
-        <dt>テンプレ画像を編集しないといけませんか？</dt>
-        <dd>いいえ。画像編集アプリは不要で、項目を入力してテーマを選ぶだけでカードが完成します。</dd>
-        <dt>サモナーネームを出したくない場合は？</dt>
-        <dd>「非公開」「DMで教えます」などの定型文を選べます。</dd>
-        <dt>入力した内容はどこかに送信されますか？</dt>
-        <dd>入力内容や画像はお使いのブラウザ内だけで処理・保存され、サーバーには送信されません。</dd>
-        <dt>作った画像はどこで使えますか？</dt>
-        <dd>Xのフレンド募集（#LoLフレンド募集 #サモナーカード）、Discordの自己紹介、配信画面などに自由に使えます。</dd>
-      </dl>
     </section>
   </article>
 
   <footer class="site-footer">
-    <p>入力内容はこのブラウザにだけ保存され、サーバーには送信されません。作成した画像はSNS投稿などに自由に使えます。</p>
+    <nav class="footer-nav" aria-label="サイト情報"><a href="/guide/">使い方</a><a href="/templates/">テンプレ一覧</a><a href="/banner/">宣伝バナー</a><a href="/faq/">よくある質問</a><a href="/about/">運営者・お問い合わせ</a><a href="/privacy/">プライバシーポリシー</a><a href="/terms/">利用規約</a></nav>
+    <p>入力内容はこのブラウザにだけ保存され、サーバーには送信されません。作成した画像はSNS投稿や配信などに自由に使えます。</p>
     <p>不具合・ご要望は <a href="https://x.com/hotaka_1123" target="_blank" rel="noopener">X（@hotaka_1123）</a> までお気軽にどうぞ。</p>
-    <p id="analytics-notice" hidden>サイト改善のため、Google Analytics でアクセス数や機能の利用回数を計測しています（入力内容や画像は送信しません）。</p>
+    <p id="analytics-notice" hidden>サイト改善のため、Google Analytics でアクセス数や機能の利用回数を計測しています（入力内容や画像は送信しません）。詳しくは<a href="/privacy/">プライバシーポリシー</a>をご覧ください。</p>
     <p class="legal">SUMMONER CARD isn't endorsed by Riot Games and doesn't reflect the views or opinions of Riot Games or anyone officially involved in producing or managing Riot Games properties. Riot Games, and all associated properties are trademarks or registered trademarks of Riot Games, Inc.</p>
+    <p class="legal">© 2026 SUMMONER CARD</p>
   </footer>
 
   <dialog id="picker">
