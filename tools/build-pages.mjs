@@ -362,7 +362,7 @@ ${FAQ.map(([q, a]) => `        <dt>${q}</dt>\n        <dd>${a}</dd>`).join('\n')
 
       <section>
         <h2>2. アクセス解析ツールについて</h2>
-        <p>本サイトでは、サイトの改善のために Google LLC のアクセス解析ツール「Google Analytics」を利用する場合があります。Google Analytics は Cookie を使用して、ページの閲覧数、参照元、使用端末、本サイトの機能の利用回数（画像の保存回数、選ばれたテーマなど）を収集します。これらは匿名で集計され、個人を特定するものではありません。カードに入力した文字や画像そのものは送信しません。</p>
+        <p>本サイトでは、サイトの改善のために Google LLC のアクセス解析ツール「Google Analytics」を利用しています。Google Analytics は Cookie を使用して、ページの閲覧数、参照元、使用端末、本サイトの機能の利用回数（画像の保存回数、選ばれたテーマなど）を収集します。これらは匿名で集計され、個人を特定するものではありません。カードに入力した文字や画像そのものは送信しません。</p>
         <p>データの収集はブラウザの設定で Cookie を無効にするか、<a href="https://tools.google.com/dlpage/gaoptout?hl=ja" target="_blank" rel="noopener">Google アナリティクス オプトアウト アドオン</a>を利用することで拒否できます。Google によるデータの取り扱いについては、<a href="https://policies.google.com/technologies/partner-sites?hl=ja" target="_blank" rel="noopener">Google のポリシーと規約</a>をご覧ください。</p>
       </section>
 
