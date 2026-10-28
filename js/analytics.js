@@ -1,6 +1,6 @@
 // Usage analytics via Google Analytics 4.
 // Put the GA4 measurement ID (looks like "G-XXXXXXXXXX") here to turn it on. Empty = off.
-export const GA_ID = '';
+export const GA_ID = 'G-78DHF4DF3D';
 
 let ready = false;
 
