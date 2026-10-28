@@ -5,6 +5,7 @@ import {
 import { CARD_H, CARD_W, SITE_URL, champSquareUrl, loadSplash, profileIconUrl, renderCard } from './card.js';
 import { cropImage } from './cropper.js';
 import { initAnalytics, track } from './analytics.js';
+import { renderBanner } from './banner.js';
 
 const STORAGE_KEY = 'riftcard:v1';
 const $ = (sel) => document.querySelector(sel);
@@ -855,6 +856,56 @@ $('#btn-sample').addEventListener('click', () => {
   update({ ...SAMPLE_STATE });
   syncSkins();
   track('sample_load');
+});
+
+// ---------- Promo banner ----------
+
+let bannerCanvas = null;
+$('#btn-banner').addEventListener('click', () => {
+  bannerCanvas = renderBanner(canvas, state, new URL(SITE_URL).host);
+  $('#banner-img').src = bannerCanvas.toDataURL('image/png');
+  $('#banner-dialog').showModal();
+  track('banner_open', { theme: state.theme });
+});
+$('#banner-close').addEventListener('click', () => $('#banner-dialog').close());
+
+$('#banner-save').addEventListener('click', () => {
+  // In-app browsers and iPhone: the image in the dialog can be saved with a long press.
+  if (IN_APP || IS_IOS) {
+    toast('上のバナー画像を長押しして保存してください');
+  } else {
+    bannerCanvas.toBlob((blob) => {
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'summoner-card-banner.png';
+      a.click();
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+    }, 'image/png');
+  }
+  track('banner_save', { theme: state.theme });
+});
+
+$('#banner-copy-url').addEventListener('click', async () => {
+  try {
+    await navigator.clipboard.writeText(SITE_URL);
+    toast('URLをコピーしました。Twitchパネルや概要欄のリンクに貼ってください');
+  } catch {
+    toast(SITE_URL);
+  }
+});
+
+// Copy buttons for code samples in the guide.
+document.addEventListener('click', async (e) => {
+  const id = e.target.closest('[data-copy-target]')?.dataset.copyTarget;
+  if (!id) return;
+  try {
+    await navigator.clipboard.writeText(document.getElementById(id).textContent);
+    toast('コピーしました');
+    track('embed_copy');
+  } catch {
+    toast('コピーできませんでした。手動で選択してコピーしてください');
+  }
 });
 
 $('#show-credit').addEventListener('change', (e) => {

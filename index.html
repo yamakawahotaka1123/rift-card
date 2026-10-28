@@ -94,6 +94,7 @@
           <button type="button" class="btn ghost small" id="spread-copy">サイトのURLをコピー</button>
         </div>
       </div>
+      <button type="button" class="btn banner-btn" id="btn-banner">🎨 自分のカードで宣伝バナーを作る<small>配信画面・Twitchパネル・Xのヘッダーなどに</small></button>
       <div class="actions sub">
         <button type="button" class="btn ghost" id="btn-sample">サンプルを入れる</button>
         <button type="button" class="btn ghost" id="btn-reset">入力をリセット</button>
@@ -291,6 +292,19 @@
       </div>
     </section>
 
+    <section id="banners">
+      <h2>宣伝バナー（ご自由にお使いください）</h2>
+      <p>配信画面・Twitchのパネル・YouTubeの概要欄・ブログや個人サイトなどに、<strong>許可なく自由に</strong>貼っていただけます。リンク先は <code>https://summonercard.com/</code> にしてもらえると嬉しいです。</p>
+      <p>ツール上の「🎨 自分のカードで宣伝バナーを作る」から、<strong>自分のカード入りのバナー</strong>も作れます。</p>
+      <div class="gallery banners">
+        <figure><img src="img/banner.jpg" width="1800" height="600" loading="lazy" alt="SUMMONER CARD サモナーカード作成メーカーの宣伝バナー"><figcaption>通常版（1800×600）</figcaption></figure>
+        <figure><img src="img/banner-pastel.jpg" width="1800" height="600" loading="lazy" alt="SUMMONER CARD サモナーカード作成メーカーの宣伝バナー（パステル）"><figcaption>パステル版（1800×600）</figcaption></figure>
+      </div>
+      <p>ブログや個人サイトに貼る場合のHTML：</p>
+      <pre class="embed-code" id="embed-code">&lt;a href="https://summonercard.com/" target="_blank" rel="noopener"&gt;&lt;img src="https://summonercard.com/img/banner.jpg" alt="SUMMONER CARD｜サモナーカード作成メーカー" width="600" height="200"&gt;&lt;/a&gt;</pre>
+      <button type="button" class="btn ghost small" data-copy-target="embed-code">HTMLをコピー</button>
+    </section>
+
     <section>
       <h2>よくある質問</h2>
       <dl class="faq">
@@ -358,6 +372,19 @@
     <div class="actions">
       <button type="button" class="btn primary" id="crop-ok">決定</button>
       <button type="button" class="btn ghost" id="crop-cancel">キャンセル</button>
+    </div>
+  </dialog>
+
+  <dialog id="banner-dialog">
+    <div class="banner-head">
+      <strong>宣伝バナー</strong>
+      <button type="button" class="btn ghost small" id="banner-close">閉じる</button>
+    </div>
+    <img id="banner-img" alt="自分のカード入りのSUMMONER CARD宣伝バナー">
+    <p class="banner-note">配信画面・Twitchのパネル・Xのヘッダー・ブログなどに自由に使ってOKです。リンクを付けられる場所では <strong>https://summonercard.com/</strong> にリンクしてもらえると嬉しいです🙏</p>
+    <div class="actions">
+      <button type="button" class="btn primary" id="banner-save">バナーを保存</button>
+      <button type="button" class="btn ghost" id="banner-copy-url">リンク先URLをコピー</button>
     </div>
   </dialog>
 

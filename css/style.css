@@ -40,6 +40,45 @@ button { cursor: pointer; }
 .inapp-banner p { margin: 0; flex: 1; }
 .inapp-banner .btn { flex-shrink: 0; white-space: nowrap; }
 
+.banner-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  margin-top: 12px;
+  padding: 12px;
+  border-style: dashed;
+}
+.banner-btn small { margin-top: 2px; font-size: 12px; font-weight: 500; color: var(--muted); }
+
+dialog#banner-dialog {
+  width: min(1000px, calc(100vw - 24px));
+  padding: 16px;
+  border: 1px solid var(--gold);
+  border-radius: 12px;
+  background: var(--bg2);
+  color: var(--text);
+}
+dialog#banner-dialog::backdrop { background: rgba(0, 0, 0, 0.8); }
+.banner-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+.banner-head strong { color: var(--gold); }
+#banner-img { display: block; width: 100%; height: auto; border-radius: 8px; -webkit-touch-callout: default; }
+.banner-note { font-size: 13px; color: var(--muted); }
+.banner-note strong { color: var(--gold2); }
+
+.gallery.banners { grid-template-columns: 1fr; }
+.embed-code {
+  overflow-x: auto;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #061019;
+  font-size: 12px;
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+.guide code { color: var(--gold2); }
+
 dialog#save-dialog {
   width: min(900px, calc(100vw - 24px));
   padding: 16px;
