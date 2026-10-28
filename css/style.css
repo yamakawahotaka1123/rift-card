@@ -214,6 +214,22 @@ legend {
   font-weight: 800;
 }
 legend small { color: var(--muted); font-weight: 500; margin-left: 6px; }
+legend .help {
+  display: inline-grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  margin-left: 6px;
+  border: 1px solid var(--gold);
+  border-radius: 50%;
+  font-size: 12px;
+  color: var(--gold);
+  text-decoration: none;
+  vertical-align: 2px;
+}
+legend .help:hover { background: rgba(200, 170, 110, 0.18); }
+.help-links { display: flex; flex-wrap: wrap; gap: 6px 16px; margin: 12px 0 0; font-size: 13px; }
+.help-links a { color: var(--gold); }
 .section-clear {
   position: absolute;
   top: -12px;

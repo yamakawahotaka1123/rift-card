@@ -92,6 +92,7 @@
         </div>
       </div>
       <button type="button" class="btn banner-btn" id="btn-banner">🎨 自分のカードで宣伝バナーを作る<small>配信画面・Twitchパネル・Xのヘッダーなどに</small></button>
+      <p class="help-links"><a href="/guide/">使い方ガイド</a><a href="/templates/">テンプレ一覧</a><a href="/faq/">よくある質問</a></p>
       <div class="actions sub">
         <button type="button" class="btn ghost" id="btn-sample">サンプルを入れる</button>
         <button type="button" class="btn ghost" id="btn-reset">入力をリセット</button>
@@ -100,7 +101,7 @@
 
     <form class="editor" id="form" autocomplete="off" onsubmit="return false">
       <fieldset>
-        <legend>基本情報</legend>
+        <legend>基本情報 <a class="help" href="/guide/#basic" target="_blank" title="使い方を見る" aria-label="使い方を見る">?</a></legend>
         <button type="button" class="section-clear" data-clear="basic">クリア</button>
         <div class="row">
           <label class="field grow">サモナーネーム
@@ -136,7 +137,7 @@
       </fieldset>
 
       <fieldset>
-        <legend>ランク</legend>
+        <legend>ランク <a class="help" href="/guide/#rank" target="_blank" title="使い方を見る" aria-label="使い方を見る">?</a></legend>
         <button type="button" class="section-clear" data-clear="rank">クリア</button>
         <div class="row">
           <label class="field grow">ティア
@@ -149,14 +150,14 @@
       </fieldset>
 
       <fieldset>
-        <legend>ロール</legend>
+        <legend>ロール <a class="help" href="/guide/#role" target="_blank" title="使い方を見る" aria-label="使い方を見る">?</a></legend>
         <button type="button" class="section-clear" data-clear="roles">クリア</button>
         <p class="hint">メインは1つだけ。サブ・ノマなら可・無理はいくつでも選べます。もう一度押すと解除されます。</p>
         <div class="roles" id="roles"></div>
       </fieldset>
 
       <fieldset>
-        <legend><span id="champ-legend">得意チャンピオン</span> <small>最大5体</small></legend>
+        <legend><span id="champ-legend">得意チャンピオン</span> <small>最大5体</small> <a class="help" href="/guide/#champs" target="_blank" title="使い方を見る" aria-label="使い方を見る">?</a></legend>
         <button type="button" class="section-clear" data-clear="champs">クリア</button>
         <div class="field">見出し
           <div class="segmented" data-radio="champLabel">
@@ -168,13 +169,13 @@
       </fieldset>
 
       <fieldset>
-        <legend>プレイスタイル <small>最大6個</small></legend>
+        <legend>プレイスタイル <small>最大6個</small> <a class="help" href="/guide/#tags" target="_blank" title="使い方を見る" aria-label="使い方を見る">?</a></legend>
         <button type="button" class="section-clear" data-clear="tags">クリア</button>
         <div class="chips" id="tags"></div>
       </fieldset>
 
       <fieldset>
-        <legend>活動時間・連絡先</legend>
+        <legend>活動時間・連絡先 <a class="help" href="/guide/#contact" target="_blank" title="使い方を見る" aria-label="使い方を見る">?</a></legend>
         <button type="button" class="section-clear" data-clear="contact">クリア</button>
         <label class="field">活動時間
           <input name="hours" maxlength="30" placeholder="例：平日22時〜深夜 / 休日いつでも">
@@ -198,7 +199,7 @@
       </fieldset>
 
       <fieldset>
-        <legend>ひとこと</legend>
+        <legend>ひとこと <a class="help" href="/guide/#comment" target="_blank" title="使い方を見る" aria-label="使い方を見る">?</a></legend>
         <button type="button" class="section-clear" data-clear="comment">クリア</button>
         <label class="field">
           <textarea name="comment" rows="3" maxlength="80" placeholder="例：ミッドメインです！一緒にランク回せる方募集中"></textarea>
@@ -207,7 +208,7 @@
       </fieldset>
 
       <fieldset>
-        <legend>デザイン</legend>
+        <legend>デザイン <a class="help" href="/guide/#design" target="_blank" title="使い方を見る" aria-label="使い方を見る">?</a></legend>
         <button type="button" class="section-clear" data-clear="design">クリア</button>
         <div class="field">テーマ
           <div class="themes" id="themes"></div>
