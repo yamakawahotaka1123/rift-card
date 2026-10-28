@@ -289,6 +289,7 @@ ${THEMES.map(([id, name, text]) => `        <section class="theme-item">
     h1: '宣伝バナー（ご自由にお使いください）',
     body: `
       <p>SUMMONER CARD を紹介していただける方向けのバナーです。配信画面・Twitchのパネル・YouTubeの概要欄・ブログや個人サイトなどに、<strong>連絡不要で自由に</strong>貼っていただけます。リンクを付けられる場所では、リンク先を <code>https://summonercard.com/</code> にしていただけると嬉しいです。</p>
+      <p class="thanks">連絡は不要ですが、使ってくれたら <a href="https://x.com/hotaka_1123" target="_blank" rel="noopener">X（@hotaka_1123）</a> でひとこと教えてもらえると、とても喜びます🙏 配信や記事を見に行かせてください！</p>
 
       <section>
         <h2>自分のカード入りのバナーを作る</h2>
