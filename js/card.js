@@ -1,31 +1,23 @@
 // Draws the summoner card onto a canvas. Everything happens in the browser.
 import { CDRAGON, CDRAGON_GAME, DDRAGON, ROLE_LEVELS, ROLES, THEMES, TIERS } from './data.js';
-import {
-  drawFairyBackdrop, drawFairyCorners, drawFairyFrame, drawIconBandage, drawUnicornHorn,
-} from './fairy.js';
+import { DECOS } from './decos.js';
 
 export const CARD_W = 1200;
 export const CARD_H = 675;
 export const SITE_URL = 'https://summonercard.com/';
 const SITE_URL_SHORT = 'summonercard.com';
 
-// Font sets per theme style. FONT_EN is for small labels, FONT_TITLE for section titles.
-const FONT_SETS = {
-  default: {
-    jp: '"M PLUS 1p", "Hiragino Sans", "Yu Gothic", sans-serif',
-    en: '"Cinzel", "M PLUS 1p", serif',
-    title: '"Cinzel", "M PLUS 1p", serif',
-  },
-  fairy: {
-    jp: '"M PLUS Rounded 1c", "M PLUS 1p", "Hiragino Maru Gothic ProN", sans-serif',
-    en: '"M PLUS Rounded 1c", "M PLUS 1p", sans-serif',
-    title: '"Dancing Script", cursive',
-  },
+// Default fonts; a theme's decoration set (decos.js) can replace them.
+// FONT_EN is for small labels, FONT_TITLE for section titles.
+const DEFAULT_FONTS = {
+  jp: '"M PLUS 1p", "Hiragino Sans", "Yu Gothic", sans-serif',
+  en: '"Cinzel", "M PLUS 1p", serif',
+  title: '"Cinzel", "M PLUS 1p", serif',
 };
 // Set once per render, right before the synchronous drawing pass.
-let FONT_JP = FONT_SETS.default.jp;
-let FONT_EN = FONT_SETS.default.en;
-let FONT_TITLE = FONT_SETS.default.title;
+let FONT_JP = DEFAULT_FONTS.jp;
+let FONT_EN = DEFAULT_FONTS.en;
+let FONT_TITLE = DEFAULT_FONTS.title;
 
 const imageCache = new Map();
 
@@ -156,15 +148,9 @@ function drawPlaced(ctx, img, w, h, offX, offY, zoom = 1) {
 
 function sectionLabel(ctx, text, x, y, theme) {
   ctx.textAlign = 'left';
-  if (theme.deco === 'fairy') {
-    // Gold script in title case, e.g. "Favorite Champions".
-    const title = text.toLowerCase().replace(/\b\w/g, (c) => c.toUpperCase());
-    ctx.font = `700 28px ${FONT_TITLE}`;
-    ctx.fillStyle = theme.gold;
-    ctx.fillText(title, x, y + 2);
-    const w = ctx.measureText(title).width;
-    ctx.fillStyle = hexToRgba(theme.gold, 0.45);
-    ctx.fillRect(x + w + 10, y - 6, 50, 1.5);
+  const deco = DECOS[theme.deco];
+  if (deco?.label) {
+    deco.label(ctx, text, x, y, theme, { jp: FONT_JP, en: FONT_EN, title: FONT_TITLE });
     return;
   }
   ctx.font = `700 18px ${FONT_TITLE}`;
@@ -180,9 +166,7 @@ function sectionLabel(ctx, text, x, y, theme) {
 // Make sure the web fonts (and the unicode-range subsets for the actual text) are ready.
 async function ensureFonts(state, theme) {
   if (!document.fonts) return;
-  const fairy = theme.deco === 'fairy'
-    ? [`500 24px "M PLUS Rounded 1c"`, `700 24px "M PLUS Rounded 1c"`, `800 24px "M PLUS Rounded 1c"`]
-    : [];
+  const extra = DECOS[theme.deco]?.fonts?.load || [];
   const text = [state.name, state.tag, state.hours, state.discord, state.x, state.twitch, state.youtube, state.comment, ...state.tags, ...(state._names || [])].join('');
   const sample = `${text}0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ#.・〜`;
   // Don't let a slow font download block the preview; the app redraws when fonts finish loading.
@@ -192,8 +176,7 @@ async function ensureFonts(state, theme) {
       document.fonts.load(`700 24px "M PLUS 1p"`, sample),
       document.fonts.load(`800 24px "M PLUS 1p"`, sample),
       document.fonts.load(`700 24px "Cinzel"`, 'ROLECHAMPIONSUNRANKEDLv0123456789'),
-      ...fairy.map((f) => document.fonts.load(f, sample)),
-      ...(fairy.length ? [document.fonts.load(`700 24px "Dancing Script"`, 'Role Main Favorite Champions Summoner Card')] : []),
+      ...extra.map((f) => document.fonts.load(f, `${sample}Role Main Favorite Champions Summoner Card`)),
     ]).catch(() => {}),
     new Promise((resolve) => setTimeout(resolve, 1500)),
   ]);
@@ -225,11 +208,11 @@ export async function renderCard(canvas, state, ctxData) {
     ensureFonts(state, theme),
   ]);
 
-  const fonts = FONT_SETS[theme.deco] || FONT_SETS.default;
+  const deco = DECOS[theme.deco] || {};
+  const fonts = deco.fonts || DEFAULT_FONTS;
   FONT_JP = fonts.jp;
   FONT_EN = fonts.en;
   FONT_TITLE = fonts.title;
-  const fairy = theme.deco === 'fairy';
 
   // Draw into an offscreen canvas first so the preview never shows a half-drawn card.
   const off = document.createElement('canvas');
@@ -239,7 +222,7 @@ export async function renderCard(canvas, state, ctxData) {
   ctx.textBaseline = 'alphabetic';
 
   // Background
-  const bgGrad = fairy ? ctx.createLinearGradient(0, 0, 0, CARD_H) : ctx.createLinearGradient(0, 0, CARD_W, CARD_H);
+  const bgGrad = deco.vertical ? ctx.createLinearGradient(0, 0, 0, CARD_H) : ctx.createLinearGradient(0, 0, CARD_W, CARD_H);
   const stops = theme.bgStops || [theme.bg1, theme.bg2];
   stops.forEach((c, i) => bgGrad.addColorStop(i / (stops.length - 1), c));
   ctx.fillStyle = bgGrad;
@@ -259,8 +242,8 @@ export async function renderCard(canvas, state, ctxData) {
     ctx.fillStyle = bottom;
     ctx.fillRect(0, 0, CARD_W, CARD_H);
   }
-  if (fairy) {
-    drawFairyBackdrop(ctx, CARD_W, CARD_H, theme, Boolean(splash));
+  if (deco.backdrop) {
+    deco.backdrop(ctx, CARD_W, CARD_H, theme, Boolean(splash));
   } else if (!splash) {
     // Faint hex grid so the plain background isn't flat.
     ctx.strokeStyle = hexToRgba(theme.accent, 0.06);
@@ -281,10 +264,9 @@ export async function renderCard(canvas, state, ctxData) {
     }
   }
 
-  if (fairy) {
-    drawFairyFrame(ctx, CARD_W, CARD_H, theme);
-    // Under the content, so the flowers fill the edges without covering anything.
-    drawFairyCorners(ctx, CARD_W, CARD_H, theme);
+  if (deco.frame) {
+    // Drawn under the content, so corner art never covers text or images.
+    deco.frame(ctx, CARD_W, CARD_H, theme);
   } else {
     // Frame with corner diamonds
     ctx.strokeStyle = hexToRgba(theme.accent, 0.8);
@@ -332,10 +314,7 @@ export async function renderCard(canvas, state, ctxData) {
     roundRect(ctx, ix, iy, is, is, 18);
   }
   ctx.stroke();
-  if (fairy) {
-    drawUnicornHorn(ctx, ix + is / 2, iy + 8, theme);
-    drawIconBandage(ctx, ix + is / 2, iy + is / 2, is / 2, theme);
-  }
+  deco.iconDeco?.(ctx, ix + is / 2, iy + is / 2, is / 2, theme);
 
   if (state.level) {
     const label = `Lv.${state.level}`;
@@ -358,8 +337,8 @@ export async function renderCard(canvas, state, ctxData) {
   const nameMax = 600;
   ctx.textAlign = 'left';
   ctx.fillStyle = theme.text;
-  ctx.shadowColor = theme.light ? 'transparent' : 'rgba(0,0,0,0.6)';
-  ctx.shadowBlur = 8;
+  ctx.shadowColor = deco.nameGlow || (theme.light ? 'transparent' : 'rgba(0,0,0,0.6)');
+  ctx.shadowBlur = deco.nameGlow ? 18 : 8;
   const tagText = state.tag ? ` #${state.tag}` : '';
   ctx.font = `700 30px ${FONT_JP}`;
   const tagW = tagText ? ctx.measureText(tagText).width : 0;
@@ -564,8 +543,8 @@ export async function renderCard(canvas, state, ctxData) {
 
   // Comment
   if (state.comment) {
-    // The pastel themes leave the bottom-right corner for their lollipop and syringe.
-    const bx = 60, by = 512, bw = CARD_W - (fairy ? 330 : 120), bh = 112;
+    // Some themes keep the bottom-right corner free for their corner art.
+    const bx = 60, by = 512, bw = CARD_W - 120 - (deco.commentRight || 0), bh = 112;
     roundRect(ctx, bx, by, bw, bh, 14);
     ctx.fillStyle = theme.panel;
     ctx.fill();
@@ -584,22 +563,13 @@ export async function renderCard(canvas, state, ctxData) {
 
   // Watermark: site name, plus the URL so people who see a shared card can find the site.
   ctx.textAlign = 'right';
-  if (fairy) {
-    const right = CARD_W - 270;
-    ctx.font = `700 24px ${FONT_TITLE}`;
-    ctx.fillStyle = theme.gold;
-    ctx.fillText('Summoner Card', right, CARD_H - 30);
-    if (state.showCredit !== false) {
-      const w = ctx.measureText('Summoner Card').width;
-      ctx.font = `700 12px ${FONT_JP}`;
-      ctx.fillStyle = hexToRgba(theme.text, 0.6);
-      ctx.fillText(SITE_URL_SHORT, right - w - 10, CARD_H - 32);
-    }
+  const credit = state.showCredit !== false ? SITE_URL_SHORT : '';
+  if (deco.watermark) {
+    deco.watermark(ctx, CARD_W, CARD_H, theme, credit, fonts);
   } else {
     ctx.font = `700 13px ${FONT_EN}`;
     ctx.fillStyle = hexToRgba(theme.text, 0.5);
-    const label = state.showCredit !== false ? `SUMMONER CARD · ${SITE_URL_SHORT}` : 'SUMMONER CARD';
-    ctx.fillText(label, CARD_W - 32, CARD_H - 30);
+    ctx.fillText(credit ? `SUMMONER CARD · ${credit}` : 'SUMMONER CARD', CARD_W - (deco.watermarkRight || 32), CARD_H - 30);
   }
 
   canvas.width = CARD_W;

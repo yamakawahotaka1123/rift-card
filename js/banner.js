@@ -126,7 +126,8 @@ function fitFont(ctx, text, weight, size, family, maxWidth) {
  */
 export function renderBanner(card, state, siteLabel) {
   const theme = THEMES.find((t) => t.id === state.theme) || THEMES[0];
-  const fairy = theme.deco === 'fairy';
+  // Light themes get the pastel banner style; dark themes the gold-on-navy one.
+  const fairy = Boolean(theme.light);
   const c = document.createElement('canvas');
   c.width = BANNER_W;
   c.height = BANNER_H;

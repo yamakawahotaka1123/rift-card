@@ -71,7 +71,32 @@ export const THEMES = [
     line: '#8a93cf', candy: ['#a9d3f7', '#c6b3f3', '#f7a8c8', '#ffe08f'],
     checker: ['#d6e8fb', '#ffffff'], clouds: ['#dbe9fb', '#e6d8fb', '#f9d6ea'],
   },
-  { id: 'guardian', label: 'スターガーディアン', light: true, bg1: '#fff3fb', bg2: '#e7e8ff', accent: '#c45bd0', accent2: '#5b7cf0', text: '#2a1d3a', sub: '#6e6280', panel: 'rgba(255,255,255,0.72)' },
+  { id: 'guardian', label: 'スターガーディアン', light: true, bg1: '#fff3fb', bg2: '#e7e8ff', accent: '#c45bd0', accent2: '#5b7cf0', gold: '#e0a93a', text: '#2a1d3a', sub: '#6e6280', panel: 'rgba(255,255,255,0.72)' },
+  {
+    id: 'jirai', label: '地雷系', deco: 'jirai',
+    bg1: '#160910', bg2: '#2a0f1f', bgStops: ['#1a0a12', '#2b1020', '#160910'],
+    accent: '#ff6fa8', accent2: '#ffc2da', gold: '#ffc2da', text: '#fff0f6', sub: '#c99ab0', panel: 'rgba(22,6,14,0.72)',
+  },
+  {
+    id: 'ryousan', label: '量産型', light: true, deco: 'ryousan',
+    bg1: '#fff6f9', bg2: '#fde3ec', bgStops: ['#fff8fa', '#fde6ee', '#fbd9e5'],
+    accent: '#ef8fb1', accent2: '#f7bcd0', gold: '#e9a9bf', line: '#e8a3bb', text: '#6b3a4c', sub: '#b88a9a', panel: 'rgba(255,255,255,0.8)',
+  },
+  {
+    id: 'y2k', label: 'Y2K', light: true, deco: 'y2k',
+    bg1: '#e9f1ff', bg2: '#ffd6f6', bgStops: ['#cfe6ff', '#f2d4ff', '#ffd6ec', '#d8fff4'],
+    accent: '#6b4dff', accent2: '#ff5cc8', gold: '#ffb800', line: '#2a2350', text: '#231d4a', sub: '#6f6aa0', panel: 'rgba(255,255,255,0.75)',
+  },
+  {
+    id: 'gaming', label: 'ゲーミング', deco: 'gaming',
+    bg1: '#05050c', bg2: '#100c24', bgStops: ['#07061a', '#0d0b20', '#1a0b2e'],
+    accent: '#00e5ff', accent2: '#ff2a6d', gold: '#ffb800', text: '#f2f7ff', sub: '#7f8bb0', panel: 'rgba(6,6,20,0.78)',
+  },
+  {
+    id: 'wafu', label: '和風', light: true, deco: 'wafu',
+    bg1: '#f8f1e4', bg2: '#efe1c6', bgStops: ['#fbf6ec', '#f3e8d3', '#ead9b9'],
+    accent: '#b3242c', accent2: '#c9a24a', gold: '#c9a24a', line: '#8a6a2e', text: '#2b1d14', sub: '#8a7560', panel: 'rgba(255,251,242,0.82)',
+  },
 ];
 
 export const DEFAULT_STATE = {

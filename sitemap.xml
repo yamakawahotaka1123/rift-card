@@ -14,6 +14,11 @@
     <image:image><image:loc>https://summonercard.com/img/theme-fairy.jpg</image:loc></image:image>
     <image:image><image:loc>https://summonercard.com/img/theme-fairy-mint.jpg</image:loc></image:image>
     <image:image><image:loc>https://summonercard.com/img/theme-guardian.jpg</image:loc></image:image>
+    <image:image><image:loc>https://summonercard.com/img/theme-jirai.jpg</image:loc></image:image>
+    <image:image><image:loc>https://summonercard.com/img/theme-ryousan.jpg</image:loc></image:image>
+    <image:image><image:loc>https://summonercard.com/img/theme-y2k.jpg</image:loc></image:image>
+    <image:image><image:loc>https://summonercard.com/img/theme-gaming.jpg</image:loc></image:image>
+    <image:image><image:loc>https://summonercard.com/img/theme-wafu.jpg</image:loc></image:image>
   </url>
   <url>
     <loc>https://summonercard.com/guide/</loc>
