@@ -26,21 +26,89 @@
     <loc>https://summonercard.com/en/</loc>
     <lastmod>2026-10-30</lastmod>
     <image:image><image:loc>https://summonercard.com/og-en.jpg</image:loc></image:image>
+    <image:image><image:loc>https://summonercard.com/img/en/banner.jpg</image:loc></image:image>
+    <image:image><image:loc>https://summonercard.com/img/en/banner-pastel.jpg</image:loc></image:image>
+    <image:image><image:loc>https://summonercard.com/img/en/theme-halloween.jpg</image:loc></image:image>
+    <image:image><image:loc>https://summonercard.com/img/en/theme-christmas.jpg</image:loc></image:image>
+    <image:image><image:loc>https://summonercard.com/img/en/theme-hextech.jpg</image:loc></image:image>
+    <image:image><image:loc>https://summonercard.com/img/en/theme-noxus.jpg</image:loc></image:image>
+    <image:image><image:loc>https://summonercard.com/img/en/theme-freljord.jpg</image:loc></image:image>
+    <image:image><image:loc>https://summonercard.com/img/en/theme-shadow.jpg</image:loc></image:image>
+    <image:image><image:loc>https://summonercard.com/img/en/theme-ionia.jpg</image:loc></image:image>
+    <image:image><image:loc>https://summonercard.com/img/en/theme-fairy.jpg</image:loc></image:image>
+    <image:image><image:loc>https://summonercard.com/img/en/theme-fairy-mint.jpg</image:loc></image:image>
+    <image:image><image:loc>https://summonercard.com/img/en/theme-guardian.jpg</image:loc></image:image>
+    <image:image><image:loc>https://summonercard.com/img/en/theme-jirai.jpg</image:loc></image:image>
+    <image:image><image:loc>https://summonercard.com/img/en/theme-ryousan.jpg</image:loc></image:image>
+    <image:image><image:loc>https://summonercard.com/img/en/theme-y2k.jpg</image:loc></image:image>
+    <image:image><image:loc>https://summonercard.com/img/en/theme-gaming.jpg</image:loc></image:image>
+    <image:image><image:loc>https://summonercard.com/img/en/theme-wafu.jpg</image:loc></image:image>
   </url>
   <url>
     <loc>https://summonercard.com/ko/</loc>
     <lastmod>2026-10-30</lastmod>
     <image:image><image:loc>https://summonercard.com/og-ko.jpg</image:loc></image:image>
+    <image:image><image:loc>https://summonercard.com/img/ko/banner.jpg</image:loc></image:image>
+    <image:image><image:loc>https://summonercard.com/img/ko/banner-pastel.jpg</image:loc></image:image>
+    <image:image><image:loc>https://summonercard.com/img/ko/theme-halloween.jpg</image:loc></image:image>
+    <image:image><image:loc>https://summonercard.com/img/ko/theme-christmas.jpg</image:loc></image:image>
+    <image:image><image:loc>https://summonercard.com/img/ko/theme-hextech.jpg</image:loc></image:image>
+    <image:image><image:loc>https://summonercard.com/img/ko/theme-noxus.jpg</image:loc></image:image>
+    <image:image><image:loc>https://summonercard.com/img/ko/theme-freljord.jpg</image:loc></image:image>
+    <image:image><image:loc>https://summonercard.com/img/ko/theme-shadow.jpg</image:loc></image:image>
+    <image:image><image:loc>https://summonercard.com/img/ko/theme-ionia.jpg</image:loc></image:image>
+    <image:image><image:loc>https://summonercard.com/img/ko/theme-fairy.jpg</image:loc></image:image>
+    <image:image><image:loc>https://summonercard.com/img/ko/theme-fairy-mint.jpg</image:loc></image:image>
+    <image:image><image:loc>https://summonercard.com/img/ko/theme-guardian.jpg</image:loc></image:image>
+    <image:image><image:loc>https://summonercard.com/img/ko/theme-jirai.jpg</image:loc></image:image>
+    <image:image><image:loc>https://summonercard.com/img/ko/theme-ryousan.jpg</image:loc></image:image>
+    <image:image><image:loc>https://summonercard.com/img/ko/theme-y2k.jpg</image:loc></image:image>
+    <image:image><image:loc>https://summonercard.com/img/ko/theme-gaming.jpg</image:loc></image:image>
+    <image:image><image:loc>https://summonercard.com/img/ko/theme-wafu.jpg</image:loc></image:image>
   </url>
   <url>
     <loc>https://summonercard.com/zh-cn/</loc>
     <lastmod>2026-10-30</lastmod>
     <image:image><image:loc>https://summonercard.com/og-zh-cn.jpg</image:loc></image:image>
+    <image:image><image:loc>https://summonercard.com/img/zh-cn/banner.jpg</image:loc></image:image>
+    <image:image><image:loc>https://summonercard.com/img/zh-cn/banner-pastel.jpg</image:loc></image:image>
+    <image:image><image:loc>https://summonercard.com/img/zh-cn/theme-halloween.jpg</image:loc></image:image>
+    <image:image><image:loc>https://summonercard.com/img/zh-cn/theme-christmas.jpg</image:loc></image:image>
+    <image:image><image:loc>https://summonercard.com/img/zh-cn/theme-hextech.jpg</image:loc></image:image>
+    <image:image><image:loc>https://summonercard.com/img/zh-cn/theme-noxus.jpg</image:loc></image:image>
+    <image:image><image:loc>https://summonercard.com/img/zh-cn/theme-freljord.jpg</image:loc></image:image>
+    <image:image><image:loc>https://summonercard.com/img/zh-cn/theme-shadow.jpg</image:loc></image:image>
+    <image:image><image:loc>https://summonercard.com/img/zh-cn/theme-ionia.jpg</image:loc></image:image>
+    <image:image><image:loc>https://summonercard.com/img/zh-cn/theme-fairy.jpg</image:loc></image:image>
+    <image:image><image:loc>https://summonercard.com/img/zh-cn/theme-fairy-mint.jpg</image:loc></image:image>
+    <image:image><image:loc>https://summonercard.com/img/zh-cn/theme-guardian.jpg</image:loc></image:image>
+    <image:image><image:loc>https://summonercard.com/img/zh-cn/theme-jirai.jpg</image:loc></image:image>
+    <image:image><image:loc>https://summonercard.com/img/zh-cn/theme-ryousan.jpg</image:loc></image:image>
+    <image:image><image:loc>https://summonercard.com/img/zh-cn/theme-y2k.jpg</image:loc></image:image>
+    <image:image><image:loc>https://summonercard.com/img/zh-cn/theme-gaming.jpg</image:loc></image:image>
+    <image:image><image:loc>https://summonercard.com/img/zh-cn/theme-wafu.jpg</image:loc></image:image>
   </url>
   <url>
     <loc>https://summonercard.com/zh-tw/</loc>
     <lastmod>2026-10-30</lastmod>
     <image:image><image:loc>https://summonercard.com/og-zh-tw.jpg</image:loc></image:image>
+    <image:image><image:loc>https://summonercard.com/img/zh-tw/banner.jpg</image:loc></image:image>
+    <image:image><image:loc>https://summonercard.com/img/zh-tw/banner-pastel.jpg</image:loc></image:image>
+    <image:image><image:loc>https://summonercard.com/img/zh-tw/theme-halloween.jpg</image:loc></image:image>
+    <image:image><image:loc>https://summonercard.com/img/zh-tw/theme-christmas.jpg</image:loc></image:image>
+    <image:image><image:loc>https://summonercard.com/img/zh-tw/theme-hextech.jpg</image:loc></image:image>
+    <image:image><image:loc>https://summonercard.com/img/zh-tw/theme-noxus.jpg</image:loc></image:image>
+    <image:image><image:loc>https://summonercard.com/img/zh-tw/theme-freljord.jpg</image:loc></image:image>
+    <image:image><image:loc>https://summonercard.com/img/zh-tw/theme-shadow.jpg</image:loc></image:image>
+    <image:image><image:loc>https://summonercard.com/img/zh-tw/theme-ionia.jpg</image:loc></image:image>
+    <image:image><image:loc>https://summonercard.com/img/zh-tw/theme-fairy.jpg</image:loc></image:image>
+    <image:image><image:loc>https://summonercard.com/img/zh-tw/theme-fairy-mint.jpg</image:loc></image:image>
+    <image:image><image:loc>https://summonercard.com/img/zh-tw/theme-guardian.jpg</image:loc></image:image>
+    <image:image><image:loc>https://summonercard.com/img/zh-tw/theme-jirai.jpg</image:loc></image:image>
+    <image:image><image:loc>https://summonercard.com/img/zh-tw/theme-ryousan.jpg</image:loc></image:image>
+    <image:image><image:loc>https://summonercard.com/img/zh-tw/theme-y2k.jpg</image:loc></image:image>
+    <image:image><image:loc>https://summonercard.com/img/zh-tw/theme-gaming.jpg</image:loc></image:image>
+    <image:image><image:loc>https://summonercard.com/img/zh-tw/theme-wafu.jpg</image:loc></image:image>
   </url>
   <url>
     <loc>https://summonercard.com/guide/</loc>
@@ -68,6 +136,118 @@
   </url>
   <url>
     <loc>https://summonercard.com/about/</loc>
+    <lastmod>2026-10-30</lastmod>
+  </url>
+  <url>
+    <loc>https://summonercard.com/en/guide/</loc>
+    <lastmod>2026-10-30</lastmod>
+  </url>
+  <url>
+    <loc>https://summonercard.com/en/templates/</loc>
+    <lastmod>2026-10-30</lastmod>
+  </url>
+  <url>
+    <loc>https://summonercard.com/en/banner/</loc>
+    <lastmod>2026-10-30</lastmod>
+  </url>
+  <url>
+    <loc>https://summonercard.com/en/faq/</loc>
+    <lastmod>2026-10-30</lastmod>
+  </url>
+  <url>
+    <loc>https://summonercard.com/en/privacy/</loc>
+    <lastmod>2026-10-30</lastmod>
+  </url>
+  <url>
+    <loc>https://summonercard.com/en/terms/</loc>
+    <lastmod>2026-10-30</lastmod>
+  </url>
+  <url>
+    <loc>https://summonercard.com/en/about/</loc>
+    <lastmod>2026-10-30</lastmod>
+  </url>
+  <url>
+    <loc>https://summonercard.com/ko/guide/</loc>
+    <lastmod>2026-10-30</lastmod>
+  </url>
+  <url>
+    <loc>https://summonercard.com/ko/templates/</loc>
+    <lastmod>2026-10-30</lastmod>
+  </url>
+  <url>
+    <loc>https://summonercard.com/ko/banner/</loc>
+    <lastmod>2026-10-30</lastmod>
+  </url>
+  <url>
+    <loc>https://summonercard.com/ko/faq/</loc>
+    <lastmod>2026-10-30</lastmod>
+  </url>
+  <url>
+    <loc>https://summonercard.com/ko/privacy/</loc>
+    <lastmod>2026-10-30</lastmod>
+  </url>
+  <url>
+    <loc>https://summonercard.com/ko/terms/</loc>
+    <lastmod>2026-10-30</lastmod>
+  </url>
+  <url>
+    <loc>https://summonercard.com/ko/about/</loc>
+    <lastmod>2026-10-30</lastmod>
+  </url>
+  <url>
+    <loc>https://summonercard.com/zh-cn/guide/</loc>
+    <lastmod>2026-10-30</lastmod>
+  </url>
+  <url>
+    <loc>https://summonercard.com/zh-cn/templates/</loc>
+    <lastmod>2026-10-30</lastmod>
+  </url>
+  <url>
+    <loc>https://summonercard.com/zh-cn/banner/</loc>
+    <lastmod>2026-10-30</lastmod>
+  </url>
+  <url>
+    <loc>https://summonercard.com/zh-cn/faq/</loc>
+    <lastmod>2026-10-30</lastmod>
+  </url>
+  <url>
+    <loc>https://summonercard.com/zh-cn/privacy/</loc>
+    <lastmod>2026-10-30</lastmod>
+  </url>
+  <url>
+    <loc>https://summonercard.com/zh-cn/terms/</loc>
+    <lastmod>2026-10-30</lastmod>
+  </url>
+  <url>
+    <loc>https://summonercard.com/zh-cn/about/</loc>
+    <lastmod>2026-10-30</lastmod>
+  </url>
+  <url>
+    <loc>https://summonercard.com/zh-tw/guide/</loc>
+    <lastmod>2026-10-30</lastmod>
+  </url>
+  <url>
+    <loc>https://summonercard.com/zh-tw/templates/</loc>
+    <lastmod>2026-10-30</lastmod>
+  </url>
+  <url>
+    <loc>https://summonercard.com/zh-tw/banner/</loc>
+    <lastmod>2026-10-30</lastmod>
+  </url>
+  <url>
+    <loc>https://summonercard.com/zh-tw/faq/</loc>
+    <lastmod>2026-10-30</lastmod>
+  </url>
+  <url>
+    <loc>https://summonercard.com/zh-tw/privacy/</loc>
+    <lastmod>2026-10-30</lastmod>
+  </url>
+  <url>
+    <loc>https://summonercard.com/zh-tw/terms/</loc>
+    <lastmod>2026-10-30</lastmod>
+  </url>
+  <url>
+    <loc>https://summonercard.com/zh-tw/about/</loc>
     <lastmod>2026-10-30</lastmod>
   </url>
 </urlset>

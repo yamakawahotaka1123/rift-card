@@ -28,7 +28,7 @@ League of Legends の自己紹介カード（サモナーカード）をブラ�
 | `guide/` `templates/` `banner/` `faq/` `privacy/` `terms/` `about/` | 説明ページ（生成物） |
 | `tools/build-pages.mjs` | 説明ページと `sitemap.xml` の生成スクリプト |
 
-説明ページの文章を変えるときは `tools/build-pages.mjs` を編集して、次を実行してください。
+説明ページの文章は `tools/pages/<言語>.mjs` にあります（ja / en / ko / zh-cn / zh-tw）。変えたら次を実行してください。
 
 ```sh
 node tools/build-pages.mjs

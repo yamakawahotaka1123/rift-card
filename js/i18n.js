@@ -184,7 +184,7 @@ const STRINGS = {
     'btn.resetAll': 'Reset everything',
     'footer.storage': 'Everything you enter stays in this browser and is never sent to a server. Feel free to use the images you make on social media, streams and anywhere else.',
     'footer.contact': `Bugs or requests? Feel free to reach out on ${X_LINK}.`,
-    'footer.analytics': 'To improve the site, we use Google Analytics to count visits and how often features are used (what you enter and your images are not sent). See the <a href="/privacy/">privacy policy</a> (in Japanese).',
+    'footer.analytics': 'To improve the site, we use Google Analytics to count visits and how often features are used (what you enter and your images are not sent). See the <a href="/privacy/">privacy policy</a> for details.',
     'nav.guide': 'How to use',
     'nav.templates': 'Templates',
     'nav.banner': 'Promo banners',
@@ -192,6 +192,36 @@ const STRINGS = {
     'nav.about': 'About & contact',
     'nav.privacy': 'Privacy policy',
     'nav.terms': 'Terms of use',
+    'nav.make': 'Make a card',
+    'nav.templatesShort': 'Templates',
+    'help.guide': 'Guide',
+    'help.title': 'How to use this',
+    home: `
+    <section>
+      <h2>What is a summoner card?</h2>
+      <p>A summoner card is a profile image where League of Legends players sum up their <strong>rank, roles, main champions and play times</strong>. People post them on X and in Discord servers to find duo partners and friends.</p>
+      <p>Until now, most people downloaded a template image and typed on it with an image editor. With SUMMONER CARD <strong>there’s no template to edit</strong>: fill in the fields and your card is generated with champion and rank icons. It’s free, needs no sign-up and works on phones.</p>
+    </section>
+
+    <section>
+      <h2>How to make one (3 steps)</h2>
+      <ol class="steps">
+        <li><strong>Enter your basic info</strong><br>Choose your summoner name, rank and roles (Main / Sub / Normals OK / No). If you’d rather not show your name, presets like “Ask me in DMs” are available.</li>
+        <li><strong>Main champions and play style</strong><br>Pick up to five main champs, tags like Casual, Ranked grinder or Voice chat, and add your play time, Discord and X.</li>
+        <li><strong>Pick a theme and save</strong><br>Choose a theme and a skin background, then press “Save image”. Share it straight to X or Discord.</li>
+      </ol>
+      <p>See the <a href="/guide/">guide</a> for details on every field.</p>
+    </section>
+
+    <section>
+      <h2>More</h2>
+      <div class="link-cards">
+        <a href="/guide/"><strong>How to use</strong><span>Every field explained, plus tips for finding friends</span></a>
+        <a href="/templates/"><strong>Templates</strong><span>Samples of all 15 themes. Pick one and start</span></a>
+        <a href="/banner/"><strong>Promo banners</strong><span>Free banners for your stream or blog</span></a>
+        <a href="/faq/"><strong>FAQ</strong><span>Saving on a phone, when the X app won’t save and more</span></a>
+      </div>
+    </section>`,
     'picker.role': 'Role',
     'tab.icons': 'Summoner icons',
     'tab.champs': 'Champions',
@@ -326,7 +356,7 @@ const STRINGS = {
     'btn.resetAll': '모두 초기화',
     'footer.storage': '입력한 내용은 이 브라우저에만 저장되고 서버로 전송되지 않아요. 만든 이미지는 SNS나 방송 등에 자유롭게 사용할 수 있어요.',
     'footer.contact': `버그 제보나 요청은 ${X_LINK}로 편하게 연락 주세요.`,
-    'footer.analytics': '사이트 개선을 위해 Google Analytics로 방문 수와 기능 이용 횟수를 측정하고 있어요(입력 내용이나 이미지는 전송하지 않아요). 자세한 내용은 <a href="/privacy/">개인정보처리방침</a>(일본어)을 확인해 주세요.',
+    'footer.analytics': '사이트 개선을 위해 Google Analytics로 방문 수와 기능 이용 횟수를 측정하고 있어요(입력 내용이나 이미지는 전송하지 않아요). 자세한 내용은 <a href="/privacy/">개인정보처리방침</a>을 확인해 주세요.',
     'nav.guide': '사용법',
     'nav.templates': '템플릿',
     'nav.banner': '홍보 배너',
@@ -334,6 +364,36 @@ const STRINGS = {
     'nav.about': '운영자・문의',
     'nav.privacy': '개인정보처리방침',
     'nav.terms': '이용약관',
+    'nav.make': '카드 만들기',
+    'nav.templatesShort': '템플릿',
+    'help.guide': '사용법 가이드',
+    'help.title': '사용법 보기',
+    home: `
+    <section>
+      <h2>서머너 카드란?</h2>
+      <p>서머너 카드는 리그 오브 레전드 플레이어가 <strong>랭크・포지션・주력 챔피언・플레이 시간</strong> 등을 정리한 자기소개 이미지예요. X나 디스코드 서버에서 듀오나 친구를 구할 때 많이 써요.</p>
+      <p>지금까지는 템플릿 이미지를 받아서 편집 앱으로 글자를 적어 넣는 게 일반적이었죠. SUMMONER CARD라면 <strong>템플릿 편집이 필요 없어요</strong>. 항목만 입력하면 챔피언과 랭크 아이콘이 들어간 카드가 자동으로 완성돼요. 무료・가입 없이 휴대폰에서도 만들 수 있어요.</p>
+    </section>
+
+    <section>
+      <h2>서머너 카드 만드는 법(3단계)</h2>
+      <ol class="steps">
+        <li><strong>기본 정보 입력</strong><br>소환사 이름・랭크・포지션(주 포지션/서브/일반겜만/불가)을 골라요. 이름을 공개하고 싶지 않다면 「DM으로 알려드려요」 같은 문구도 고를 수 있어요.</li>
+        <li><strong>주력 챔피언과 플레이 스타일</strong><br>주력 챔피언을 최대 5개, 즐겜러・랭크러・보이스 가능 같은 태그, 플레이 시간과 디스코드・X를 입력해요.</li>
+        <li><strong>테마를 골라서 저장</strong><br>마음에 드는 테마와 스킨 배경을 고르고 「이미지 저장」. 그대로 X나 디스코드에 공유할 수 있어요.</li>
+      </ol>
+      <p>각 항목의 자세한 설명은 <a href="/guide/">사용법 가이드</a>를 확인해 주세요.</p>
+    </section>
+
+    <section>
+      <h2>더 보기</h2>
+      <div class="link-cards">
+        <a href="/guide/"><strong>사용법 가이드</strong><span>항목별 설명과 친구 구할 때 잘 통하는 팁</span></a>
+        <a href="/templates/"><strong>템플릿 목록</strong><span>15가지 테마 미리보기. 골라서 바로 만들기</span></a>
+        <a href="/banner/"><strong>홍보 배너</strong><span>방송이나 블로그에 자유롭게 붙일 수 있는 배너</span></a>
+        <a href="/faq/"><strong>자주 묻는 질문</strong><span>휴대폰에서 저장하는 법, X 앱에서 저장이 안 될 때 등</span></a>
+      </div>
+    </section>`,
     'picker.role': '포지션',
     'tab.icons': '소환사 아이콘',
     'tab.champs': '챔피언',
@@ -468,7 +528,7 @@ const STRINGS = {
     'btn.resetAll': '全部重置',
     'footer.storage': '输入的内容只保存在此浏览器中，不会发送到服务器。制作的图片可以自由用于社交媒体、直播等。',
     'footer.contact': `有问题或建议请随时通过 ${X_LINK} 联系。`,
-    'footer.analytics': '为了改进网站，我们使用 Google Analytics 统计访问量和功能使用次数（不会发送输入内容和图片）。详情请见<a href="/privacy/">隐私政策</a>（日文）。',
+    'footer.analytics': '为了改进网站，我们使用 Google Analytics 统计访问量和功能使用次数（不会发送输入内容和图片）。详情请见<a href="/privacy/">隐私政策</a>。',
     'nav.guide': '使用方法',
     'nav.templates': '模板',
     'nav.banner': '宣传横幅',
@@ -476,6 +536,36 @@ const STRINGS = {
     'nav.about': '关于・联系',
     'nav.privacy': '隐私政策',
     'nav.terms': '使用条款',
+    'nav.make': '制作卡片',
+    'nav.templatesShort': '模板',
+    'help.guide': '使用指南',
+    'help.title': '查看使用方法',
+    home: `
+    <section>
+      <h2>什么是召唤师卡片？</h2>
+      <p>召唤师卡片是英雄联盟玩家把<strong>段位、位置、拿手英雄、游戏时间</strong>等整理在一起的自我介绍图片。常用于在X、Discord服务器等地方找队友和朋友。</p>
+      <p>以前大家通常是下载模板图片，再用修图软件往上写字。用 SUMMONER CARD 就<strong>不需要编辑模板</strong>，只要填写内容，就会自动生成带英雄和段位图标的卡片。免费、无需注册，手机也能做。</p>
+    </section>
+
+    <section>
+      <h2>制作方法（3步）</h2>
+      <ol class="steps">
+        <li><strong>填写基本信息</strong><br>选择召唤师名称、段位和位置（主玩/副玩/匹配可/不行）。不想公开名字的话，也可以选择「私信告诉你」等文案。</li>
+        <li><strong>拿手英雄和游戏风格</strong><br>选择最多5个拿手英雄、娱乐玩家・冲分玩家・可以语音等标签，再填写游戏时间和Discord・X。</li>
+        <li><strong>选择主题并保存</strong><br>选好喜欢的主题和皮肤背景，点击「保存图片」。可以直接分享到X或Discord。</li>
+      </ol>
+      <p>各项目的详细说明请看<a href="/guide/">使用指南</a>。</p>
+    </section>
+
+    <section>
+      <h2>更多内容</h2>
+      <div class="link-cards">
+        <a href="/guide/"><strong>使用指南</strong><span>各项目说明和找队友的小技巧</span></a>
+        <a href="/templates/"><strong>模板一览</strong><span>15种主题预览，选好直接制作</span></a>
+        <a href="/banner/"><strong>宣传横幅</strong><span>可以自由放在直播或博客上的横幅</span></a>
+        <a href="/faq/"><strong>常见问题</strong><span>手机上如何保存、X应用中无法保存时等</span></a>
+      </div>
+    </section>`,
     'picker.role': '位置',
     'tab.icons': '召唤师头像',
     'tab.champs': '英雄',
@@ -610,7 +700,7 @@ const STRINGS = {
     'btn.resetAll': '全部重設',
     'footer.storage': '輸入的內容只會儲存在此瀏覽器中，不會傳送到伺服器。製作的圖片可以自由用於社群、實況等。',
     'footer.contact': `有問題或建議請隨時透過 ${X_LINK} 聯絡。`,
-    'footer.analytics': '為了改善網站，我們使用 Google Analytics 統計造訪次數和功能使用次數（不會傳送輸入內容和圖片）。詳情請見<a href="/privacy/">隱私權政策</a>（日文）。',
+    'footer.analytics': '為了改善網站，我們使用 Google Analytics 統計造訪次數和功能使用次數（不會傳送輸入內容和圖片）。詳情請見<a href="/privacy/">隱私權政策</a>。',
     'nav.guide': '使用方法',
     'nav.templates': '範本',
     'nav.banner': '宣傳橫幅',
@@ -618,6 +708,36 @@ const STRINGS = {
     'nav.about': '關於・聯絡',
     'nav.privacy': '隱私權政策',
     'nav.terms': '使用條款',
+    'nav.make': '製作卡片',
+    'nav.templatesShort': '範本',
+    'help.guide': '使用指南',
+    'help.title': '查看使用方法',
+    home: `
+    <section>
+      <h2>什麼是召喚師卡片？</h2>
+      <p>召喚師卡片是英雄聯盟玩家把<strong>牌位、位置、拿手英雄、遊戲時間</strong>等整理在一起的自我介紹圖片。常用於在X、Discord伺服器等地方找隊友和朋友。</p>
+      <p>以前大家通常是下載範本圖片，再用修圖App往上寫字。用 SUMMONER CARD 就<strong>不需要編輯範本</strong>，只要填寫內容，就會自動產生附英雄和牌位圖示的卡片。免費、不用註冊，手機也能做。</p>
+    </section>
+
+    <section>
+      <h2>製作方法（3步驟）</h2>
+      <ol class="steps">
+        <li><strong>填寫基本資料</strong><br>選擇召喚師名稱、牌位和位置（主玩/副玩/一般可/不行）。不想公開名字的話，也可以選擇「私訊告訴你」等文字。</li>
+        <li><strong>拿手英雄和遊戲風格</strong><br>選擇最多5個拿手英雄、休閒玩家・衝分玩家・可以語音等標籤，再填寫遊戲時間和Discord・X。</li>
+        <li><strong>選擇主題並儲存</strong><br>選好喜歡的主題和造型背景，點擊「儲存圖片」。可以直接分享到X或Discord。</li>
+      </ol>
+      <p>各項目的詳細說明請看<a href="/guide/">使用指南</a>。</p>
+    </section>
+
+    <section>
+      <h2>更多內容</h2>
+      <div class="link-cards">
+        <a href="/guide/"><strong>使用指南</strong><span>各項目說明和找隊友的小技巧</span></a>
+        <a href="/templates/"><strong>範本一覽</strong><span>15種主題預覽，選好直接製作</span></a>
+        <a href="/banner/"><strong>宣傳橫幅</strong><span>可以自由放在實況或部落格上的橫幅</span></a>
+        <a href="/faq/"><strong>常見問題</strong><span>手機上如何儲存、X App中無法儲存時等</span></a>
+      </div>
+    </section>`,
     'picker.role': '位置',
     'tab.icons': '召喚師頭像',
     'tab.champs': '英雄',
@@ -783,7 +903,6 @@ export function applyI18n() {
   }
   if (LANG === 'ja') return;
   document.documentElement.lang = LANG;
-  document.querySelector('.logo a')?.setAttribute('href', LANG_INFO.path);
   document.documentElement.classList.add('i18n');
   document.title = t('title');
   if (CJK_FONT) {
@@ -799,5 +918,10 @@ export function applyI18n() {
   for (const el of document.querySelectorAll('[data-i18n-title]')) {
     el.title = t(el.dataset.i18nTitle);
     el.setAttribute('aria-label', el.title);
+  }
+  const prefix = LANG_INFO.path.slice(0, -1);
+  for (const link of document.querySelectorAll('a[href^="/"]')) {
+    const href = link.getAttribute('href');
+    if (/^\/((guide|templates|banner|faq|privacy|terms|about)\/.*)?(\?.*)?$/.test(href)) link.setAttribute('href', prefix + href);
   }
 }

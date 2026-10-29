@@ -71,8 +71,8 @@
   </div>
   <header class="site-header">
     <select id="lang" class="lang-select" aria-label="Language"></select>
-    <h1 class="logo"><a href="/">SUMMONER CARD <span data-i18n="logo.sub">サモナーカード作成メーカー｜LoL自己紹介カード</span></a></h1>
-    <nav class="site-nav" aria-label="メニュー"><a href="/" aria-current="page">カードを作る</a><a href="/guide/">使い方</a><a href="/templates/">テンプレ</a><a href="/banner/">宣伝バナー</a><a href="/faq/">よくある質問</a></nav>
+    <h1 class="logo"><a href="/en/">SUMMONER CARD <span data-i18n="logo.sub">サモナーカード作成メーカー｜LoL自己紹介カード</span></a></h1>
+    <nav class="site-nav" aria-label="メニュー"><a href="/en/" aria-current="page" data-i18n="nav.make">カードを作る</a><a href="/en/guide/" data-i18n="nav.guide">使い方</a><a href="/en/templates/" data-i18n="nav.templatesShort">テンプレ</a><a href="/en/banner/" data-i18n="nav.banner">宣伝バナー</a><a href="/en/faq/" data-i18n="nav.faq">よくある質問</a></nav>
   </header>
 
   <main class="layout">
@@ -98,7 +98,7 @@
       </div>
       <div class="preview-more">
       <button type="button" class="btn banner-btn" id="btn-banner" data-i18n-html="banner.btn">🎨 自分のカードで宣伝バナーを作る<small>配信画面・Twitchパネル・Xのヘッダーなどに</small></button>
-      <p class="help-links"><a href="/guide/">使い方ガイド</a><a href="/templates/">テンプレ一覧</a><a href="/faq/">よくある質問</a></p>
+      <p class="help-links"><a href="/en/guide/" data-i18n="help.guide">使い方ガイド</a><a href="/en/templates/" data-i18n="nav.templates">テンプレ一覧</a><a href="/en/faq/" data-i18n="nav.faq">よくある質問</a></p>
       <div class="actions sub">
         <button type="button" class="btn ghost" id="btn-sample" data-i18n="btn.sample">サンプルを入れる</button>
         <button type="button" class="btn ghost" id="btn-reset" data-i18n="btn.reset">入力をリセット</button>
@@ -108,7 +108,7 @@
 
     <form class="editor" id="form" autocomplete="off" onsubmit="return false">
       <fieldset>
-        <legend><span data-i18n="sec.basic">基本情報</span> <a class="help" href="/guide/#basic" target="_blank" title="使い方を見る" aria-label="使い方を見る">?</a></legend>
+        <legend><span data-i18n="sec.basic">基本情報</span> <a class="help" href="/en/guide/#basic" target="_blank" title="使い方を見る" aria-label="使い方を見る" data-i18n-title="help.title">?</a></legend>
         <button type="button" class="section-clear" data-i18n="clear" data-clear="basic">クリア</button>
         <div class="row">
           <label class="field grow"><span data-i18n="f.name">サモナーネーム</span>
@@ -144,7 +144,7 @@
       </fieldset>
 
       <fieldset>
-        <legend><span data-i18n="sec.rank">ランク</span> <a class="help" href="/guide/#rank" target="_blank" title="使い方を見る" aria-label="使い方を見る">?</a></legend>
+        <legend><span data-i18n="sec.rank">ランク</span> <a class="help" href="/en/guide/#rank" target="_blank" title="使い方を見る" aria-label="使い方を見る" data-i18n-title="help.title">?</a></legend>
         <button type="button" class="section-clear" data-i18n="clear" data-clear="rank">クリア</button>
         <div class="row">
           <label class="field grow"><span data-i18n="f.tier">ティア</span>
@@ -157,14 +157,14 @@
       </fieldset>
 
       <fieldset>
-        <legend><span data-i18n="sec.role">ロール</span> <a class="help" href="/guide/#role" target="_blank" title="使い方を見る" aria-label="使い方を見る">?</a></legend>
+        <legend><span data-i18n="sec.role">ロール</span> <a class="help" href="/en/guide/#role" target="_blank" title="使い方を見る" aria-label="使い方を見る" data-i18n-title="help.title">?</a></legend>
         <button type="button" class="section-clear" data-i18n="clear" data-clear="roles">クリア</button>
         <p class="hint" data-i18n="hint.roles">メインは1つだけ。サブ・ノマなら可・無理はいくつでも選べます。もう一度押すと解除されます。</p>
         <div class="roles" id="roles"></div>
       </fieldset>
 
       <fieldset>
-        <legend><span id="champ-legend">得意チャンピオン</span> <small data-i18n="max5">最大5体</small> <a class="help" href="/guide/#champs" target="_blank" title="使い方を見る" aria-label="使い方を見る">?</a></legend>
+        <legend><span id="champ-legend">得意チャンピオン</span> <small data-i18n="max5">最大5体</small> <a class="help" href="/en/guide/#champs" target="_blank" title="使い方を見る" aria-label="使い方を見る" data-i18n-title="help.title">?</a></legend>
         <button type="button" class="section-clear" data-i18n="clear" data-clear="champs">クリア</button>
         <div class="field"><span data-i18n="f.champHeading">見出し</span>
           <div class="segmented" data-radio="champLabel">
@@ -176,13 +176,13 @@
       </fieldset>
 
       <fieldset>
-        <legend><span data-i18n="sec.tags">プレイスタイル</span> <small data-i18n="max6">最大6個</small> <a class="help" href="/guide/#tags" target="_blank" title="使い方を見る" aria-label="使い方を見る">?</a></legend>
+        <legend><span data-i18n="sec.tags">プレイスタイル</span> <small data-i18n="max6">最大6個</small> <a class="help" href="/en/guide/#tags" target="_blank" title="使い方を見る" aria-label="使い方を見る" data-i18n-title="help.title">?</a></legend>
         <button type="button" class="section-clear" data-i18n="clear" data-clear="tags">クリア</button>
         <div class="chips" id="tags"></div>
       </fieldset>
 
       <fieldset>
-        <legend><span data-i18n="sec.contact">活動時間・連絡先</span> <a class="help" href="/guide/#contact" target="_blank" title="使い方を見る" aria-label="使い方を見る">?</a></legend>
+        <legend><span data-i18n="sec.contact">活動時間・連絡先</span> <a class="help" href="/en/guide/#contact" target="_blank" title="使い方を見る" aria-label="使い方を見る" data-i18n-title="help.title">?</a></legend>
         <button type="button" class="section-clear" data-i18n="clear" data-clear="contact">クリア</button>
         <label class="field"><span data-i18n="f.hours">活動時間</span>
           <input name="hours" maxlength="30" data-i18n-ph="ph.hours" placeholder="例：平日22時〜深夜 / 休日いつでも">
@@ -206,7 +206,7 @@
       </fieldset>
 
       <fieldset>
-        <legend><span data-i18n="sec.comment">ひとこと</span> <a class="help" href="/guide/#comment" target="_blank" title="使い方を見る" aria-label="使い方を見る">?</a></legend>
+        <legend><span data-i18n="sec.comment">ひとこと</span> <a class="help" href="/en/guide/#comment" target="_blank" title="使い方を見る" aria-label="使い方を見る" data-i18n-title="help.title">?</a></legend>
         <button type="button" class="section-clear" data-i18n="clear" data-clear="comment">クリア</button>
         <label class="field">
           <textarea name="comment" rows="3" maxlength="80" data-i18n-ph="ph.comment" placeholder="例：ミッドメインです！一緒にランク回せる方募集中"></textarea>
@@ -215,7 +215,7 @@
       </fieldset>
 
       <fieldset>
-        <legend><span data-i18n="sec.design">デザイン</span> <a class="help" href="/guide/#design" target="_blank" title="使い方を見る" aria-label="使い方を見る">?</a></legend>
+        <legend><span data-i18n="sec.design">デザイン</span> <a class="help" href="/en/guide/#design" target="_blank" title="使い方を見る" aria-label="使い方を見る" data-i18n-title="help.title">?</a></legend>
         <button type="button" class="section-clear" data-i18n="clear" data-clear="design">クリア</button>
         <div class="field"><span data-i18n="f.theme">テーマ</span>
           <div class="themes" id="themes"></div>
@@ -266,7 +266,7 @@
     </form>
   </main>
 
-  <article class="guide">
+  <article class="guide" data-i18n-html="home">
     <section>
       <h2>サモナーカードとは？</h2>
       <p>サモナーカードは、LoL（League of Legends）のプレイヤーが<strong>ランク・ロール・得意チャンピオン・活動時間</strong>などをまとめた自己紹介画像です。Xの「#LoLフレンド募集」や「#サモナーカード」、Discordサーバーの自己紹介チャンネルなどでよく使われています。</p>
@@ -280,25 +280,25 @@
         <li><strong>得意チャンピオンとプレイスタイル</strong><br>得意チャンプを最大5体、エンジョイ勢・ランク勢・VCありなどのタグ、活動時間やDiscord・Xを入力します。</li>
         <li><strong>テーマを選んで保存</strong><br>好きなテーマとスキンの背景を選んで「画像を保存」。そのままXやDiscordにシェアできます。</li>
       </ol>
-      <p>各項目の詳しい説明は<a href="/guide/">使い方ガイド</a>をご覧ください。</p>
+      <p>各項目の詳しい説明は<a href="/en/guide/">使い方ガイド</a>をご覧ください。</p>
     </section>
 
     <section>
       <h2>もっと見る</h2>
       <div class="link-cards">
-        <a href="/guide/"><strong>使い方ガイド</strong><span>入力項目ごとの説明と、フレンド募集で伝わるコツ</span></a>
-        <a href="/templates/"><strong>テンプレ一覧</strong><span>15種類のテーマの見本。選んでそのまま作成</span></a>
-        <a href="/banner/"><strong data-i18n="banner.title">宣伝バナー</strong><span>配信やブログに自由に貼れるバナー素材</span></a>
-        <a href="/faq/"><strong>よくある質問</strong><span>スマホでの保存方法、Xのアプリで保存できないとき など</span></a>
+        <a href="/en/guide/"><strong>使い方ガイド</strong><span>入力項目ごとの説明と、フレンド募集で伝わるコツ</span></a>
+        <a href="/en/templates/"><strong>テンプレ一覧</strong><span>15種類のテーマの見本。選んでそのまま作成</span></a>
+        <a href="/en/banner/"><strong data-i18n="banner.title">宣伝バナー</strong><span>配信やブログに自由に貼れるバナー素材</span></a>
+        <a href="/en/faq/"><strong>よくある質問</strong><span>スマホでの保存方法、Xのアプリで保存できないとき など</span></a>
       </div>
     </section>
   </article>
 
   <footer class="site-footer">
-    <nav class="footer-nav" aria-label="サイト情報"><a href="/guide/" data-i18n="nav.guide">使い方</a><a href="/templates/" data-i18n="nav.templates">テンプレ一覧</a><a href="/banner/" data-i18n="nav.banner">宣伝バナー</a><a href="/faq/" data-i18n="nav.faq">よくある質問</a><a href="/about/" data-i18n="nav.about">運営者・お問い合わせ</a><a href="/privacy/" data-i18n="nav.privacy">プライバシーポリシー</a><a href="/terms/" data-i18n="nav.terms">利用規約</a></nav>
+    <nav class="footer-nav" aria-label="サイト情報"><a href="/en/guide/" data-i18n="nav.guide">使い方</a><a href="/en/templates/" data-i18n="nav.templates">テンプレ一覧</a><a href="/en/banner/" data-i18n="nav.banner">宣伝バナー</a><a href="/en/faq/" data-i18n="nav.faq">よくある質問</a><a href="/en/about/" data-i18n="nav.about">運営者・お問い合わせ</a><a href="/en/privacy/" data-i18n="nav.privacy">プライバシーポリシー</a><a href="/en/terms/" data-i18n="nav.terms">利用規約</a></nav>
     <p data-i18n="footer.storage">入力内容はこのブラウザにだけ保存され、サーバーには送信されません。作成した画像はSNS投稿や配信などに自由に使えます。</p>
     <p data-i18n-html="footer.contact">不具合・ご要望は <a href="https://x.com/hotaka_1123" target="_blank" rel="noopener">X（@hotaka_1123）</a> までお気軽にどうぞ。</p>
-    <p id="analytics-notice" hidden data-i18n-html="footer.analytics">サイト改善のため、Google Analytics でアクセス数や機能の利用回数を計測しています（入力内容や画像は送信しません）。詳しくは<a href="/privacy/">プライバシーポリシー</a>をご覧ください。</p>
+    <p id="analytics-notice" hidden data-i18n-html="footer.analytics">サイト改善のため、Google Analytics でアクセス数や機能の利用回数を計測しています（入力内容や画像は送信しません）。詳しくは<a href="/en/privacy/">プライバシーポリシー</a>をご覧ください。</p>
     <p class="legal">SUMMONER CARD isn't endorsed by Riot Games and doesn't reflect the views or opinions of Riot Games or anyone officially involved in producing or managing Riot Games properties. Riot Games, and all associated properties are trademarks or registered trademarks of Riot Games, Inc.</p>
     <p class="legal">© 2026 SUMMONER CARD</p>
   </footer>

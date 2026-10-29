@@ -18,7 +18,7 @@ body {
   margin: 0;
   background: radial-gradient(1200px 600px at 70% -10%, #0d2a3f 0%, transparent 60%), var(--bg);
   color: var(--text);
-  font-family: "M PLUS 1p", "Hiragino Sans", "Yu Gothic", sans-serif;
+  font-family: "M PLUS 1p", var(--font-cjk, "Hiragino Sans"), "Hiragino Sans", "Yu Gothic", sans-serif;
   line-height: 1.6;
   -webkit-text-size-adjust: 100%;
 }
@@ -743,7 +743,7 @@ dialog::backdrop { background: rgba(0, 0, 0, 0.7); }
   .site-footer { padding: 20px 16px 40px; }
 }
 
-/* Language switcher (top left) and non-Japanese pages */
+/* Language switcher (top left) */
 .lang-select {
   width: auto;
   flex: none;
@@ -757,6 +757,4 @@ dialog::backdrop { background: rgba(0, 0, 0, 0.7); }
   cursor: pointer;
 }
 .site-header .logo { margin-right: auto; }
-html.i18n body, html.i18n .logo span { font-family: "M PLUS 1p", var(--font-cjk, sans-serif), "Hiragino Sans", sans-serif; }
-/* The guide, FAQ and other pages are Japanese only, so the tool page doesn't point to them. */
-html.i18n .site-nav, html.i18n .help, html.i18n .help-links, html.i18n .guide { display: none; }
+.logo span { font-family: "M PLUS 1p", var(--font-cjk, "Hiragino Sans"), sans-serif; }
