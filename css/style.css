@@ -742,3 +742,21 @@ dialog::backdrop { background: rgba(0, 0, 0, 0.7); }
   .logo span { display: block; margin: 2px 0 0; }
   .site-footer { padding: 20px 16px 40px; }
 }
+
+/* Language switcher (top left) and non-Japanese pages */
+.lang-select {
+  width: auto;
+  flex: none;
+  padding: 5px 8px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--bg2);
+  color: var(--text);
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+}
+.site-header .logo { margin-right: auto; }
+html.i18n body, html.i18n .logo span { font-family: "M PLUS 1p", var(--font-cjk, sans-serif), "Hiragino Sans", sans-serif; }
+/* The guide, FAQ and other pages are Japanese only, so the tool page doesn't point to them. */
+html.i18n .site-nav, html.i18n .help, html.i18n .help-links, html.i18n .guide { display: none; }

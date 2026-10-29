@@ -1,13 +1,14 @@
 // Promo banner (3:1) that shows the user's card next to the site name and URL.
 // People can put it on stream overlays, Twitch panels, profiles or personal sites.
 import { THEMES } from './data.js';
+import { t, withCjk } from './i18n.js';
 
 export const BANNER_W = 1800;
 export const BANNER_H = 600;
 
 const SERIF = '"Cinzel", "M PLUS 1p", serif';
-const JP = '"M PLUS 1p", "Hiragino Sans", "Yu Gothic", sans-serif';
-const ROUNDED = '"M PLUS Rounded 1c", "M PLUS 1p", sans-serif';
+const JP = withCjk('"M PLUS 1p", "Hiragino Sans", "Yu Gothic", sans-serif');
+const ROUNDED = withCjk('"M PLUS Rounded 1c", "M PLUS 1p", sans-serif');
 
 function hexToRgba(hex, alpha) {
   const n = parseInt(hex.slice(1), 16);
@@ -269,7 +270,7 @@ export function renderBanner(card, state, siteLabel) {
   ctx.fillStyle = fairy ? theme.text : '#ece6da';
   ctx.font = `${fairy ? 800 : 500} 42px ${fairy ? ROUNDED : JP}`;
   ctx.letterSpacing = '4px';
-  ctx.fillText('あなただけのサモナーカードを作成。', centerX, 418);
+  ctx.fillText(t('banner.tagline'), centerX, 418);
   ctx.letterSpacing = '0px';
 
   // Call-to-action button with the URL under it
@@ -296,7 +297,7 @@ export function renderBanner(card, state, siteLabel) {
   ctx.stroke();
   ctx.fillStyle = '#ffffff';
   ctx.font = `800 40px ${fairy ? ROUNDED : JP}`;
-  ctx.fillText('今すぐ作成 ›', centerX, btnY + 54);
+  ctx.fillText(t('banner.cta'), centerX, btnY + 54);
   ctx.font = `700 22px ${fairy ? ROUNDED : JP}`;
   ctx.fillStyle = fairy ? theme.sub : hexToRgba('#ece6da', 0.75);
   ctx.fillText(siteLabel, centerX, btnY + btnH + 34);

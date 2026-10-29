@@ -6,6 +6,9 @@ import { CARD_H, CARD_W, SITE_URL, champSquareUrl, loadSplash, profileIconUrl, r
 import { cropImage } from './cropper.js';
 import { initAnalytics, track } from './analytics.js';
 import { renderBanner } from './banner.js';
+import {
+  LANG, LANG_INFO, SHARE_HASHTAGS, allNamePresets, applyI18n, levelLabel, namePresets, t, tagName, themeName, tierName,
+} from './i18n.js';
 
 const STORAGE_KEY = 'riftcard:v1';
 const $ = (sel) => document.querySelector(sel);
@@ -81,7 +84,7 @@ function scheduleRender() {
 function update(patch, { save = true } = {}) {
   state = { ...state, ...patch };
   if (save && !saveState() && (state.iconUpload || state.bgUpload)) {
-    toast('画像が大きすぎてブラウザに保存できませんでした（ページを閉じると消えます）');
+    toast(t('toast.tooBig'));
   }
   syncUI();
   scheduleRender();
@@ -129,7 +132,7 @@ canvas.addEventListener('wheel', (e) => {
 // ---------- Form ----------
 
 function buildStaticUI() {
-  $('#tier').innerHTML = TIERS.map((t) => `<option value="${t.id}">${t.label}</option>`).join('');
+  $('#tier').innerHTML = TIERS.map((tier) => `<option value="${tier.id}">${tierName(tier)}</option>`).join('');
   $('#division').innerHTML = DIVISIONS.map((d) => `<option value="${d}">${d}</option>`).join('');
 
   $('#roles').innerHTML = ROLES.map((r) => `
@@ -137,16 +140,16 @@ function buildStaticUI() {
       <img src="https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-static-assets/global/default/svg/position-${r.id}.svg" alt="">
       <span>${r.label}</span>
       <div class="role-btns">
-        ${ROLE_LEVELS.map((l) => `<button type="button" data-setrole="${l.id}" data-role-id="${r.id}">${l.label}</button>`).join('')}
+        ${ROLE_LEVELS.map((l) => `<button type="button" data-setrole="${l.id}" data-role-id="${r.id}">${levelLabel(l)}</button>`).join('')}
       </div>
     </div>`).join('');
 
-  $('#name-presets').innerHTML = NAME_PRESETS
+  $('#name-presets').innerHTML = namePresets(NAME_PRESETS)
     .map((p) => `<button type="button" class="chip" data-name-preset="${p}">${p}</button>`).join('');
 
-  $('#themes').innerHTML = THEMES.map((t) => `
-    <button type="button" class="theme" data-theme="${t.id}" style="--a:${t.accent};--b:${t.bg1};--c:${t.bg2}">
-      <i></i><span>${t.label}</span>
+  $('#themes').innerHTML = THEMES.map((theme) => `
+    <button type="button" class="theme" data-theme="${theme.id}" style="--a:${theme.accent};--b:${theme.bg1};--c:${theme.bg2}">
+      <i></i><span>${themeName(theme)}</span>
     </button>`).join('');
 }
 
@@ -176,20 +179,20 @@ function syncUI() {
   for (const b of $('#themes').children) b.classList.toggle('on', b.dataset.theme === state.theme);
 
   if (state.iconUpload) {
-    $('#icon-btn').innerHTML = `<img src="${state.iconUpload}" alt=""><span>アップロード画像</span>`;
+    $('#icon-btn').innerHTML = `<img src="${state.iconUpload}" alt=""><span>${t('upload.image')}</span>`;
   } else if (state.iconId) {
-    $('#icon-btn').innerHTML = `<img src="${profileIconUrl(state.iconId)}" alt=""><span>${state.iconTitle || `アイコン #${state.iconId}`}</span>`;
+    $('#icon-btn').innerHTML = `<img src="${profileIconUrl(state.iconId)}" alt=""><span>${state.iconTitle || t('icon.n', { id: state.iconId })}</span>`;
   } else {
-    champButton($('#icon-btn'), state.iconChamp, 'アイコンを選ぶ');
+    champButton($('#icon-btn'), state.iconChamp, t('pick.icon'));
   }
   $('#icon-clear').hidden = !(state.iconUpload || state.iconId || state.iconChamp);
   $('#icon-recrop').hidden = !(state.iconUpload && uploadedFiles.icon);
   $('#bg-recrop').hidden = !(state.bgUpload && uploadedFiles.bg);
 
   if (state.bgUpload) {
-    $('#splash-btn').innerHTML = `<img src="${state.bgUpload}" alt="" class="wide"><span>アップロード画像</span>`;
+    $('#splash-btn').innerHTML = `<img src="${state.bgUpload}" alt="" class="wide"><span>${t('upload.image')}</span>`;
   } else {
-    champButton($('#splash-btn'), state.splashChamp, 'スキンから選ぶ');
+    champButton($('#splash-btn'), state.splashChamp, t('pick.skin'));
   }
   const hasBg = Boolean(state.splashChamp || state.bgUpload);
   $('#skin').hidden = !state.splashChamp || Boolean(state.bgUpload);
@@ -198,7 +201,7 @@ function syncUI() {
   canvas.classList.toggle('draggable', hasBg);
   $('#show-credit').checked = state.showCredit !== false;
 
-  const roleOptions = (selected) => `<option value="">ロールなし</option>`
+  const roleOptions = (selected) => `<option value="">${t('role.none')}</option>`
     + ROLES.map((r) => `<option value="${r.id}"${r.id === selected ? ' selected' : ''}>${r.label}</option>`).join('');
   const list = $('#champ-list');
   $('#champ-legend').textContent = champLabelText();
@@ -207,28 +210,28 @@ function syncUI() {
       <img src="${img || champSquareUrl(ctxData.version, id)}" alt="">
       <span>${ctxData.champions[id]?.name || id}</span>
       <select class="champ-role" data-role-index="${i}">${roleOptions(role)}</select>
-      <button type="button" class="champ-img-btn" data-skinimg="${i}">スキン画像</button>
-      ${img ? `<button type="button" class="champ-img-btn" data-resetimg="${i}">元に戻す</button>` : ''}
+      <button type="button" class="champ-img-btn" data-skinimg="${i}">${t('btn.skinImg')}</button>
+      ${img ? `<button type="button" class="champ-img-btn" data-resetimg="${i}">${t('btn.revert')}</button>` : ''}
       <div class="champ-ops">
-        <button type="button" data-move="${i}" title="左へ" ${i === 0 ? 'disabled' : ''}>←</button>
-        <button type="button" data-remove="${i}" title="削除">×</button>
+        <button type="button" data-move="${i}" title="${t('title.left')}" ${i === 0 ? 'disabled' : ''}>←</button>
+        <button type="button" data-remove="${i}" title="${t('btn.delete')}">×</button>
       </div>
     </div>`).join('')
-    + (state.champs.length < MAX_CHAMPS ? '<button type="button" class="champ-add" data-pick="champs">＋ 追加</button>' : '');
+    + (state.champs.length < MAX_CHAMPS ? `<button type="button" class="champ-add" data-pick="champs">${t('btn.add')}</button>` : '');
 }
 
-const champLabelText = () => (state.champLabel === 'fav' ? '好きなチャンピオン' : '得意チャンピオン');
+const champLabelText = () => t(state.champLabel === 'fav' ? 'champLabel.fav' : 'champLabel.main');
 
 const escapeHtml = (s) => s.replace(/[&<>"']/g, (c) => `&#${c.charCodeAt(0)};`);
 
 function renderTags() {
-  const chip = (t, custom) => `
-    <button type="button" class="chip${state.tags.includes(t) ? ' on' : ''}${custom ? ' custom' : ''}" data-tag="${escapeHtml(t)}">
-      ${escapeHtml(t)}${custom ? `<span class="chip-del" data-deltag="${escapeHtml(t)}" title="削除">×</span>` : ''}
+  const chip = (tag, custom) => `
+    <button type="button" class="chip${state.tags.includes(tag) ? ' on' : ''}${custom ? ' custom' : ''}" data-tag="${escapeHtml(tag)}">
+      ${escapeHtml(tagName(tag))}${custom ? `<span class="chip-del" data-deltag="${escapeHtml(tag)}" title="${t('btn.delete')}">×</span>` : ''}
     </button>`;
-  $('#tags').innerHTML = TAGS.map((t) => chip(t, false)).join('')
-    + state.customTags.map((t) => chip(t, true)).join('')
-    + '<button type="button" class="chip add" data-addtag>＋ 自分で追加</button>';
+  $('#tags').innerHTML = TAGS.map((tag) => chip(tag, false)).join('')
+    + state.customTags.map((tag) => chip(tag, true)).join('')
+    + `<button type="button" class="chip add" data-addtag>${t('btn.addTag')}</button>`;
 }
 
 // Swaps the "+" chip for a text box; Enter or leaving the box adds the tag.
@@ -236,7 +239,7 @@ function startAddTag(btn) {
   const input = document.createElement('input');
   input.className = 'chip-input';
   input.maxLength = MAX_TAG_LENGTH;
-  input.placeholder = `${MAX_TAG_LENGTH}文字まで`;
+  input.placeholder = t('ph.tagMax', { n: MAX_TAG_LENGTH });
   btn.replaceWith(input);
   input.focus();
   let done = false;
@@ -251,7 +254,7 @@ function startAddTag(btn) {
     const customTags = TAGS.includes(tag) || state.customTags.includes(tag) ? state.customTags : [...state.customTags, tag];
     let { tags } = state;
     if (!tags.includes(tag)) {
-      if (tags.length >= MAX_TAGS) toast(`プレイスタイルは${MAX_TAGS}個まで選べます（追加だけしました）`);
+      if (tags.length >= MAX_TAGS) toast(t('toast.tagsMaxAdded', { n: MAX_TAGS }));
       else tags = [...tags, tag];
     }
     update({ customTags, tags });
@@ -327,7 +330,7 @@ form.addEventListener('click', (e) => {
     if (state.tags.includes(tag)) {
       update({ tags: state.tags.filter((t) => t !== tag) });
     } else if (state.tags.length >= MAX_TAGS) {
-      toast(`プレイスタイルは${MAX_TAGS}個まで選べます`);
+      toast(t('toast.tagsMax', { n: MAX_TAGS }));
     } else {
       update({ tags: [...state.tags, tag] });
     }
@@ -362,8 +365,8 @@ form.addEventListener('click', (e) => {
 // Originals stay in memory (not localStorage) so the user can re-crop during this visit.
 const uploadedFiles = { icon: null, bg: null };
 const CROP = {
-  icon: () => ({ aspect: 1, round: state.iconShape === 'circle', outW: 300, outH: 300, title: 'アイコンをトリミング' }),
-  bg: () => ({ aspect: CARD_W / CARD_H, outW: 1600, outH: 900, title: '背景をトリミング' }),
+  icon: () => ({ aspect: 1, round: state.iconShape === 'circle', outW: 300, outH: 300, title: t('crop.icon') }),
+  bg: () => ({ aspect: CARD_W / CARD_H, outW: 1600, outH: 900, title: t('crop.bg') }),
 };
 const APPLY = {
   icon: (data) => update({ iconUpload: data, iconId: '', iconTitle: '', iconChamp: '' }),
@@ -381,7 +384,7 @@ async function cropAndApply(kind) {
     }
   } catch {
     uploadedFiles[kind] = null;
-    toast('この画像は読み込めませんでした。JPEGかPNGを試してください');
+    toast(t('toast.badImage'));
   }
   syncUI();
 }
@@ -422,7 +425,7 @@ form.addEventListener('click', (e) => {
 });
 
 function resetAll() {
-  if (!confirm('入力内容をすべてリセットしますか？')) return;
+  if (!confirm(t('confirm.reset'))) return;
   uploadedFiles.icon = uploadedFiles.bg = null;
   update({ ...DEFAULT_STATE });
   syncSkins();
@@ -434,7 +437,7 @@ function resetAll() {
 const skinCache = new Map();
 async function loadSkins(id) {
   if (!skinCache.has(id)) {
-    skinCache.set(id, fetch(`${DDRAGON}/cdn/${ctxData.version}/data/ja_JP/champion/${id}.json`)
+    skinCache.set(id, fetch(`${DDRAGON}/cdn/${ctxData.version}/data/${LANG_INFO.ddragon}/champion/${id}.json`)
       .then((r) => r.json())
       // Chromas are listed as skins with a parentSkin but have no splash art of their own.
       .then((json) => json.data[id].skins.filter((s) => s.parentSkin === undefined))
@@ -452,7 +455,7 @@ async function syncSkins() {
   const id = state.splashChamp;
   const skins = await loadSkins(id);
   if (id !== state.splashChamp) return;
-  select.innerHTML = skins.map((s) => `<option value="${s.num}">${s.name === 'default' ? 'デフォルト' : s.name}</option>`).join('');
+  select.innerHTML = skins.map((s) => `<option value="${s.num}">${s.name === 'default' ? t('skin.default') : s.name}</option>`).join('');
   select.value = String(state.splashSkin);
 }
 
@@ -464,8 +467,8 @@ let skinTarget = -1;
 async function openSkinPicker(index) {
   skinTarget = index;
   const { id } = state.champs[index];
-  $('#skin-picker-title').textContent = `${ctxData.champions[id]?.name || id} のスキンを選ぶ`;
-  $('#skin-grid').innerHTML = '<p class="picker-empty">読み込み中…</p>';
+  $('#skin-picker-title').textContent = t('skin.pickTitle', { name: ctxData.champions[id]?.name || id });
+  $('#skin-grid').innerHTML = `<p class="picker-empty">${t('loading')}</p>`;
   skinPicker.showModal();
   const skins = await loadSkins(id);
   if (skinTarget !== index) return;
@@ -474,7 +477,7 @@ async function openSkinPicker(index) {
     <button type="button" data-skin-num="${s.num}">
       <img loading="lazy" src="${DDRAGON}/cdn/img/champion/tiles/${id}_${s.num}.jpg" alt=""
         onerror="this.onerror=null;this.src='${champSquareUrl(ctxData.version, id)}'">
-      <span>${s.name === 'default' ? 'デフォルト' : s.name}</span>
+      <span>${s.name === 'default' ? t('skin.default') : s.name}</span>
     </button>`).join('');
 }
 
@@ -493,13 +496,13 @@ $('#skin-grid').addEventListener('click', async (e) => {
     const splash = await loadSplash(entry.id, ctxData.champions[entry.id]?.key, btn.dataset.skinNum);
     if (!splash) throw new Error('no splash');
     const blob = await fetch(splash.src).then((r) => r.blob());
-    const data = await cropImage(blob, { aspect: 1, outW: 240, outH: 240, title: `${ctxData.champions[entry.id]?.name || entry.id} のアイコンをトリミング` });
+    const data = await cropImage(blob, { aspect: 1, outW: 240, outH: 240, title: t('crop.champ', { name: ctxData.champions[entry.id]?.name || entry.id }) });
     if (!data) return;
     // The list may have changed while cropping; match on the same entry object.
     update({ champs: state.champs.map((c) => (c === entry ? { ...c, img: data } : c)) });
     track('champ_skin_icon', { champion: entry.id });
   } catch {
-    toast('このスキンの画像を読み込めませんでした');
+    toast(t('toast.skinFail'));
   }
 });
 
@@ -516,7 +519,7 @@ let pickRole = '';
 
 // Role that newly added favorite champions get; starts at the main role.
 function renderPickerRoles() {
-  $('#picker-role-buttons').innerHTML = [{ id: '', label: 'なし' }, ...ROLES]
+  $('#picker-role-buttons').innerHTML = [{ id: '', label: t('role.noneShort') }, ...ROLES]
     .map((r) => `<button type="button" data-pickrole="${r.id}" class="${r.id === pickRole ? 'on' : ''}">${r.label}</button>`)
     .join('');
 }
@@ -537,11 +540,11 @@ const normalize = (s) => s.normalize('NFKC').toLowerCase()
 // ~5,000 icons (320KB gzipped), so only fetch them when the icon tab is first opened.
 function loadIcons() {
   if (!iconList) {
-    iconList = fetch(`${CDRAGON_GAME}/ja_jp/v1/summoner-icons.json`)
+    iconList = fetch(`${CDRAGON_GAME}/${LANG_INFO.cdragon}/v1/summoner-icons.json`)
       .then((r) => r.json())
       .then((icons) => icons
         .map((i) => {
-          const title = i.title.replace(/\s*アイコン$/, '');
+          const title = i.title.replace(/\s*(アイコン|Icon|아이콘|头像|頭像|圖示|图标)$/i, '');
           return { id: String(i.id), title, year: i.yearReleased, search: normalize(`${title}${i.id}`) };
         })
         .sort((a, b) => b.year - a.year || Number(b.id) - Number(a.id)))
@@ -574,8 +577,8 @@ function renderPicker() {
   iconLimit = ICON_PAGE;
   for (const b of $('#picker-tabs').children) b.classList.toggle('on', b.dataset.tab === pickTab);
   $('#picker-search').placeholder = pickTab === 'profile'
-    ? 'アイコンを検索（例：アーリ、K/DA、ポロ）'
-    : 'チャンピオンを検索（ひらがなOK）';
+    ? t('ph.searchIcon')
+    : t('ph.searchChamp');
   if (pickTab === 'profile') {
     renderIconGrid();
     return;
@@ -583,9 +586,9 @@ function renderPicker() {
   const q = normalize($('#picker-search').value);
   const items = sortedChamps.filter((c) => !q || c.search.includes(q));
   $('#picker-status').textContent = pickTarget === 'champs'
-    ? `${state.champs.length} / ${MAX_CHAMPS} 体選択中（上で選んだロールで登録。同じチャンプを別ロールで追加もできます）`
+    ? t('picker.champStatus', { n: state.champs.length, max: MAX_CHAMPS })
     : '';
-  const roleLabel = (id) => ROLES.find((r) => r.id === id)?.label || 'ロールなし';
+  const roleLabel = (id) => ROLES.find((r) => r.id === id)?.label || t('role.none');
   $('#picker-grid').innerHTML = items.map((c) => {
     let cls = '';
     let note = '';
@@ -603,31 +606,31 @@ function renderPicker() {
       <img loading="lazy" src="${champSquareUrl(ctxData.version, c.id)}" alt="">
       <span>${c.name}</span>${note}
     </button>`;
-  }).join('') || '<p class="picker-empty">見つかりませんでした</p>';
+  }).join('') || `<p class="picker-empty">${t('notFound')}</p>`;
 }
 
 async function renderIconGrid() {
   const grid = $('#picker-grid');
   if (!iconData) {
-    $('#picker-status').textContent = 'アイコン一覧を読み込み中…';
+    $('#picker-status').textContent = t('icons.loading');
     grid.innerHTML = '';
   }
   const icons = await loadIcons();
   if (pickTab !== 'profile' || !picker.open) return;
   if (!icons.length) {
-    $('#picker-status').textContent = 'アイコン一覧を読み込めませんでした。閉じてもう一度開いてください。';
+    $('#picker-status').textContent = t('icons.fail');
     return;
   }
   const q = normalize($('#picker-search').value);
   const items = icons.filter((i) => !q || i.search.includes(q));
-  $('#picker-status').textContent = `${items.length.toLocaleString()} 件（新しい順）`;
+  $('#picker-status').textContent = t('icons.count', { n: items.length.toLocaleString() });
   grid.innerHTML = items.slice(0, iconLimit).map((i) => `
     <button type="button" class="${i.id === String(state.iconId) ? 'on' : ''}" data-icon="${i.id}" title="${i.title}">
       <img loading="lazy" src="${profileIconUrl(i.id)}" alt="">
       <span>${i.title}</span>
     </button>`).join('')
-    + (items.length > iconLimit ? `<button type="button" class="picker-more" data-more>もっと見る（残り ${(items.length - iconLimit).toLocaleString()} 件）</button>` : '')
-    || '<p class="picker-empty">見つかりませんでした</p>';
+    + (items.length > iconLimit ? `<button type="button" class="picker-more" data-more>${t('icons.more', { n: (items.length - iconLimit).toLocaleString() })}</button>` : '')
+    || `<p class="picker-empty">${t('notFound')}</p>`;
 }
 
 // Load the next page automatically when scrolled near the bottom.
@@ -672,7 +675,7 @@ $('#picker-grid').addEventListener('click', (e) => {
     if (state.champs.some((c) => c.id === id && c.role === pickRole)) {
       update({ champs: state.champs.filter((c) => !(c.id === id && c.role === pickRole)) });
     } else if (state.champs.length >= MAX_CHAMPS) {
-      toast(`${champLabelText()}は${MAX_CHAMPS}体まで選べます`);
+      toast(t('toast.champsMax', { label: champLabelText(), n: MAX_CHAMPS }));
       return;
     } else {
       update({ champs: [...state.champs, { id, role: pickRole }] });
@@ -706,7 +709,7 @@ function cardSummary() {
     tag_count: state.tags.length,
     custom_tags: state.customTags.length,
     role_levels: ROLE_LEVELS.filter((l) => levels.includes(l.id)).map((l) => l.id).join(',') || 'none',
-    name_hidden: NAME_PRESETS.includes(state.name),
+    name_hidden: allNamePresets(NAME_PRESETS).includes(state.name),
     has_comment: Boolean(state.comment),
     has_stream: Boolean(state.twitch || state.youtube),
   };
@@ -724,7 +727,7 @@ const IN_APP = /Twitter|TwitterAndroid|FBAN|FBAV|Instagram|Line\/|Discord|; wv\)
 function showSaveDialog(hint) {
   $('#save-img').src = canvas.toDataURL('image/png');
   $('#save-dialog .save-hint').innerHTML = hint
-    || '<strong>画像を長押し</strong>して「写真に保存」「画像を保存」などを選んでください';
+    || t('save.hint');
   $('#save-dialog').showModal();
 }
 $('#save-close').addEventListener('click', () => $('#save-dialog').close());
@@ -733,7 +736,7 @@ if (IN_APP) $('#inapp-banner').hidden = false;
 $('#inapp-copy').addEventListener('click', async () => {
   try {
     await navigator.clipboard.writeText(SITE_URL);
-    toast('URLをコピーしました。SafariやChromeに貼り付けて開いてください');
+    toast(t('toast.inAppUrl'));
   } catch {
     toast(SITE_URL);
   }
@@ -772,26 +775,25 @@ async function copyImage() {
 $('#btn-copy').addEventListener('click', async () => {
   const copied = await copyImage();
   if (copied) {
-    toast('画像をコピーしました');
+    toast(t('toast.copied'));
     track('card_copy', cardSummary());
     showSpread();
   } else if (matchMedia('(pointer: coarse)').matches) {
-    showSaveDialog('このブラウザでは自動でコピーできません。<strong>画像を長押し</strong>して「コピー」や「保存」を選んでください');
+    showSaveDialog(t('save.copyHint'));
   } else {
-    toast('このブラウザではコピーできません。「画像を保存」を使ってください');
+    toast(t('toast.copyFail'));
   }
 });
 
-const SHARE_HASHTAGS = ['LoL自己紹介カード', 'サモナーカード', 'LoLフレンド募集'];
 const xIntent = (text, hashtags) => `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`
   + `&url=${encodeURIComponent(SITE_URL)}&hashtags=${encodeURIComponent(hashtags.join(','))}`;
 
 $('#btn-share').addEventListener('click', async () => {
-  const text = 'LoLの自己紹介カードを作りました！\n作成はこちら👉';
+  const text = t('share.text');
 
   // In-app browsers can't attach the image anywhere: let the user save it first, then post.
   if (IN_APP) {
-    showSaveDialog(`<strong>画像を長押しして保存</strong>してから、Xの投稿に添付してください。<br><a href="${xIntent(text, SHARE_HASHTAGS)}" target="_blank" rel="noopener">投稿画面を開く →</a>`);
+    showSaveDialog(t('share.inApp', { url: xIntent(text, SHARE_HASHTAGS) }));
     track('card_share', { method: 'in_app', ...cardSummary() });
     showSpread();
     return;
@@ -815,7 +817,7 @@ $('#btn-share').addEventListener('click', async () => {
   const copied = await copyImage();
   window.open(xIntent(text, SHARE_HASHTAGS), '_blank', 'noopener');
   track('card_share', { method: 'x', ...cardSummary() });
-  toast(copied ? '画像をコピーしました。投稿欄に貼り付け（Ctrl+V）てください' : '保存した画像を投稿に添付してください');
+  toast(t(copied ? 'toast.sharePaste' : 'toast.shareAttach'));
   showSpread();
 });
 
@@ -838,14 +840,14 @@ $('#spread-close').addEventListener('click', () => {
 });
 
 $('#spread-share').addEventListener('click', () => {
-  window.open(xIntent('LoLの自己紹介カード（サモナーカード）が無料で作れるサイト見つけた！\nランク・ロール・得意チャンプを入れるだけ🎮\n', SHARE_HASHTAGS), '_blank', 'noopener');
+  window.open(xIntent(t('spread.tweet'), SHARE_HASHTAGS), '_blank', 'noopener');
   track('site_share', { method: 'x' });
 });
 
 $('#spread-copy').addEventListener('click', async () => {
   try {
     await navigator.clipboard.writeText(SITE_URL);
-    toast('サイトのURLをコピーしました。DiscordやLINEで貼り付けてね');
+    toast(t('toast.siteUrl'));
     track('site_share', { method: 'copy_url' });
   } catch {
     toast(SITE_URL);
@@ -853,7 +855,7 @@ $('#spread-copy').addEventListener('click', async () => {
 });
 
 $('#btn-sample').addEventListener('click', () => {
-  update({ ...SAMPLE_STATE });
+  update({ ...SAMPLE_STATE, hours: t('sample.hours'), comment: t('sample.comment') });
   syncSkins();
   track('sample_load');
 });
@@ -872,7 +874,7 @@ $('#banner-close').addEventListener('click', () => $('#banner-dialog').close());
 $('#banner-save').addEventListener('click', () => {
   // In-app browsers and iPhone: the image in the dialog can be saved with a long press.
   if (IN_APP || IS_IOS) {
-    toast('上のバナー画像を長押しして保存してください');
+    toast(t('toast.bannerLongPress'));
   } else {
     bannerCanvas.toBlob((blob) => {
       const url = URL.createObjectURL(blob);
@@ -889,7 +891,7 @@ $('#banner-save').addEventListener('click', () => {
 $('#banner-copy-url').addEventListener('click', async () => {
   try {
     await navigator.clipboard.writeText(SITE_URL);
-    toast('URLをコピーしました。Twitchパネルや概要欄のリンクに貼ってください');
+    toast(t('toast.bannerUrl'));
   } catch {
     toast(SITE_URL);
   }
@@ -901,10 +903,10 @@ document.addEventListener('click', async (e) => {
   if (!id) return;
   try {
     await navigator.clipboard.writeText(document.getElementById(id).textContent);
-    toast('コピーしました');
+    toast(t('toast.copyDone'));
     track('embed_copy');
   } catch {
-    toast('コピーできませんでした。手動で選択してコピーしてください');
+    toast(t('toast.copyManual'));
   }
 });
 
@@ -919,6 +921,7 @@ $('#btn-reset-all').addEventListener('click', resetAll);
 // ---------- Boot ----------
 
 async function init() {
+  applyI18n();
   initAnalytics();
   if (IN_APP) track('in_app_browser');
   buildStaticUI();
@@ -926,13 +929,13 @@ async function init() {
   try {
     const versions = await fetch(`${DDRAGON}/api/versions.json`).then((r) => r.json());
     ctxData.version = versions[0];
-    const json = await fetch(`${DDRAGON}/cdn/${ctxData.version}/data/ja_JP/champion.json`).then((r) => r.json());
+    const json = await fetch(`${DDRAGON}/cdn/${ctxData.version}/data/${LANG_INFO.ddragon}/champion.json`).then((r) => r.json());
     ctxData.champions = json.data;
     sortedChamps = Object.values(json.data)
       .map((c) => ({ id: c.id, name: c.name, search: normalize(`${c.name}${c.id}${c.title}`) }))
-      .sort((a, b) => a.name.localeCompare(b.name, 'ja'));
+      .sort((a, b) => a.name.localeCompare(b.name, LANG));
   } catch {
-    $('#loading').textContent = 'チャンピオンデータを読み込めませんでした。再読み込みしてください。';
+    $('#loading').textContent = t('load.fail');
     return;
   }
   // "/?theme=fairy" (from the template page) preselects a theme, then the URL is cleaned up.

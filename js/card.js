@@ -1,6 +1,7 @@
 // Draws the summoner card onto a canvas. Everything happens in the browser.
 import { CDRAGON, CDRAGON_GAME, DDRAGON, ROLE_LEVELS, ROLES, THEMES, TIERS } from './data.js';
 import { DECOS } from './decos.js';
+import { CJK_FAMILY, levelBadge, t, tagName, tierName, withCjk } from './i18n.js';
 
 export const CARD_W = 1200;
 export const CARD_H = 675;
@@ -167,7 +168,7 @@ function sectionLabel(ctx, text, x, y, theme) {
 async function ensureFonts(state, theme) {
   if (!document.fonts) return;
   const extra = DECOS[theme.deco]?.fonts?.load || [];
-  const text = [state.name, state.tag, state.hours, state.discord, state.x, state.twitch, state.youtube, state.comment, ...state.tags, ...(state._names || [])].join('');
+  const text = [state.name, state.tag, state.hours, state.discord, state.x, state.twitch, state.youtube, state.comment, ...state.tags.map(tagName), tierName(TIERS.find((x) => x.id === state.tier) || TIERS[0]), ...(state._names || [])].join('');
   const sample = `${text}0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ#.・〜`;
   // Don't let a slow font download block the preview; the app redraws when fonts finish loading.
   await Promise.race([
@@ -176,6 +177,7 @@ async function ensureFonts(state, theme) {
       document.fonts.load(`700 24px "M PLUS 1p"`, sample),
       document.fonts.load(`800 24px "M PLUS 1p"`, sample),
       document.fonts.load(`700 24px "Cinzel"`, 'ROLECHAMPIONSUNRANKEDLv0123456789'),
+      ...(CJK_FAMILY ? [500, 700, 800].map((w) => document.fonts.load(`${w} 24px ${CJK_FAMILY}`, sample)) : []),
       ...extra.map((f) => document.fonts.load(f, `${sample}Role Main Favorite Champions Summoner Card`)),
     ]).catch(() => {}),
     new Promise((resolve) => setTimeout(resolve, 1500)),
@@ -210,9 +212,9 @@ export async function renderCard(canvas, state, ctxData) {
 
   const deco = DECOS[theme.deco] || {};
   const fonts = deco.fonts || DEFAULT_FONTS;
-  FONT_JP = fonts.jp;
-  FONT_EN = fonts.en;
-  FONT_TITLE = fonts.title;
+  FONT_JP = withCjk(fonts.jp);
+  FONT_EN = withCjk(fonts.en);
+  FONT_TITLE = withCjk(fonts.title);
 
   // Draw into an offscreen canvas first so the preview never shows a half-drawn card.
   const off = document.createElement('canvas');
@@ -342,7 +344,7 @@ export async function renderCard(canvas, state, ctxData) {
   const tagText = state.tag ? ` #${state.tag}` : '';
   ctx.font = `700 30px ${FONT_JP}`;
   const tagW = tagText ? ctx.measureText(tagText).width : 0;
-  const nameText = fitText(ctx, state.name || 'サモナーネーム', nameMax - tagW, 800, 56, 32);
+  const nameText = fitText(ctx, state.name || t('card.name'), nameMax - tagW, 800, 56, 32);
   const nameW = ctx.measureText(nameText).width;
   ctx.fillText(nameText, nx, 118);
   if (tagText) {
@@ -411,7 +413,7 @@ export async function renderCard(canvas, state, ctxData) {
   }
   ctx.textAlign = 'center';
   ctx.fillStyle = theme.text;
-  const tierLabel = tier.divisions ? `${tier.label} ${state.division}` : tier.label;
+  const tierLabel = tier.divisions ? `${tierName(tier)} ${state.division}` : tierName(tier);
   ctx.shadowColor = theme.light ? 'transparent' : 'rgba(0,0,0,0.7)';
   ctx.shadowBlur = 6;
   ctx.fillText(fitText(ctx, tierLabel, 260, 800, 30, 20), rcx, 238);
@@ -460,7 +462,7 @@ export async function renderCard(canvas, state, ctxData) {
     ctx.globalAlpha = 1;
     if (level) {
       ctx.font = `800 12px ${FONT_JP}`;
-      const bw = Math.max(36, ctx.measureText(level.badge).width + 14);
+      const bw = Math.max(36, ctx.measureText(levelBadge(level)).width + 14);
       roundRect(ctx, x + 31 - bw / 2, ry - 9, bw, 18, 9);
       const filled = levelId === 'main' || levelId === 'ng';
       const color = levelId === 'ng' ? NG_COLOR : levelId === 'normal' ? theme.sub : theme.accent;
@@ -472,7 +474,7 @@ export async function renderCard(canvas, state, ctxData) {
         ctx.stroke();
       }
       ctx.fillStyle = filled ? (levelId === 'ng' ? '#ffffff' : theme.bg1) : color;
-      ctx.fillText(level.badge, x + 31, ry + 4);
+      ctx.fillText(levelBadge(level), x + 31, ry + 4);
     }
   });
 
@@ -523,7 +525,7 @@ export async function renderCard(canvas, state, ctxData) {
   const ty = 452;
   ctx.font = `700 19px ${FONT_JP}`;
   const tagsShown = [];
-  for (const tag of state.tags) {
+  for (const tag of state.tags.map(tagName)) {
     const w = ctx.measureText(tag).width + 32;
     if (tx + w > CARD_W - 60) break;
     tagsShown.push([tag, tx, w]);
