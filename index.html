@@ -74,6 +74,7 @@
 
   <main class="layout">
     <section class="preview" aria-label="プレビュー">
+      <div class="preview-main">
       <div class="canvas-wrap">
         <canvas id="card" width="1200" height="675"></canvas>
         <div class="loading" id="loading">読み込み中…</div>
@@ -83,6 +84,7 @@
         <button type="button" class="btn" id="btn-copy">画像をコピー</button>
         <button type="button" class="btn x" id="btn-share">Xでシェア</button>
       </div>
+      </div>
       <div class="spread" id="spread" hidden>
         <button type="button" class="spread-close" id="spread-close" aria-label="閉じる">×</button>
         <p><strong>カードができました🎉</strong><br>このサイトはできたばかりです。よければ友だちやフレンドにも教えてもらえると嬉しいです🙏</p>
@@ -91,11 +93,13 @@
           <button type="button" class="btn ghost small" id="spread-copy">サイトのURLをコピー</button>
         </div>
       </div>
+      <div class="preview-more">
       <button type="button" class="btn banner-btn" id="btn-banner">🎨 自分のカードで宣伝バナーを作る<small>配信画面・Twitchパネル・Xのヘッダーなどに</small></button>
       <p class="help-links"><a href="/guide/">使い方ガイド</a><a href="/templates/">テンプレ一覧</a><a href="/faq/">よくある質問</a></p>
       <div class="actions sub">
         <button type="button" class="btn ghost" id="btn-sample">サンプルを入れる</button>
         <button type="button" class="btn ghost" id="btn-reset">入力をリセット</button>
+      </div>
       </div>
     </section>
 
