@@ -11,6 +11,8 @@ import {
 } from './i18n.js';
 
 const STORAGE_KEY = 'riftcard:v1';
+// Links people share point at the page for their language, so previews show that language.
+const PAGE_URL = new URL(LANG_INFO.path, SITE_URL).href;
 const $ = (sel) => document.querySelector(sel);
 
 const form = $('#form');
@@ -735,10 +737,10 @@ $('#save-close').addEventListener('click', () => $('#save-dialog').close());
 if (IN_APP) $('#inapp-banner').hidden = false;
 $('#inapp-copy').addEventListener('click', async () => {
   try {
-    await navigator.clipboard.writeText(SITE_URL);
+    await navigator.clipboard.writeText(PAGE_URL);
     toast(t('toast.inAppUrl'));
   } catch {
-    toast(SITE_URL);
+    toast(PAGE_URL);
   }
 });
 
@@ -786,7 +788,7 @@ $('#btn-copy').addEventListener('click', async () => {
 });
 
 const xIntent = (text, hashtags) => `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`
-  + `&url=${encodeURIComponent(SITE_URL)}&hashtags=${encodeURIComponent(hashtags.join(','))}`;
+  + `&url=${encodeURIComponent(PAGE_URL)}&hashtags=${encodeURIComponent(hashtags.join(','))}`;
 
 $('#btn-share').addEventListener('click', async () => {
   const text = t('share.text');
@@ -804,7 +806,7 @@ $('#btn-share').addEventListener('click', async () => {
   const file = new File([blob], fileName(), { type: 'image/png' });
   if (matchMedia('(pointer: coarse)').matches && navigator.canShare?.({ files: [file] })) {
     try {
-      await navigator.share({ files: [file], text: `${text}${SITE_URL}\n${SHARE_HASHTAGS.map((h) => `#${h}`).join(' ')}` });
+      await navigator.share({ files: [file], text: `${text}${PAGE_URL}\n${SHARE_HASHTAGS.map((h) => `#${h}`).join(' ')}` });
       track('card_share', { method: 'share_sheet', ...cardSummary() });
       showSpread();
       return;
@@ -846,11 +848,11 @@ $('#spread-share').addEventListener('click', () => {
 
 $('#spread-copy').addEventListener('click', async () => {
   try {
-    await navigator.clipboard.writeText(SITE_URL);
+    await navigator.clipboard.writeText(PAGE_URL);
     toast(t('toast.siteUrl'));
     track('site_share', { method: 'copy_url' });
   } catch {
-    toast(SITE_URL);
+    toast(PAGE_URL);
   }
 });
 
@@ -890,10 +892,10 @@ $('#banner-save').addEventListener('click', () => {
 
 $('#banner-copy-url').addEventListener('click', async () => {
   try {
-    await navigator.clipboard.writeText(SITE_URL);
+    await navigator.clipboard.writeText(PAGE_URL);
     toast(t('toast.bannerUrl'));
   } catch {
-    toast(SITE_URL);
+    toast(PAGE_URL);
   }
 });
 

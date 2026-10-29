@@ -7,7 +7,7 @@ import { fileURLToPath } from 'node:url';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const SITE = 'https://summonercard.com';
-const UPDATED = '2026-10-29';
+const UPDATED = '2026-10-30';
 
 const FONTS = 'https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=M+PLUS+1p:wght@400;500;700;800&display=swap';
 
@@ -507,6 +507,86 @@ for (const page of pages) {
   console.log('wrote', `${page.slug}/index.html`);
 }
 
+// ---------- Tool page in other languages ----------
+// Copies of the top page with translated meta tags and a preview card in that language.
+// The page text itself is translated in the browser by js/i18n.js.
+
+const LANG_PAGES = [
+  {
+    slug: 'en', lang: 'en', locale: 'en_US',
+    title: 'Summoner Card Maker | Free LoL Profile Card Generator - SUMMONER CARD',
+    description: 'Make a League of Legends summoner card (profile card) for free. Pick your rank, roles, main champions and a skin background and the image is ready. No sign-up, works on phones. Great for finding duo partners on X and Discord.',
+    ogTitle: 'Summoner Card Maker | Free LoL profile cards',
+    ogDescription: 'Add your rank, roles and main champs to make a LoL profile card for free.',
+    alt: 'Example LoL profile card made with SUMMONER CARD',
+    name: 'SUMMONER CARD (Summoner Card Maker)',
+    appDescription: 'A free web app for making League of Legends summoner cards (profile cards).',
+  },
+  {
+    slug: 'ko', lang: 'ko', locale: 'ko_KR',
+    title: '서머너 카드 메이커 | 롤 자기소개 카드 무료 제작 - SUMMONER CARD',
+    description: '리그 오브 레전드(롤) 서머너 카드・자기소개 카드를 무료로 만들 수 있는 생성기. 랭크・포지션・주력 챔피언・스킨 배경만 고르면 이미지 완성. 가입 없이 휴대폰에서도 OK. 듀오 구하기나 디스코드 자기소개에.',
+    ogTitle: '서머너 카드 메이커 | 롤 자기소개 카드 무료 제작',
+    ogDescription: '랭크・포지션・주력 챔피언을 넣어서 롤 자기소개 카드를 무료로 만들어 보세요.',
+    alt: 'SUMMONER CARD로 만든 롤 자기소개 카드 예시',
+    name: 'SUMMONER CARD (서머너 카드 메이커)',
+    appDescription: '리그 오브 레전드 서머너 카드・자기소개 카드를 무료로 만들 수 있는 웹 앱.',
+  },
+  {
+    slug: 'zh-cn', lang: 'zh-CN', locale: 'zh_CN',
+    title: '召唤师卡片生成器｜免费制作LoL自我介绍卡 - SUMMONER CARD',
+    description: '免费制作英雄联盟（LoL）召唤师卡片・自我介绍卡。只要选择段位、位置、拿手英雄和皮肤背景，图片就完成了。无需注册，手机也能用。适合找队友开黑或在Discord自我介绍。',
+    ogTitle: '召唤师卡片生成器｜免费制作LoL自我介绍卡',
+    ogDescription: '填入段位、位置和拿手英雄，免费制作LoL自我介绍卡。',
+    alt: '用SUMMONER CARD制作的LoL自我介绍卡示例',
+    name: 'SUMMONER CARD（召唤师卡片生成器）',
+    appDescription: '免费制作英雄联盟召唤师卡片・自我介绍卡的网页应用。',
+  },
+  {
+    slug: 'zh-tw', lang: 'zh-TW', locale: 'zh_TW',
+    title: '召喚師卡片產生器｜免費製作LoL自我介紹卡 - SUMMONER CARD',
+    description: '免費製作英雄聯盟（LoL）召喚師卡片・自我介紹卡。只要選擇牌位、位置、拿手英雄和造型背景，圖片就完成了。不用註冊，手機也能用。適合找雙排隊友或在Discord自我介紹。',
+    ogTitle: '召喚師卡片產生器｜免費製作LoL自我介紹卡',
+    ogDescription: '填入牌位、位置和拿手英雄，免費製作LoL自我介紹卡。',
+    alt: '用SUMMONER CARD製作的LoL自我介紹卡範例',
+    name: 'SUMMONER CARD（召喚師卡片產生器）',
+    appDescription: '免費製作英雄聯盟召喚師卡片・自我介紹卡的網頁應用。',
+  },
+];
+
+const top = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
+const attr = (s) => s.replace(/&/g, '&amp;').replace(/"/g, '&quot;');
+for (const p of LANG_PAGES) {
+  let html = top;
+  const set = (pattern, value) => {
+    if (!pattern.test(html)) throw new Error(`index.html: ${pattern} not found`);
+    html = html.replace(pattern, value);
+  };
+  set(/<html lang="ja">/, `<html lang="${p.lang}">`);
+  set(/<title>.*<\/title>/, `<title>${p.title}</title>`);
+  set(/(<meta name="description" content=")[^"]*/, `$1${attr(p.description)}`);
+  set(/(<link rel="canonical" href=")[^"]*/, `$1${SITE}/${p.slug}/`);
+  set(/(<meta property="og:title" content=")[^"]*/, `$1${attr(p.ogTitle)}`);
+  set(/(<meta property="og:description" content=")[^"]*/, `$1${attr(p.ogDescription)}`);
+  set(/(<meta property="og:url" content=")[^"]*/, `$1${SITE}/${p.slug}/`);
+  set(/(<meta property="og:image" content=")[^"]*/, `$1${SITE}/og-${p.slug}.jpg`);
+  set(/(<meta property="og:image:alt" content=")[^"]*/, `$1${attr(p.alt)}`);
+  set(/(<meta property="og:locale" content=")[^"]*/, `$1${p.locale}`);
+  set(/(<meta name="twitter:title" content=")[^"]*/, `$1${attr(p.ogTitle)}`);
+  set(/(<meta name="twitter:description" content=")[^"]*/, `$1${attr(p.ogDescription)}`);
+  set(/(<meta name="twitter:image" content=")[^"]*/, `$1${SITE}/og-${p.slug}.jpg`);
+  set(/(<meta name="twitter:image:alt" content=")[^"]*/, `$1${attr(p.alt)}`);
+  set(/"name": "SUMMONER CARD（サモナーカード作成メーカー）",\n\s*"alternateName": \[[^\]]*\],/, `"name": ${JSON.stringify(p.name)},`);
+  set(/("url": ")https:\/\/summonercard\.com\/(",)/, `$1${SITE}/${p.slug}/$2`);
+  set(/("description": ")[^"]*(",\n\s*"applicationCategory")/, `$1${p.appDescription}$2`);
+  set(/"inLanguage": "ja"/, `"inLanguage": "${p.lang}"`);
+  set(/"image": "https:\/\/summonercard\.com\/og\.jpg"/, `"image": "${SITE}/og-${p.slug}.jpg"`);
+  const dir = path.join(ROOT, p.slug);
+  fs.mkdirSync(dir, { recursive: true });
+  fs.writeFileSync(path.join(dir, 'index.html'), html);
+  console.log('wrote', `${p.slug}/index.html`);
+}
+
 // Sitemap: top page (with images) plus every generated page.
 const images = ['og.jpg', 'img/banner.jpg', 'img/banner-pastel.jpg', ...THEMES.map(([id]) => `img/theme-${id}.jpg`)];
 const urls = [
@@ -515,6 +595,11 @@ const urls = [
     <lastmod>${UPDATED}</lastmod>
 ${images.map((i) => `    <image:image><image:loc>${SITE}/${i}</image:loc></image:image>`).join('\n')}
   </url>`,
+  ...LANG_PAGES.map((p) => `  <url>
+    <loc>${SITE}/${p.slug}/</loc>
+    <lastmod>${UPDATED}</lastmod>
+    <image:image><image:loc>${SITE}/og-${p.slug}.jpg</image:loc></image:image>
+  </url>`),
   ...pages.map((p) => `  <url>
     <loc>${SITE}/${p.slug}/</loc>
     <lastmod>${UPDATED}</lastmod>

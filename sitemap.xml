@@ -2,7 +2,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
   <url>
     <loc>https://summonercard.com/</loc>
-    <lastmod>2026-10-29</lastmod>
+    <lastmod>2026-10-30</lastmod>
     <image:image><image:loc>https://summonercard.com/og.jpg</image:loc></image:image>
     <image:image><image:loc>https://summonercard.com/img/banner.jpg</image:loc></image:image>
     <image:image><image:loc>https://summonercard.com/img/banner-pastel.jpg</image:loc></image:image>
@@ -23,31 +23,51 @@
     <image:image><image:loc>https://summonercard.com/img/theme-wafu.jpg</image:loc></image:image>
   </url>
   <url>
+    <loc>https://summonercard.com/en/</loc>
+    <lastmod>2026-10-30</lastmod>
+    <image:image><image:loc>https://summonercard.com/og-en.jpg</image:loc></image:image>
+  </url>
+  <url>
+    <loc>https://summonercard.com/ko/</loc>
+    <lastmod>2026-10-30</lastmod>
+    <image:image><image:loc>https://summonercard.com/og-ko.jpg</image:loc></image:image>
+  </url>
+  <url>
+    <loc>https://summonercard.com/zh-cn/</loc>
+    <lastmod>2026-10-30</lastmod>
+    <image:image><image:loc>https://summonercard.com/og-zh-cn.jpg</image:loc></image:image>
+  </url>
+  <url>
+    <loc>https://summonercard.com/zh-tw/</loc>
+    <lastmod>2026-10-30</lastmod>
+    <image:image><image:loc>https://summonercard.com/og-zh-tw.jpg</image:loc></image:image>
+  </url>
+  <url>
     <loc>https://summonercard.com/guide/</loc>
-    <lastmod>2026-10-29</lastmod>
+    <lastmod>2026-10-30</lastmod>
   </url>
   <url>
     <loc>https://summonercard.com/templates/</loc>
-    <lastmod>2026-10-29</lastmod>
+    <lastmod>2026-10-30</lastmod>
   </url>
   <url>
     <loc>https://summonercard.com/banner/</loc>
-    <lastmod>2026-10-29</lastmod>
+    <lastmod>2026-10-30</lastmod>
   </url>
   <url>
     <loc>https://summonercard.com/faq/</loc>
-    <lastmod>2026-10-29</lastmod>
+    <lastmod>2026-10-30</lastmod>
   </url>
   <url>
     <loc>https://summonercard.com/privacy/</loc>
-    <lastmod>2026-10-29</lastmod>
+    <lastmod>2026-10-30</lastmod>
   </url>
   <url>
     <loc>https://summonercard.com/terms/</loc>
-    <lastmod>2026-10-29</lastmod>
+    <lastmod>2026-10-30</lastmod>
   </url>
   <url>
     <loc>https://summonercard.com/about/</loc>
-    <lastmod>2026-10-29</lastmod>
+    <lastmod>2026-10-30</lastmod>
   </url>
 </urlset>
