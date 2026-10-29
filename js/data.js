@@ -97,6 +97,16 @@ export const THEMES = [
     bg1: '#f8f1e4', bg2: '#efe1c6', bgStops: ['#fbf6ec', '#f3e8d3', '#ead9b9'],
     accent: '#b3242c', accent2: '#c9a24a', gold: '#c9a24a', line: '#8a6a2e', text: '#2b1d14', sub: '#8a7560', panel: 'rgba(255,251,242,0.82)',
   },
+  {
+    id: 'halloween', label: 'ハロウィン', deco: 'halloween',
+    bg1: '#140a1f', bg2: '#2a1238', bgStops: ['#120820', '#24103a', '#3a1530'],
+    accent: '#ff8a1f', accent2: '#b57bff', gold: '#ffb347', text: '#fff3e6', sub: '#bba6cc', panel: 'rgba(16,6,24,0.72)',
+  },
+  {
+    id: 'christmas', label: 'クリスマス', deco: 'christmas',
+    bg1: '#0b2a1c', bg2: '#14402a', bgStops: ['#0a2418', '#123a26', '#1c4a30'],
+    accent: '#e8414f', accent2: '#f6f1e7', gold: '#e6c46a', text: '#fff8ef', sub: '#b6cbb8', panel: 'rgba(6,24,15,0.7)',
+  },
 ];
 
 export const DEFAULT_STATE = {
