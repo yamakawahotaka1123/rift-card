@@ -504,6 +504,123 @@ function gift(ctx, x, y, s, box, ribbon) {
   bow(ctx, x, y - s * 0.72, s * 0.5, ribbon, '#8a6a1e', 0);
 }
 
+function ume(ctx, x, y, s, color, center) {
+  ctx.fillStyle = color;
+  for (let i = 0; i < 5; i++) {
+    const a = (Math.PI * 2 * i) / 5 - Math.PI / 2;
+    ctx.beginPath();
+    ctx.arc(x + Math.cos(a) * s * 0.55, y + Math.sin(a) * s * 0.55, s * 0.48, 0, Math.PI * 2);
+    ctx.fill();
+  }
+  ctx.strokeStyle = center;
+  ctx.lineWidth = Math.max(1, s * 0.06);
+  for (let i = 0; i < 10; i++) {
+    const a = (Math.PI * 2 * i) / 10;
+    ctx.beginPath();
+    ctx.moveTo(x, y);
+    ctx.lineTo(x + Math.cos(a) * s * 0.42, y + Math.sin(a) * s * 0.42);
+    ctx.stroke();
+  }
+  ctx.beginPath();
+  ctx.arc(x, y, s * 0.16, 0, Math.PI * 2);
+  ctx.fillStyle = center;
+  ctx.fill();
+}
+
+// Folding fan; (x, y) is the pivot, the fan opens upward.
+function sensu(ctx, x, y, s, rot = 0) {
+  ctx.save();
+  ctx.translate(x, y);
+  ctx.rotate(rot);
+  const a0 = -Math.PI * 0.88, a1 = -Math.PI * 0.12, ribs = 8;
+  for (let i = 0; i < ribs; i++) {
+    const p = a0 + ((a1 - a0) * i) / ribs, q = a0 + ((a1 - a0) * (i + 1)) / ribs;
+    ctx.beginPath();
+    ctx.arc(0, 0, s, p, q);
+    ctx.arc(0, 0, s * 0.35, q, p, true);
+    ctx.closePath();
+    ctx.fillStyle = i % 2 ? '#d61f2c' : '#f7e3a1';
+    ctx.fill();
+  }
+  ctx.beginPath();
+  ctx.arc(0, 0, s, a0, a1);
+  ctx.arc(0, 0, s * 0.35, a1, a0, true);
+  ctx.closePath();
+  ctx.lineWidth = 2;
+  ctx.strokeStyle = '#b8902e';
+  ctx.stroke();
+  // Rising sun on the leaf
+  ctx.beginPath();
+  ctx.arc(0, -s * 0.68, s * 0.17, 0, Math.PI * 2);
+  ctx.fillStyle = '#ffffff';
+  ctx.fill();
+  ctx.beginPath();
+  ctx.arc(0, -s * 0.68, s * 0.12, 0, Math.PI * 2);
+  ctx.fillStyle = '#e8202c';
+  ctx.fill();
+  ctx.strokeStyle = '#6b4a1a';
+  ctx.lineWidth = 2;
+  for (const a of [a0, (a0 + a1) / 2, a1]) {
+    ctx.beginPath();
+    ctx.moveTo(0, 0);
+    ctx.lineTo(Math.cos(a) * s * 0.35, Math.sin(a) * s * 0.35);
+    ctx.stroke();
+  }
+  ctx.beginPath();
+  ctx.arc(0, 0, s * 0.06, 0, Math.PI * 2);
+  ctx.fillStyle = '#e6c15a';
+  ctx.fill();
+  ctx.restore();
+}
+
+// Kagami mochi on a small stand, topped with a mikan.
+function kagamiMochi(ctx, x, y, s) {
+  ctx.save();
+  ctx.translate(x, y);
+  // Stand
+  ctx.fillStyle = '#c99a55';
+  ctx.beginPath();
+  ctx.moveTo(-s * 0.95, s * 0.35);
+  ctx.lineTo(s * 0.95, s * 0.35);
+  ctx.lineTo(s * 0.75, s * 0.75);
+  ctx.lineTo(-s * 0.75, s * 0.75);
+  ctx.closePath();
+  ctx.fill();
+  ctx.fillStyle = '#e8bf74';
+  ctx.fillRect(-s * 1.0, s * 0.27, s * 2.0, s * 0.12);
+  // Paper with red edge
+  ctx.fillStyle = '#ffffff';
+  ctx.fillRect(-s * 0.85, s * 0.18, s * 1.7, s * 0.12);
+  ctx.fillStyle = '#d61f2c';
+  ctx.fillRect(-s * 0.85, s * 0.27, s * 1.7, s * 0.04);
+  // Two mochi
+  for (const [cy, rx, ry] of [[s * 0.02, 0.85, 0.3], [-s * 0.42, 0.65, 0.26]]) {
+    const g = ctx.createLinearGradient(0, cy - s * ry, 0, cy + s * ry);
+    g.addColorStop(0, '#ffffff');
+    g.addColorStop(1, '#e9e1d2');
+    ctx.beginPath();
+    ctx.ellipse(0, cy, s * rx, s * ry, 0, 0, Math.PI * 2);
+    ctx.fillStyle = g;
+    ctx.fill();
+    ctx.lineWidth = 1.2;
+    ctx.strokeStyle = '#cbbfa8';
+    ctx.stroke();
+  }
+  // Mikan and leaf
+  const g = ctx.createRadialGradient(-s * 0.08, -s * 0.9, s * 0.03, 0, -s * 0.8, s * 0.24);
+  g.addColorStop(0, '#ffc35a');
+  g.addColorStop(1, '#f07d0c');
+  ctx.beginPath();
+  ctx.arc(0, -s * 0.8, s * 0.24, 0, Math.PI * 2);
+  ctx.fillStyle = g;
+  ctx.fill();
+  ctx.beginPath();
+  ctx.ellipse(s * 0.16, -s * 1.05, s * 0.18, s * 0.07, -0.5, 0, Math.PI * 2);
+  ctx.fillStyle = '#2f8a3c';
+  ctx.fill();
+  ctx.restore();
+}
+
 // ---------- Shared pieces ----------
 
 function scriptLabel(color) {
@@ -994,5 +1111,72 @@ export const DECOS = {
     label: scriptLabel('gold'),
     commentRight: 90,
     watermarkRight: 120,
+  },
+
+  // お正月: crimson and gold, rising-sun rays, plum blossoms, kagami mochi, a fan on the icon.
+  newyear: {
+    fonts: {
+      jp: MINCHO,
+      en: MINCHO,
+      title: MINCHO,
+      load: ['700 24px "Shippori Mincho"', '800 24px "Shippori Mincho"'],
+    },
+    vertical: true,
+    backdrop: (ctx, W, H, theme, hasImage) => {
+      // Rising-sun rays from below the bottom edge
+      ctx.save();
+      ctx.fillStyle = rgba(theme.gold, hasImage ? 0.05 : 0.08);
+      const ox = W / 2, oy = H + 60, rays = 24;
+      for (let i = 0; i < rays; i += 2) {
+        const p = Math.PI + (Math.PI * i) / rays, q = Math.PI + (Math.PI * (i + 1)) / rays;
+        ctx.beginPath();
+        ctx.moveTo(ox, oy);
+        ctx.arc(ox, oy, W, p, q);
+        ctx.closePath();
+        ctx.fill();
+      }
+      ctx.restore();
+      scatter(1101, 24, W, H, (x, y, rand) => {
+        if (rand() < 0.6) ume(ctx, x, y, 7 + rand() * 6, rand() < 0.5 ? rgba('#ffffff', 0.85) : rgba('#ffb3c1', 0.85), theme.gold);
+        else sparkle(ctx, x, y, 5 + rand() * 4, rgba(theme.gold, 0.9));
+      });
+    },
+    frame: (ctx, W, H, theme) => {
+      ctx.lineWidth = 6;
+      ctx.strokeStyle = theme.gold;
+      ctx.strokeRect(18, 18, W - 36, H - 36);
+      ctx.lineWidth = 1.5;
+      ctx.strokeStyle = rgba('#ffffff', 0.7);
+      ctx.strokeRect(30, 30, W - 60, H - 60);
+      // Corner ornaments
+      ctx.fillStyle = theme.gold;
+      for (const [x, y, sx, sy] of [[30, 30, 1, 1], [W - 30, 30, -1, 1], [30, H - 30, 1, -1], [W - 30, H - 30, -1, -1]]) {
+        ctx.fillRect(x, y, sx * 26, sy * 4);
+        ctx.fillRect(x, y, sx * 4, sy * 26);
+        ctx.fillRect(x + sx * 10, y + sy * 10, sx * 8, sy * 8);
+      }
+      kumo(ctx, 430, 38, 240, 20, rgba(theme.gold, 0.5));
+      kumo(ctx, 600, 62, 180, 14, rgba(theme.gold, 0.35));
+      kagamiMochi(ctx, W - 74, H - 86, 42);
+      ume(ctx, W - 132, H - 44, 13, '#ffffff', theme.gold);
+      ume(ctx, W - 22 - 18, 52, 12, '#ffb3c1', theme.gold);
+    },
+    iconDeco: (ctx, cx, cy, r) => {
+      sensu(ctx, cx + r * 0.62, cy - r * 0.38, 46, 0.55);
+      ume(ctx, cx - r * 0.74, cy + r * 0.7, 15, '#ffffff', '#e6c15a');
+      ume(ctx, cx - r * 0.42, cy + r * 0.92, 10, '#ffb3c1', '#e6c15a');
+    },
+    label: (ctx, text, x, y, theme, fonts) => {
+      ctx.fillStyle = theme.gold;
+      ctx.fillRect(x, y - 15, 6, 18);
+      ctx.font = `800 19px ${fonts.title}`;
+      ctx.fillStyle = theme.text;
+      ctx.letterSpacing = '3px';
+      ctx.fillText(text, x + 14, y);
+      ctx.letterSpacing = '0px';
+    },
+    nameGlow: '#f2d27a',
+    commentRight: 110,
+    watermarkRight: 150,
   },
 };

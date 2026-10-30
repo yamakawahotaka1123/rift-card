@@ -217,7 +217,7 @@ const STRINGS = {
       <h2>More</h2>
       <div class="link-cards">
         <a href="/guide/"><strong>How to use</strong><span>Every field explained, plus tips for finding friends</span></a>
-        <a href="/templates/"><strong>Templates</strong><span>Samples of all 15 themes. Pick one and start</span></a>
+        <a href="/templates/"><strong>Templates</strong><span>Samples of all 15+ themes. Pick one and start</span></a>
         <a href="/banner/"><strong>Promo banners</strong><span>Free banners for your stream or blog</span></a>
         <a href="/faq/"><strong>FAQ</strong><span>Saving on a phone, when the X app won’t save and more</span></a>
       </div>
@@ -389,7 +389,7 @@ const STRINGS = {
       <h2>더 보기</h2>
       <div class="link-cards">
         <a href="/guide/"><strong>사용법 가이드</strong><span>항목별 설명과 친구 구할 때 잘 통하는 팁</span></a>
-        <a href="/templates/"><strong>템플릿 목록</strong><span>15가지 테마 미리보기. 골라서 바로 만들기</span></a>
+        <a href="/templates/"><strong>템플릿 목록</strong><span>15가지 이상 테마 미리보기. 골라서 바로 만들기</span></a>
         <a href="/banner/"><strong>홍보 배너</strong><span>방송이나 블로그에 자유롭게 붙일 수 있는 배너</span></a>
         <a href="/faq/"><strong>자주 묻는 질문</strong><span>휴대폰에서 저장하는 법, X 앱에서 저장이 안 될 때 등</span></a>
       </div>
@@ -561,7 +561,7 @@ const STRINGS = {
       <h2>更多内容</h2>
       <div class="link-cards">
         <a href="/guide/"><strong>使用指南</strong><span>各项目说明和找队友的小技巧</span></a>
-        <a href="/templates/"><strong>模板一览</strong><span>15种主题预览，选好直接制作</span></a>
+        <a href="/templates/"><strong>模板一览</strong><span>15种以上主题预览，选好直接制作</span></a>
         <a href="/banner/"><strong>宣传横幅</strong><span>可以自由放在直播或博客上的横幅</span></a>
         <a href="/faq/"><strong>常见问题</strong><span>手机上如何保存、X应用中无法保存时等</span></a>
       </div>
@@ -733,7 +733,7 @@ const STRINGS = {
       <h2>更多內容</h2>
       <div class="link-cards">
         <a href="/guide/"><strong>使用指南</strong><span>各項目說明和找隊友的小技巧</span></a>
-        <a href="/templates/"><strong>範本一覽</strong><span>15種主題預覽，選好直接製作</span></a>
+        <a href="/templates/"><strong>範本一覽</strong><span>15種以上主題預覽，選好直接製作</span></a>
         <a href="/banner/"><strong>宣傳橫幅</strong><span>可以自由放在實況或部落格上的橫幅</span></a>
         <a href="/faq/"><strong>常見問題</strong><span>手機上如何儲存、X App中無法儲存時等</span></a>
       </div>
@@ -830,10 +830,10 @@ const LEVELS = {
 };
 
 const THEME_NAMES = {
-  en: { hextech: 'Hextech', noxus: 'Noxus', freljord: 'Freljord', shadow: 'Shadow Isles', ionia: 'Ionia', fairy: 'Dreamy Pink', 'fairy-mint': 'Dreamy Blue', guardian: 'Star Guardian', jirai: 'Jirai-kei', ryousan: 'Ryousan-kei', y2k: 'Y2K', gaming: 'Gaming RGB', wafu: 'Japanese', halloween: 'Halloween', christmas: 'Christmas' },
-  ko: { hextech: '마법공학', noxus: '녹서스', freljord: '프렐요드', shadow: '그림자 군도', ionia: '아이오니아', fairy: '몽환 핑크', 'fairy-mint': '몽환 블루', guardian: '별 수호자', jirai: '지뢰계', ryousan: '양산형', y2k: 'Y2K', gaming: '게이밍', wafu: '일본풍', halloween: '할로윈', christmas: '크리스마스' },
-  'zh-CN': { hextech: '海克斯科技', noxus: '诺克萨斯', freljord: '弗雷尔卓德', shadow: '暗影岛', ionia: '艾欧尼亚', fairy: '梦幻粉', 'fairy-mint': '梦幻蓝', guardian: '星之守护者', jirai: '地雷系', ryousan: '量产型', y2k: 'Y2K', gaming: '电竞RGB', wafu: '和风', halloween: '万圣节', christmas: '圣诞节' },
-  'zh-TW': { hextech: '海克斯科技', noxus: '諾克薩斯', freljord: '弗雷爾卓德', shadow: '闇影島', ionia: '愛歐尼亞', fairy: '夢幻粉', 'fairy-mint': '夢幻藍', guardian: '星光守護者', jirai: '地雷系', ryousan: '量產型', y2k: 'Y2K', gaming: '電競RGB', wafu: '和風', halloween: '萬聖節', christmas: '聖誕節' },
+  en: { hextech: 'Hextech', noxus: 'Noxus', freljord: 'Freljord', shadow: 'Shadow Isles', ionia: 'Ionia', fairy: 'Dreamy Pink', 'fairy-mint': 'Dreamy Blue', guardian: 'Star Guardian', jirai: 'Jirai-kei', ryousan: 'Ryousan-kei', y2k: 'Y2K', gaming: 'Gaming RGB', wafu: 'Japanese', halloween: 'Halloween', christmas: 'Christmas', newyear: 'New Year' },
+  ko: { hextech: '마법공학', noxus: '녹서스', freljord: '프렐요드', shadow: '그림자 군도', ionia: '아이오니아', fairy: '몽환 핑크', 'fairy-mint': '몽환 블루', guardian: '별 수호자', jirai: '지뢰계', ryousan: '양산형', y2k: 'Y2K', gaming: '게이밍', wafu: '일본풍', halloween: '할로윈', christmas: '크리스마스', newyear: '새해' },
+  'zh-CN': { hextech: '海克斯科技', noxus: '诺克萨斯', freljord: '弗雷尔卓德', shadow: '暗影岛', ionia: '艾欧尼亚', fairy: '梦幻粉', 'fairy-mint': '梦幻蓝', guardian: '星之守护者', jirai: '地雷系', ryousan: '量产型', y2k: 'Y2K', gaming: '电竞RGB', wafu: '和风', halloween: '万圣节', christmas: '圣诞节', newyear: '新年' },
+  'zh-TW': { hextech: '海克斯科技', noxus: '諾克薩斯', freljord: '弗雷爾卓德', shadow: '闇影島', ionia: '愛歐尼亞', fairy: '夢幻粉', 'fairy-mint': '夢幻藍', guardian: '星光守護者', jirai: '地雷系', ryousan: '量產型', y2k: 'Y2K', gaming: '電競RGB', wafu: '和風', halloween: '萬聖節', christmas: '聖誕節', newyear: '新年' },
 };
 
 // Preset tags are stored by their Japanese text and translated for display.

@@ -10,6 +10,7 @@ import en from './pages/en.mjs';
 import ko from './pages/ko.mjs';
 import zhCn from './pages/zh-cn.mjs';
 import zhTw from './pages/zh-tw.mjs';
+import { THEMES } from '../js/data.js';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const SITE = 'https://summonercard.com';
@@ -25,6 +26,10 @@ const LANGS = [
   { prefix: 'zh-cn', hreflang: 'zh-Hans', label: '简体中文', content: zhCn, cjk: 'Noto Sans SC' },
   { prefix: 'zh-tw', hreflang: 'zh-Hant', label: '繁體中文', content: zhTw, cjk: 'Noto Sans TC' },
 ];
+
+// Seasonal themes stay hidden on the pages until their release date; js/page.js reveals them.
+const RELEASE = Object.fromEntries(THEMES.filter((t) => t.from).map((t) => [t.id, t.from]));
+const gate = (id) => (RELEASE[id] ? ` data-from="${RELEASE[id]}" hidden` : '');
 
 const SLUGS = ['guide', 'templates', 'banner', 'faq', 'privacy', 'terms', 'about'];
 const base = (lang) => (lang.prefix ? `/${lang.prefix}` : '');
@@ -140,7 +145,7 @@ function pagesFor(lang, c) {
       ...c.templates,
       body: `${c.templates.intro}
       <div class="theme-list">
-${c.themes.map(([id, name, text]) => `        <section class="theme-item">
+${c.themes.map(([id, name, text]) => `        <section class="theme-item"${gate(id)}>
           <h2>${name}</h2>
           <img src="${IMG}/theme-${id}.jpg" width="600" height="338" loading="lazy" alt="${c.templates.alt(name)}">
           <p>${text}</p>
@@ -151,7 +156,7 @@ ${c.themes.map(([id, name, text]) => `        <section class="theme-item">
     banner: {
       ...c.banner,
       body: c.banner.body.replace('<!--BANNERS-->', `<div class="gallery banners">
-${c.themes.map(([id, name]) => `          <figure><a href="${IMG}/banner-${id}.jpg" target="_blank" rel="noopener"><img src="${IMG}/banner-${id}.jpg" width="1800" height="600" loading="lazy" alt="SUMMONER CARD banner: ${name}"></a><figcaption>${name}</figcaption></figure>`).join('\n')}
+${c.themes.map(([id, name]) => `          <figure${gate(id)}><a href="${IMG}/banner-${id}.jpg" target="_blank" rel="noopener"><img src="${IMG}/banner-${id}.jpg" width="1800" height="600" loading="lazy" alt="SUMMONER CARD banner: ${name}"></a><figcaption>${name}</figcaption></figure>`).join('\n')}
         </div>`),
     },
     faq: {

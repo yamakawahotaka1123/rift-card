@@ -1,6 +1,6 @@
 import {
   CDRAGON_GAME, DDRAGON, DEFAULT_STATE, DIVISIONS, MAX_CHAMPS, MAX_COMMENT, MAX_TAG_LENGTH, MAX_TAGS, NAME_PRESETS,
-  ROLE_LEVELS, ROLES, SAMPLE_STATE, TAGS, THEMES, TIERS, mainRoleOf,
+  ROLE_LEVELS, ROLES, SAMPLE_STATE, TAGS, TIERS, availableThemes, mainRoleOf,
 } from './data.js';
 import { CARD_H, CARD_W, SITE_URL, champSquareUrl, loadSplash, profileIconUrl, renderCard } from './card.js';
 import { cropImage } from './cropper.js';
@@ -149,7 +149,7 @@ function buildStaticUI() {
   $('#name-presets').innerHTML = namePresets(NAME_PRESETS)
     .map((p) => `<button type="button" class="chip" data-name-preset="${p}">${p}</button>`).join('');
 
-  $('#themes').innerHTML = THEMES.map((theme) => `
+  $('#themes').innerHTML = availableThemes().map((theme) => `
     <button type="button" class="theme" data-theme="${theme.id}" style="--a:${theme.accent};--b:${theme.bg1};--c:${theme.bg2}">
       <i></i><span>${themeName(theme)}</span>
     </button>`).join('');
@@ -942,7 +942,7 @@ async function init() {
   }
   // "/?theme=fairy" (from the template page) preselects a theme, then the URL is cleaned up.
   const themeParam = new URLSearchParams(location.search).get('theme');
-  if (themeParam && THEMES.some((t) => t.id === themeParam)) {
+  if (themeParam && availableThemes().some((t) => t.id === themeParam)) {
     state = { ...state, theme: themeParam };
     saveState();
     track('theme_from_link', { theme: themeParam });

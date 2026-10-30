@@ -22,6 +22,7 @@ export default ({ UPDATED, LEGAL, IMG, HOME }) => ({
   themes: [
     ['halloween', 'Halloween', 'Night purple and pumpkin orange with bats, cobwebs and a jack-o’-lantern. Your icon gets a witch hat. Looks great with a Bewitching skin as the background.'],
     ['christmas', 'Christmas', 'Red and green with a candy-cane border, string lights, snowflakes and a present. Your icon gets a Santa hat. Try it with a winter skin.'],
+    ['newyear', 'New Year', 'Crimson and gold with rising-sun rays, plum blossoms and kagami mochi. Your icon gets a folding fan. Perfect for a “Happy New Year” post.'],
     ['hextech', 'Hextech', 'The classic gold-and-navy look, close to the LoL client. Goes with any skin background, so pick this if you can’t decide.'],
     ['noxus', 'Noxus', 'A bold red-and-black design. Perfect with skins of Noxian champions like Darius or Sion.'],
     ['freljord', 'Freljord', 'An icy light-blue design. Great with Ashe, Sejuani or any winter skin.'],
@@ -39,10 +40,10 @@ export default ({ UPDATED, LEGAL, IMG, HOME }) => ({
 
   templates: {
     title: 'Summoner Card Templates (Themes) | SUMMONER CARD',
-    description: '15 free summoner card templates for League of Legends: Halloween, Christmas, Gaming RGB, Y2K, Japanese, Jirai-kei and more. Pick a theme and make your LoL profile card right away.',
+    description: '15+ free summoner card templates for League of Legends: Halloween, Christmas, Gaming RGB, Y2K, Japanese, Jirai-kei and more. Pick a theme and make your LoL profile card right away.',
     h1: 'Summoner Card Templates (Themes)',
     intro: `
-      <p>SUMMONER CARD has 15 templates (themes) to choose from. There’s no image editing involved: fill in the fields and your card is done. Press “Use this template” under a sample to open the maker with that theme selected.</p>
+      <p>SUMMONER CARD has 15+ templates (themes) to choose from. There’s no image editing involved: fill in the fields and your card is done. Press “Use this template” under a sample to open the maker with that theme selected.</p>
       <p>Every theme can use any champion skin or your own uploaded image as the background. Just changing the background gives the card a whole new feel.</p>`,
     button: 'Use this template →',
     alt: (name) => `Summoner card template: ${name}`,
@@ -156,7 +157,7 @@ export default ({ UPDATED, LEGAL, IMG, HOME }) => ({
       <section id="design">
         <h2>8. Design (theme and background)</h2>
         <h3>Theme</h3>
-        <p>Choose from 15 themes. See them all on the <a href="/templates/">templates</a> page.</p>
+        <p>Choose from 15+ themes. See them all on the <a href="/templates/">templates</a> page.</p>
         <h3>Background</h3>
         <ul>
           <li><strong>Choose a skin</strong>: pick a champion and skin, and its splash art becomes the background.</li>
@@ -203,7 +204,7 @@ export default ({ UPDATED, LEGAL, IMG, HOME }) => ({
       </section>
 
       <section>
-        <h2>Banners to download (all 15 themes)</h2>
+        <h2>Banners to download (all themes)</h2>
         <p>Click an image to open it full size (1800×600) and save it from there.</p>
         <!--BANNERS-->
       </section>

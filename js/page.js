@@ -3,6 +3,11 @@ import { initAnalytics, track } from './analytics.js';
 
 initAnalytics();
 
+// Seasonal themes are in the HTML ahead of time; show them once their release date (JST) arrives.
+for (const el of document.querySelectorAll('[data-from]')) {
+  if (new Date() >= new Date(`${el.dataset.from}T00:00:00+09:00`)) el.hidden = false;
+}
+
 function toast(message) {
   const el = document.getElementById('toast');
   if (!el) return;

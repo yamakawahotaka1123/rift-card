@@ -107,7 +107,16 @@ export const THEMES = [
     bg1: '#0b2a1c', bg2: '#14402a', bgStops: ['#0a2418', '#123a26', '#1c4a30'],
     accent: '#e8414f', accent2: '#f6f1e7', gold: '#e6c46a', text: '#fff8ef', sub: '#b6cbb8', panel: 'rgba(6,24,15,0.7)',
   },
+  {
+    // Shows up on its own from `from` (JST); until then only direct renders can use it.
+    id: 'newyear', label: 'お正月', deco: 'newyear', from: '2026-12-01',
+    bg1: '#5a0a13', bg2: '#8c1520', bgStops: ['#46070f', '#74101a', '#9a1c25'],
+    accent: '#e6c15a', accent2: '#fff1d6', gold: '#f2d27a', text: '#fff7ea', sub: '#e9b9aa', panel: 'rgba(48,5,10,0.72)',
+  },
 ];
+
+export const themeIsOut = (theme, now = new Date()) => !theme.from || now >= new Date(`${theme.from}T00:00:00+09:00`);
+export const availableThemes = (now) => THEMES.filter((t) => themeIsOut(t, now));
 
 export const DEFAULT_STATE = {
   name: '',
