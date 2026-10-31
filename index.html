@@ -118,6 +118,30 @@
     </section>
 
     <form class="editor" id="form" autocomplete="off" onsubmit="return false">
+      <fieldset id="riot-import" hidden>
+        <legend><span data-i18n="sec.riot">Riot IDから読み込む</span></legend>
+        <p class="hint" data-i18n="riot.note">Riot IDを入れると、アイコン・名前・レベル・ランクが自動で入ります。得意チャンピオンも一覧から選べます。</p>
+        <div class="row riot-row">
+          <label class="field grow"><span>Riot ID</span>
+            <input id="riot-id" maxlength="22" placeholder="名前#JP1" data-i18n-ph="ph.riotId" enterkeyhint="go">
+          </label>
+          <label class="field small"><span data-i18n="riot.server">サーバー</span>
+            <select id="riot-platform"></select>
+          </label>
+          <button type="button" class="btn primary" id="riot-load" data-i18n="riot.load">読み込む</button>
+        </div>
+        <p class="hint riot-status" id="riot-status" aria-live="polite"></p>
+        <div id="riot-champs" hidden>
+          <div class="segmented" id="riot-tabs">
+            <button type="button" data-tab="win" data-i18n="riot.winTab">ランク勝率順</button>
+            <button type="button" data-tab="mastery" data-i18n="riot.masteryTab">マスタリー順</button>
+          </div>
+          <p class="hint" id="riot-note"></p>
+          <div class="riot-grid" id="riot-grid"></div>
+          <button type="button" class="btn ghost small" id="riot-top5" data-i18n="riot.top5">上から5体を入れる</button>
+        </div>
+      </fieldset>
+
       <fieldset>
         <legend><span data-i18n="sec.basic">基本情報</span> <a class="help" href="/guide/#basic" target="_blank" title="使い方を見る" aria-label="使い方を見る" data-i18n-title="help.title">?</a></legend>
         <button type="button" class="section-clear" data-i18n="clear" data-clear="basic">クリア</button>

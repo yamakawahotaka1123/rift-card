@@ -6,6 +6,7 @@ import { CARD_H, CARD_W, SITE_URL, champSquareUrl, loadSplash, profileIconUrl, r
 import { cropImage } from './cropper.js';
 import { initAnalytics, track } from './analytics.js';
 import { renderBanner } from './banner.js';
+import { initRiotImport } from './riot.js';
 import {
   LANG, LANG_INFO, SHARE_HASHTAGS, allNamePresets, applyI18n, levelLabel, namePresets, t, tagName, themeName, tierName,
 } from './i18n.js';
@@ -951,6 +952,7 @@ async function init() {
   syncUI();
   syncSkins();
   scheduleRender();
+  initRiotImport({ getState: () => state, update, ctxData, toast });
   // Re-render whenever web fonts finish loading so the preview isn't stuck on a fallback font.
   document.fonts?.ready.then(scheduleRender);
   document.fonts?.addEventListener('loadingdone', scheduleRender);

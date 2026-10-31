@@ -1,0 +1,9 @@
+name = "summonercard-api"
+main = "index.js"
+compatibility_date = "2026-10-01"
+
+[vars]
+# Ranked matches read per lookup. Keep it low on a development key (100 requests / 2 minutes).
+MATCH_COUNT = "20"
+
+# The Riot API key is a secret: npx wrangler secret put RIOT_KEY
