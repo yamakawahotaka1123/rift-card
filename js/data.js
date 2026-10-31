@@ -123,6 +123,21 @@ export const THEMES = [
     bg1: '#2b0d14', bg2: '#4d1626', bgStops: ['#22080f', '#3d1120', '#5c1a2e'],
     accent: '#ff5c8a', accent2: '#ffc2d4', gold: '#f4c58f', text: '#fff1f5', sub: '#d9a3b4', panel: 'rgba(30,6,14,0.72)',
   },
+  {
+    id: 'yozakura', label: '夜桜', deco: 'yozakura', from: '2027-03-01',
+    bg1: '#0e0b24', bg2: '#2a1640', bgStops: ['#0b0a20', '#1c1236', '#3a1a48'],
+    accent: '#ff5fa2', accent2: '#ffc1dc', gold: '#ffd9a8', text: '#fff3f8', sub: '#c3a9cf', panel: 'rgba(12,8,30,0.72)',
+  },
+  {
+    id: 'songkran', label: 'ソンクラーン', deco: 'songkran', from: '2027-03-25',
+    bg1: '#0a8fc4', bg2: '#38c6e8', bgStops: ['#0677b0', '#16a2d6', '#5fd6ef'],
+    accent: '#ffffff', accent2: '#ff7ab6', gold: '#ffe066', text: '#ffffff', sub: '#d6f4ff', panel: 'rgba(0,60,100,0.55)',
+  },
+  {
+    id: 'hanabi', label: '花火', deco: 'hanabi', from: '2027-07-01',
+    bg1: '#050a24', bg2: '#0e1a46', bgStops: ['#03061a', '#0a1236', '#152456'],
+    accent: '#ffd36b', accent2: '#ff6b8b', gold: '#f3c968', text: '#fffaf0', sub: '#a9b6dc', panel: 'rgba(4,8,30,0.72)',
+  },
 ];
 
 export const themeIsOut = (theme, now = new Date()) => !theme.from || now >= new Date(`${theme.from}T00:00:00+09:00`);

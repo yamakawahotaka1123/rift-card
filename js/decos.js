@@ -772,6 +772,134 @@ function arrowHeart(ctx, x, y, s, rot = 0) {
   ctx.restore();
 }
 
+// Crescent moon: a disc with an offset disc cut out of it.
+function crescent(ctx, x, y, r, color, glow) {
+  ctx.save();
+  ctx.shadowColor = glow;
+  ctx.shadowBlur = r * 0.8;
+  ctx.beginPath();
+  ctx.arc(x, y, r, 0, Math.PI * 2);
+  ctx.clip();
+  ctx.beginPath();
+  ctx.rect(x - r, y - r, r * 2, r * 2);
+  ctx.arc(x + r * 0.45, y - r * 0.25, r * 0.85, 0, Math.PI * 2);
+  ctx.fillStyle = color;
+  ctx.fill('evenodd');
+  ctx.restore();
+}
+
+// Firework burst: rays of dots from (x, y).
+function firework(ctx, x, y, R, color, rays = 18) {
+  ctx.save();
+  ctx.fillStyle = color;
+  ctx.strokeStyle = color;
+  ctx.lineCap = 'round';
+  const base = ctx.globalAlpha;
+  for (let i = 0; i < rays; i++) {
+    const a = (Math.PI * 2 * i) / rays;
+    const c = Math.cos(a), s = Math.sin(a);
+    ctx.lineWidth = Math.max(1, R * 0.025);
+    ctx.globalAlpha = base * 0.5;
+    ctx.beginPath();
+    ctx.moveTo(x + c * R * 0.25, y + s * R * 0.25);
+    ctx.lineTo(x + c * R * 0.8, y + s * R * 0.8);
+    ctx.stroke();
+    ctx.globalAlpha = base;
+    for (const [t, d] of [[0.9, 0.05], [1.02, 0.035]]) {
+      ctx.beginPath();
+      ctx.arc(x + c * R * t, y + s * R * t, Math.max(1, R * d), 0, Math.PI * 2);
+      ctx.fill();
+    }
+  }
+  ctx.restore();
+}
+
+// Round uchiwa fan; (x, y) is the center of the leaf.
+function uchiwa(ctx, x, y, s, rot, leaf, edge) {
+  ctx.save();
+  ctx.translate(x, y);
+  ctx.rotate(rot);
+  ctx.fillStyle = '#c99a55';
+  ctx.fillRect(-s * 0.07, s * 0.75, s * 0.14, s * 0.9);
+  ctx.beginPath();
+  ctx.arc(0, 0, s, 0, Math.PI * 2);
+  ctx.fillStyle = leaf;
+  ctx.fill();
+  ctx.lineWidth = Math.max(2, s * 0.07);
+  ctx.strokeStyle = edge;
+  ctx.stroke();
+  // Little firework on the leaf
+  firework(ctx, s * 0.1, -s * 0.05, s * 0.55, edge, 12);
+  ctx.restore();
+}
+
+// Jasmine flower: five slim white petals.
+function jasmine(ctx, x, y, s, rot = 0) {
+  ctx.save();
+  ctx.translate(x, y);
+  ctx.rotate(rot);
+  ctx.fillStyle = '#ffffff';
+  for (let i = 0; i < 5; i++) {
+    ctx.rotate((Math.PI * 2) / 5);
+    ctx.beginPath();
+    ctx.ellipse(0, -s * 0.55, s * 0.22, s * 0.5, 0, 0, Math.PI * 2);
+    ctx.fill();
+  }
+  ctx.beginPath();
+  ctx.arc(0, 0, s * 0.16, 0, Math.PI * 2);
+  ctx.fillStyle = '#ffd166';
+  ctx.fill();
+  ctx.restore();
+}
+
+// Water drop pointing up.
+function drop(ctx, x, y, s, color) {
+  ctx.beginPath();
+  ctx.moveTo(x, y - s);
+  ctx.bezierCurveTo(x + s * 0.15, y - s * 0.55, x + s * 0.6, y - s * 0.05, x + s * 0.6, y + s * 0.3);
+  ctx.arc(x, y + s * 0.3, s * 0.6, 0, Math.PI);
+  ctx.bezierCurveTo(x - s * 0.6, y - s * 0.05, x - s * 0.15, y - s * 0.55, x, y - s);
+  ctx.closePath();
+  ctx.fillStyle = color;
+  ctx.fill();
+}
+
+// Splash of drops thrown up from (x, y).
+function splash(ctx, x, y, s, color) {
+  for (const [a, d, k] of [[-0.5, 1, 0.5], [-0.25, 1.3, 0.38], [0, 1.1, 0.45], [0.25, 1.35, 0.35], [0.5, 0.95, 0.42], [-0.1, 1.7, 0.25], [0.35, 1.8, 0.22]]) {
+    drop(ctx, x + Math.sin(a) * s * d, y - Math.cos(a) * s * d, s * k, color);
+  }
+}
+
+// Silver bowl of water with a jasmine floating in it.
+function waterBowl(ctx, x, y, s) {
+  ctx.save();
+  ctx.translate(x, y);
+  splash(ctx, 0, -s * 0.35, s * 0.55, 'rgba(120,214,255,0.9)');
+  const g = ctx.createLinearGradient(-s, 0, s, 0);
+  g.addColorStop(0, '#9aa7b3');
+  g.addColorStop(0.45, '#ffffff');
+  g.addColorStop(1, '#8592a0');
+  ctx.beginPath();
+  ctx.moveTo(-s, -s * 0.2);
+  ctx.quadraticCurveTo(-s * 0.95, s * 0.6, 0, s * 0.62);
+  ctx.quadraticCurveTo(s * 0.95, s * 0.6, s, -s * 0.2);
+  ctx.closePath();
+  ctx.fillStyle = g;
+  ctx.fill();
+  ctx.beginPath();
+  ctx.ellipse(0, -s * 0.2, s, s * 0.2, 0, 0, Math.PI * 2);
+  ctx.fillStyle = '#5cc8f0';
+  ctx.fill();
+  ctx.lineWidth = 2;
+  ctx.strokeStyle = '#c3ccd5';
+  ctx.stroke();
+  ctx.fillStyle = '#b8c2cc';
+  ctx.fillRect(-s * 0.3, s * 0.6, s * 0.6, s * 0.12);
+  ctx.restore();
+  jasmine(ctx, x + s * 0.3, y - s * 0.22, s * 0.22, 0.3);
+}
+
 // ---------- Shared pieces ----------
 
 function scriptLabel(color) {
@@ -1470,5 +1598,210 @@ export const DECOS = {
     nameGlow: '#ff5c8a',
     commentRight: 110,
     watermark: scriptWatermark(140),
+  },
+
+  // 夜桜: night sky with a pink neon frame, falling petals, a crescent moon, sakura on the icon.
+  yozakura: {
+    fonts: {
+      jp: MINCHO,
+      en: MINCHO,
+      title: MINCHO,
+      load: ['700 24px "Shippori Mincho"', '800 24px "Shippori Mincho"'],
+    },
+    vertical: true,
+    backdrop: (ctx, W, H, theme, hasImage) => {
+      const rand = rng(3301);
+      ctx.fillStyle = rgba('#ffffff', hasImage ? 0.5 : 0.35);
+      for (let i = 0; i < 70; i++) {
+        ctx.beginPath();
+        ctx.arc(rand() * W, rand() * H * 0.7, 0.6 + rand() * 1.2, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      scatter(3302, 30, W, H, (x, y, r) => {
+        ctx.globalAlpha = 0.6 + r() * 0.35;
+        petal(ctx, x, y, 6 + r() * 6, r() * Math.PI * 2, r() < 0.5 ? '#ffb7d0' : '#ffd9e6');
+        ctx.globalAlpha = 1;
+      });
+    },
+    frame: (ctx, W, H, theme) => {
+      ctx.save();
+      ctx.shadowColor = theme.accent;
+      ctx.shadowBlur = 16;
+      ctx.lineWidth = 3;
+      ctx.strokeStyle = theme.accent;
+      ctx.beginPath();
+      ctx.roundRect(22, 22, W - 44, H - 44, 14);
+      ctx.stroke();
+      ctx.stroke();
+      ctx.restore();
+      ctx.lineWidth = 1;
+      ctx.strokeStyle = rgba(theme.accent2, 0.6);
+      ctx.beginPath();
+      ctx.roundRect(32, 32, W - 64, H - 64, 10);
+      ctx.stroke();
+      crescent(ctx, 560, 46, 18, '#fff4d6', '#ffe9a8');
+      // Blossom clusters on two corners
+      for (const [x, y, s, c] of [[W - 60, H - 62, 30, '#ff9cc2'], [W - 104, H - 38, 18, '#ffd1e1'], [W - 34, H - 104, 15, '#ffd1e1'], [44, H - 44, 16, '#ff9cc2'], [W - 44, 46, 16, '#ff9cc2']]) {
+        ctx.save();
+        ctx.shadowColor = '#ff5fa2';
+        ctx.shadowBlur = 12;
+        sakura(ctx, x, y, s, c, '#fff3a8');
+        ctx.restore();
+      }
+    },
+    iconDeco: (ctx, cx, cy, r) => {
+      ctx.save();
+      ctx.shadowColor = '#ff5fa2';
+      ctx.shadowBlur = 12;
+      sakura(ctx, cx - r * 0.72, cy + r * 0.7, 22, '#ff9cc2', '#fff3a8');
+      sakura(ctx, cx + r * 0.75, cy - r * 0.7, 16, '#ffd1e1', '#fff3a8');
+      ctx.restore();
+    },
+    label: (ctx, text, x, y, theme, fonts) => {
+      ctx.save();
+      ctx.font = `800 19px ${fonts.title}`;
+      ctx.shadowColor = theme.accent;
+      ctx.shadowBlur = 10;
+      ctx.fillStyle = theme.accent2;
+      ctx.letterSpacing = '3px';
+      ctx.fillText(text, x, y);
+      ctx.letterSpacing = '0px';
+      ctx.restore();
+    },
+    nameGlow: '#ff5fa2',
+    commentRight: 110,
+    watermarkRight: 140,
+  },
+
+  // ソンクラーン: bright water blue, splashes and drops, jasmine garlands, a silver water bowl, flowers on the icon.
+  songkran: {
+    fonts: ROUNDED_FONTS,
+    vertical: true,
+    backdrop: (ctx, W, H, theme, hasImage) => {
+      // Soft wave bands along the bottom
+      ctx.save();
+      for (let k = 0; k < 3; k++) {
+        ctx.beginPath();
+        const y0 = H - 40 - k * 34;
+        ctx.moveTo(0, H);
+        ctx.lineTo(0, y0);
+        for (let x = 0; x <= W; x += 60) ctx.quadraticCurveTo(x + 30, y0 - 14 * (k % 2 ? 1 : -1), x + 60, y0);
+        ctx.lineTo(W, H);
+        ctx.closePath();
+        ctx.fillStyle = rgba('#ffffff', (hasImage ? 0.08 : 0.16) - k * 0.03);
+        ctx.fill();
+      }
+      ctx.restore();
+      scatter(5501, 30, W, H, (x, y, rand) => {
+        const k = rand();
+        if (k < 0.5) drop(ctx, x, y, 6 + rand() * 6, rgba('#ffffff', 0.75));
+        else if (k < 0.8) jasmine(ctx, x, y, 7 + rand() * 4, rand());
+        else sparkle(ctx, x, y, 5 + rand() * 4, rgba('#ffffff', 0.95));
+      });
+    },
+    frame: (ctx, W, H, theme) => {
+      ctx.lineWidth = 6;
+      ctx.strokeStyle = '#ffffff';
+      ctx.beginPath();
+      ctx.roundRect(20, 20, W - 40, H - 40, 18);
+      ctx.stroke();
+      ctx.lineWidth = 2;
+      ctx.strokeStyle = theme.accent2;
+      ctx.beginPath();
+      ctx.roundRect(31, 31, W - 62, H - 62, 12);
+      ctx.stroke();
+      // Jasmine garland swagging along the top
+      const x0 = 260, x1 = W - 330, sag = 22;
+      for (let i = 0; i <= 26; i++) {
+        const t = i / 26, x = x0 + (x1 - x0) * t;
+        const y = 22 + sag * 4 * ((t * 3) % 1) * (1 - ((t * 3) % 1));
+        jasmine(ctx, x, y, i % 2 ? 6 : 8, i);
+      }
+      for (const t of [0, 1 / 3, 2 / 3, 1]) {
+        const x = x0 + (x1 - x0) * t;
+        ctx.beginPath();
+        ctx.arc(x, 22, 6, 0, Math.PI * 2);
+        ctx.fillStyle = theme.accent2;
+        ctx.fill();
+      }
+      waterBowl(ctx, W - 80, H - 70, 40);
+      jasmine(ctx, W - 140, H - 40, 10, 0.5);
+    },
+    iconDeco: (ctx, cx, cy, r, theme) => {
+      splash(ctx, cx + r * 0.78, cy - r * 0.55, 20, 'rgba(120,214,255,0.95)');
+      jasmine(ctx, cx - r * 0.74, cy + r * 0.7, 16, 0.2);
+      jasmine(ctx, cx - r * 0.42, cy + r * 0.95, 11, 0.8);
+      ctx.beginPath();
+      ctx.arc(cx - r * 0.95, cy + r * 0.38, 7, 0, Math.PI * 2);
+      ctx.fillStyle = theme.accent2;
+      ctx.fill();
+    },
+    label: scriptLabel('accent2'),
+    nameGlow: '#0aa3d6',
+    commentRight: 120,
+    watermark: scriptWatermark(150),
+  },
+
+  // 花火: deep navy summer night, firework bursts, a gold frame, an uchiwa fan on the icon.
+  hanabi: {
+    fonts: {
+      jp: MINCHO,
+      en: MINCHO,
+      title: MINCHO,
+      load: ['700 24px "Shippori Mincho"', '800 24px "Shippori Mincho"'],
+    },
+    vertical: true,
+    backdrop: (ctx, W, H, theme, hasImage) => {
+      // Big faint bursts behind everything, brighter ones only where nothing sits
+      const a = hasImage ? 0.32 : 0.45;
+      for (const [x, y, R, c] of [[330, 140, 130, '#ff6b8b'], [800, 120, 150, '#ffd36b'], [1040, 430, 130, '#7ad7ff'], [160, 540, 110, '#b78bff'], [640, 560, 110, '#7dffb0']]) {
+        ctx.save();
+        ctx.globalAlpha = a;
+        firework(ctx, x, y, R, c, 24);
+        ctx.restore();
+      }
+      const rand = rng(6601);
+      ctx.fillStyle = rgba('#ffffff', 0.4);
+      for (let i = 0; i < 50; i++) {
+        ctx.beginPath();
+        ctx.arc(rand() * W, rand() * H, 0.6 + rand(), 0, Math.PI * 2);
+        ctx.fill();
+      }
+    },
+    frame: (ctx, W, H, theme) => {
+      ctx.lineWidth = 4;
+      ctx.strokeStyle = theme.gold;
+      ctx.strokeRect(18, 18, W - 36, H - 36);
+      ctx.lineWidth = 1.5;
+      ctx.strokeStyle = rgba(theme.gold, 0.6);
+      ctx.strokeRect(28, 28, W - 56, H - 56);
+      // Small bright bursts in free corners
+      for (const [x, y, R, c] of [[W - 60, 60, 26, '#ffd36b'], [60, H - 58, 22, '#ff6b8b'], [W - 140, H - 44, 16, '#7ad7ff']]) {
+        ctx.save();
+        ctx.shadowColor = c;
+        ctx.shadowBlur = 8;
+        firework(ctx, x, y, R, c, 14);
+        ctx.restore();
+      }
+      uchiwa(ctx, W - 72, H - 92, 32, 0.35, '#1e3c8c', '#ffd36b');
+    },
+    iconDeco: (ctx, cx, cy, r) => {
+      uchiwa(ctx, cx + r * 0.7, cy - r * 0.62, 32, 0.5, '#1e3c8c', '#ffd36b');
+    },
+    label: (ctx, text, x, y, theme, fonts) => {
+      ctx.save();
+      ctx.shadowColor = theme.gold;
+      ctx.shadowBlur = 6;
+      firework(ctx, x + 7, y - 6, 8, theme.gold, 10);
+      ctx.restore();
+      ctx.font = `800 19px ${fonts.title}`;
+      ctx.fillStyle = theme.text;
+      ctx.letterSpacing = '3px';
+      ctx.fillText(text, x + 22, y);
+      ctx.letterSpacing = '0px';
+    },
+    nameGlow: '#ffd36b',
+    commentRight: 110,
+    watermarkRight: 150,
   },
 };
