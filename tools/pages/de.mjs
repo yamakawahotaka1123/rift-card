@@ -254,7 +254,7 @@ export default ({ UPDATED, LEGAL, IMG, HOME }) => ({
 
       <section>
         <h2>3. Werbung</h2>
-        <p>Um die Betriebskosten zu decken, könnte die Seite künftig Werbedienste Dritter (z. B. Google AdSense) nutzen. Dann könnten Werbeanbieter Cookies verwenden, um interessenbasierte Werbung zu zeigen. Vor der Einführung von Werbung aktualisieren wir diese Erklärung.</p>
+        <p>Um die Betriebskosten zu decken, nutzt die Seite Google AdSense, einen Werbedienst Dritter. Werbeanbieter, darunter Google, verwenden Cookies, um Anzeigen auf Grundlage deiner früheren Besuche dieser und anderer Websites zu zeigen. Personalisierte Werbung kannst du in den <a href="https://adssettings.google.com/" target="_blank" rel="noopener">Anzeigeneinstellungen</a> von Google deaktivieren und Cookies von Drittanbietern unter <a href="https://www.aboutads.info/" target="_blank" rel="noopener">www.aboutads.info</a> ablehnen.</p>
       </section>
 
       <section>

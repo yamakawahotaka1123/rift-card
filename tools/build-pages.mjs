@@ -123,6 +123,7 @@ ${alternates}
   <link rel="preload" as="style" href="${fonts}" onload="this.onload=null;this.rel='stylesheet'">
   <noscript><link rel="stylesheet" href="${fonts}"></noscript>
   <link rel="stylesheet" href="/css/style.css">
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2105839437802724" crossorigin="anonymous"></script>
   <script type="application/ld+json">
 ${ld}
   </script>

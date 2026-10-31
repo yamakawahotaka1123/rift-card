@@ -254,7 +254,7 @@ export default ({ UPDATED, LEGAL, IMG, HOME }) => ({
 
       <section>
         <h2>3. Quảng cáo</h2>
-        <p>Để trang trải chi phí vận hành, trong tương lai Trang có thể dùng dịch vụ quảng cáo của bên thứ ba (như Google AdSense). Khi đó, nhà cung cấp quảng cáo có thể dùng cookie để hiển thị quảng cáo theo sở thích của bạn. Chúng tôi sẽ cập nhật chính sách này trước khi đưa quảng cáo vào.</p>
+        <p>Để trang trải chi phí vận hành, Trang sử dụng dịch vụ quảng cáo bên thứ ba “Google AdSense”. Các nhà cung cấp quảng cáo, bao gồm Google, dùng cookie để hiển thị quảng cáo dựa trên các lần bạn truy cập Trang này và các trang khác trước đây. Bạn có thể tắt quảng cáo được cá nhân hóa trong <a href="https://adssettings.google.com/" target="_blank" rel="noopener">Cài đặt quảng cáo</a> của Google và từ chối cookie của bên thứ ba tại <a href="https://www.aboutads.info/" target="_blank" rel="noopener">www.aboutads.info</a>.</p>
       </section>
 
       <section>

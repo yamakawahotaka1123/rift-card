@@ -254,7 +254,7 @@ export default ({ UPDATED, LEGAL, IMG, HOME }) => ({
 
       <section>
         <h2>3. Advertising</h2>
-        <p>To cover running costs, the Site may in the future use third-party advertising services (such as Google AdSense). In that case, ad providers may use cookies to show ads based on your interests. We will update this policy before introducing ads.</p>
+        <p>To cover running costs, the Site uses Google AdSense, a third-party advertising service. Ad vendors, including Google, use cookies to show ads based on your previous visits to this and other websites. You can turn off personalized ads in Google’s <a href="https://adssettings.google.com/" target="_blank" rel="noopener">Ads Settings</a>, and opt out of third-party vendors’ cookies at <a href="https://www.aboutads.info/" target="_blank" rel="noopener">www.aboutads.info</a>.</p>
       </section>
 
       <section>

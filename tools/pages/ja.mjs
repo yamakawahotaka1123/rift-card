@@ -253,7 +253,7 @@ export default ({ UPDATED, LEGAL, IMG, HOME }) => ({
 
       <section>
         <h2>3. 広告について</h2>
-        <p>本サイトでは、今後、運営費をまかなうために第三者配信の広告サービス（Google AdSense など）を利用する場合があります。その場合、広告配信事業者は利用者の興味に応じた広告を表示するために Cookie を使用することがあります。広告を導入する際は、本ポリシーを更新してお知らせします。</p>
+        <p>本サイトでは、運営費をまかなうために第三者配信の広告サービス「Google AdSense」を利用しています。Google などの広告配信事業者は、Cookie を使用して、利用者が本サイトや他のサイトに過去にアクセスした際の情報に基づいて広告を表示することがあります。パーソナライズ広告は Google の<a href="https://adssettings.google.com/" target="_blank" rel="noopener">広告設定</a>で無効にできます。また、<a href="https://www.aboutads.info/" target="_blank" rel="noopener">www.aboutads.info</a> で第三者配信事業者の Cookie を無効にすることもできます。</p>
       </section>
 
       <section>

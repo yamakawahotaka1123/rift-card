@@ -254,7 +254,7 @@ export default ({ UPDATED, LEGAL, IMG, HOME }) => ({
 
       <section>
         <h2>3. Publicité</h2>
-        <p>Pour couvrir les frais, le Site pourrait à l’avenir utiliser des services publicitaires tiers (comme Google AdSense). Les régies pourraient alors utiliser des cookies pour afficher des publicités selon tes centres d’intérêt. Nous mettrons cette politique à jour avant d’introduire de la publicité.</p>
+        <p>Pour couvrir ses frais, le Site utilise Google AdSense, un service publicitaire tiers. Les fournisseurs de publicité, dont Google, utilisent des cookies pour afficher des annonces selon tes visites précédentes sur ce site et d’autres sites. Tu peux désactiver les annonces personnalisées dans les <a href="https://adssettings.google.com/" target="_blank" rel="noopener">paramètres des annonces</a> de Google et refuser les cookies de tiers sur <a href="https://www.aboutads.info/" target="_blank" rel="noopener">www.aboutads.info</a>.</p>
       </section>
 
       <section>

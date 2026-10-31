@@ -254,7 +254,7 @@ export default ({ UPDATED, LEGAL, IMG, HOME }) => ({
 
       <section>
         <h2>3. 關於廣告</h2>
-        <p>為了支付營運費用，本網站今後可能會使用第三方廣告服務（Google AdSense 等）。屆時，廣告業者可能會使用 Cookie 依使用者的興趣顯示廣告。導入廣告時，我們會更新本政策並另行告知。</p>
+        <p>為了支付營運費用，本網站使用第三方廣告服務「Google AdSense」。包括 Google 在內的廣告供應商會使用 Cookie，根據您過去造訪本網站及其他網站的資訊顯示廣告。您可以在 Google 的<a href="https://adssettings.google.com/" target="_blank" rel="noopener">廣告設定</a>中關閉個人化廣告，也可以在 <a href="https://www.aboutads.info/" target="_blank" rel="noopener">www.aboutads.info</a> 拒絕第三方供應商的 Cookie。</p>
       </section>
 
       <section>
