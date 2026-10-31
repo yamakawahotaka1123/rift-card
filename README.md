@@ -10,7 +10,7 @@ League of Legends の自己紹介カード（サモナーカード）をブラ�
 - プレイスタイルタグ（自作も可）、活動時間、Discord / X / Twitch / YouTube
 - テーマ15種（ハロウィン・クリスマス・地雷系・量産型・Y2K・ゲーミング・和風なども）、スキンや自分の画像を背景に（位置・拡大・暗さを調整）
 - PNG保存 / コピー / Xシェア、宣伝バナー（1800×600）の生成
-- 日本語 / English / 한국어 / 简体中文 / 繁體中文（ブラウザの言語で自動選択、左上で切り替え。翻訳は `js/i18n.js`）。`/en/` `/ko/` `/zh-cn/` `/zh-tw/` はその言語のプレビュー画像（`og-*.jpg`）付きのページ
+- 日本語 / English / 한국어 / 简体中文 / 繁體中文 / ไทย / Tiếng Việt / Español / Português / Deutsch / Français（ブラウザの言語で自動選択、左上で切り替え。画面の文言は `js/lang/<言語>.js`、ランク名などは `js/i18n.js`）。`/en/` `/th/` などはその言語のプレビュー画像（`og-*.jpg`）付きのページ
 
 入力内容はブラウザの localStorage にだけ保存され、サーバーには送信されません。
 
@@ -28,7 +28,7 @@ League of Legends の自己紹介カード（サモナーカード）をブラ�
 | `guide/` `templates/` `banner/` `faq/` `privacy/` `terms/` `about/` | 説明ページ（生成物） |
 | `tools/build-pages.mjs` | 説明ページと `sitemap.xml` の生成スクリプト |
 
-説明ページの文章は `tools/pages/<言語>.mjs` にあります（ja / en / ko / zh-cn / zh-tw）。変えたら次を実行してください。
+説明ページの文章は `tools/pages/<言語>.mjs` にあります（ja / en / ko / zh-cn / zh-tw / th / vi / es / pt-br / de / fr）。変えたら次を実行してください。
 
 ```sh
 node tools/build-pages.mjs

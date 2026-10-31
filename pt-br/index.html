@@ -1,0 +1,381 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script>
+    // Backup for GitHub's own HTTPS redirect: never stay on plain http.
+    if (location.protocol === 'http:' && location.hostname !== 'localhost') location.replace(`https://${location.host}${location.pathname}${location.search}${location.hash}`);
+  </script>
+  <title>Summoner Card Maker | Crie seu card de perfil de LoL grátis - SUMMONER CARD</title>
+  <meta name="description" content="Crie grátis seu card de invocador (card de perfil) de League of Legends. Escolha elo, rotas, campeões principais e um fundo de skin e a imagem fica pronta. Sem cadastro e funciona no celular. Perfeito para achar duo no X e no Discord.">
+  <link rel="canonical" href="https://summonercard.com/pt-br/">
+  <link rel="alternate" hreflang="ja" href="https://summonercard.com/">
+  <link rel="alternate" hreflang="en" href="https://summonercard.com/en/">
+  <link rel="alternate" hreflang="ko" href="https://summonercard.com/ko/">
+  <link rel="alternate" hreflang="zh-Hans" href="https://summonercard.com/zh-cn/">
+  <link rel="alternate" hreflang="zh-Hant" href="https://summonercard.com/zh-tw/">
+  <link rel="alternate" hreflang="th" href="https://summonercard.com/th/">
+  <link rel="alternate" hreflang="vi" href="https://summonercard.com/vi/">
+  <link rel="alternate" hreflang="es" href="https://summonercard.com/es/">
+  <link rel="alternate" hreflang="pt-BR" href="https://summonercard.com/pt-br/">
+  <link rel="alternate" hreflang="de" href="https://summonercard.com/de/">
+  <link rel="alternate" hreflang="fr" href="https://summonercard.com/fr/">
+  <link rel="alternate" hreflang="x-default" href="https://summonercard.com/">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <meta property="og:title" content="Summoner Card Maker | Cards de perfil de LoL grátis">
+  <meta property="og:description" content="Coloque seu elo, rotas e mains para criar seu card de perfil de LoL grátis.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://summonercard.com/pt-br/">
+  <meta property="og:image" content="https://summonercard.com/og-pt-br.jpg">
+  <meta property="og:image:type" content="image/jpeg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="675">
+  <meta property="og:image:alt" content="Exemplo de card de perfil de LoL feito com o SUMMONER CARD">
+  <meta property="og:site_name" content="SUMMONER CARD">
+  <meta property="og:locale" content="pt_BR">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Summoner Card Maker | Cards de perfil de LoL grátis">
+  <meta name="twitter:description" content="Coloque seu elo, rotas e mains para criar seu card de perfil de LoL grátis.">
+  <meta name="twitter:image" content="https://summonercard.com/og-pt-br.jpg">
+  <meta name="twitter:image:alt" content="Exemplo de card de perfil de LoL feito com o SUMMONER CARD">
+  <meta name="theme-color" content="#c8aa6e">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <!-- Load web fonts without blocking the first paint; the page shows system fonts until they arrive. -->
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Dancing+Script:wght@700&family=M+PLUS+1p:wght@400;500;700;800&family=M+PLUS+Rounded+1c:wght@500;700;800&family=Orbitron:wght@700&family=Bungee&family=Creepster&family=Shippori+Mincho:wght@700;800&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Dancing+Script:wght@700&family=M+PLUS+1p:wght@400;500;700;800&family=M+PLUS+Rounded+1c:wght@500;700;800&family=Orbitron:wght@700&family=Bungee&family=Creepster&family=Shippori+Mincho:wght@700;800&display=swap"></noscript>
+  <link rel="stylesheet" href="/css/style.css">
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebApplication",
+      "name": "SUMMONER CARD (Summoner Card Maker)",
+      "url": "https://summonercard.com/pt-br/",
+      "description": "App web gratuito para criar cards de invocador (cards de perfil) de League of Legends.",
+      "applicationCategory": "DesignApplication",
+      "operatingSystem": "Web",
+      "inLanguage": "pt-BR",
+      "image": "https://summonercard.com/og-pt-br.jpg",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "JPY"
+      }
+    }
+  ]
+}
+  </script>
+</head>
+<body>
+  <div class="inapp-banner" id="inapp-banner" hidden>
+    <p data-i18n-html="inapp.text">アプリ内ブラウザで開いています。画像の保存やシェアがうまくいかないときは、右上の「…」から<strong>「ブラウザで開く」</strong>を選んでください。</p>
+    <button type="button" class="btn small" id="inapp-copy" data-i18n="inapp.copy">URLをコピー</button>
+  </div>
+  <header class="site-header">
+    <select id="lang" class="lang-select" aria-label="Language"></select>
+    <h1 class="logo"><a href="/pt-br/">SUMMONER CARD <span data-i18n="logo.sub">サモナーカード作成メーカー｜LoL自己紹介カード</span></a></h1>
+    <nav class="site-nav" aria-label="メニュー"><a href="/pt-br/" aria-current="page" data-i18n="nav.make">カードを作る</a><a href="/pt-br/guide/" data-i18n="nav.guide">使い方</a><a href="/pt-br/templates/" data-i18n="nav.templatesShort">テンプレ</a><a href="/pt-br/banner/" data-i18n="nav.banner">宣伝バナー</a><a href="/pt-br/faq/" data-i18n="nav.faq">よくある質問</a></nav>
+  </header>
+
+  <main class="layout">
+    <section class="preview" aria-label="プレビュー">
+      <div class="preview-main">
+      <div class="canvas-wrap">
+        <canvas id="card" width="1200" height="675"></canvas>
+        <div class="loading" id="loading" data-i18n="loading">読み込み中…</div>
+      </div>
+      <div class="actions">
+        <button type="button" class="btn primary" id="btn-download" data-i18n="btn.save">画像を保存</button>
+        <button type="button" class="btn" id="btn-copy" data-i18n="btn.copy">画像をコピー</button>
+        <button type="button" class="btn x" id="btn-share" data-i18n="btn.share">Xでシェア</button>
+      </div>
+      </div>
+      <div class="spread" id="spread" hidden>
+        <button type="button" class="spread-close" id="spread-close" aria-label="閉じる" data-i18n-title="close">×</button>
+        <p data-i18n-html="spread.text"><strong>カードができました🎉</strong><br>このサイトはできたばかりです。よければ友だちやフレンドにも教えてもらえると嬉しいです🙏</p>
+        <div class="spread-actions">
+          <button type="button" class="btn x small" id="spread-share" data-i18n="spread.share">Xで広める</button>
+          <button type="button" class="btn ghost small" id="spread-copy" data-i18n="spread.copy">サイトのURLをコピー</button>
+        </div>
+      </div>
+      <div class="preview-more">
+      <button type="button" class="btn banner-btn" id="btn-banner" data-i18n-html="banner.btn">🎨 自分のカードで宣伝バナーを作る<small>配信画面・Twitchパネル・Xのヘッダーなどに</small></button>
+      <p class="help-links"><a href="/pt-br/guide/" data-i18n="help.guide">使い方ガイド</a><a href="/pt-br/templates/" data-i18n="nav.templates">テンプレ一覧</a><a href="/pt-br/faq/" data-i18n="nav.faq">よくある質問</a></p>
+      <div class="actions sub">
+        <button type="button" class="btn ghost" id="btn-sample" data-i18n="btn.sample">サンプルを入れる</button>
+        <button type="button" class="btn ghost" id="btn-reset" data-i18n="btn.reset">入力をリセット</button>
+      </div>
+      </div>
+    </section>
+
+    <form class="editor" id="form" autocomplete="off" onsubmit="return false">
+      <fieldset>
+        <legend><span data-i18n="sec.basic">基本情報</span> <a class="help" href="/pt-br/guide/#basic" target="_blank" title="使い方を見る" aria-label="使い方を見る" data-i18n-title="help.title">?</a></legend>
+        <button type="button" class="section-clear" data-i18n="clear" data-clear="basic">クリア</button>
+        <div class="row">
+          <label class="field grow"><span data-i18n="f.name">サモナーネーム</span>
+            <input name="name" maxlength="16" placeholder="例：サモナー太郎" data-i18n-ph="ph.name">
+          </label>
+          <label class="field tag"><span data-i18n="f.tag">タグ</span>
+            <span class="prefix"><input name="tag" maxlength="5" placeholder="JP1" data-i18n-ph="ph.tag"></span>
+          </label>
+        </div>
+        <div class="name-presets">
+          <span data-i18n="presets.label">名前を出さない場合：</span>
+          <div class="chips" id="name-presets"></div>
+        </div>
+        <div class="row">
+          <label class="field small"><span data-i18n="f.level">レベル</span>
+            <input name="level" type="number" min="1" max="9999" inputmode="numeric" placeholder="287">
+          </label>
+          <div class="field grow"><span data-i18n="f.icon">アイコン</span>
+            <div class="picker-row">
+              <button type="button" class="champ-btn" id="icon-btn" data-pick="icon"></button>
+              <label class="btn ghost small upload"><span data-i18n="btn.upload">画像をアップ</span><input type="file" accept="image/*" id="icon-upload" hidden></label>
+              <button type="button" class="btn ghost small" id="icon-recrop" data-i18n="btn.trim">トリミング</button>
+              <button type="button" class="btn ghost small" id="icon-clear" data-i18n="btn.delete">削除</button>
+            </div>
+          </div>
+        </div>
+        <div class="field"><span data-i18n="f.iconShape">アイコンの形</span>
+          <div class="segmented" data-radio="iconShape">
+            <button type="button" data-value="circle" data-i18n="shape.circle">丸</button>
+            <button type="button" data-value="square" data-i18n="shape.square">四角</button>
+          </div>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend><span data-i18n="sec.rank">ランク</span> <a class="help" href="/pt-br/guide/#rank" target="_blank" title="使い方を見る" aria-label="使い方を見る" data-i18n-title="help.title">?</a></legend>
+        <button type="button" class="section-clear" data-i18n="clear" data-clear="rank">クリア</button>
+        <div class="row">
+          <label class="field grow"><span data-i18n="f.tier">ティア</span>
+            <select name="tier" id="tier"></select>
+          </label>
+          <label class="field small" id="division-field"><span data-i18n="f.division">ディビジョン</span>
+            <select name="division" id="division"></select>
+          </label>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend><span data-i18n="sec.role">ロール</span> <a class="help" href="/pt-br/guide/#role" target="_blank" title="使い方を見る" aria-label="使い方を見る" data-i18n-title="help.title">?</a></legend>
+        <button type="button" class="section-clear" data-i18n="clear" data-clear="roles">クリア</button>
+        <p class="hint" data-i18n="hint.roles">メインは1つだけ。サブ・ノマなら可・無理はいくつでも選べます。もう一度押すと解除されます。</p>
+        <div class="roles" id="roles"></div>
+      </fieldset>
+
+      <fieldset>
+        <legend><span id="champ-legend">得意チャンピオン</span> <small data-i18n="max5">最大5体</small> <a class="help" href="/pt-br/guide/#champs" target="_blank" title="使い方を見る" aria-label="使い方を見る" data-i18n-title="help.title">?</a></legend>
+        <button type="button" class="section-clear" data-i18n="clear" data-clear="champs">クリア</button>
+        <div class="field"><span data-i18n="f.champHeading">見出し</span>
+          <div class="segmented" data-radio="champLabel">
+            <button type="button" data-value="main" data-i18n="champLabel.main">得意チャンピオン</button>
+            <button type="button" data-value="fav" data-i18n="champLabel.fav">好きなチャンピオン</button>
+          </div>
+        </div>
+        <div class="champ-list" id="champ-list"></div>
+      </fieldset>
+
+      <fieldset>
+        <legend><span data-i18n="sec.tags">プレイスタイル</span> <small data-i18n="max6">最大6個</small> <a class="help" href="/pt-br/guide/#tags" target="_blank" title="使い方を見る" aria-label="使い方を見る" data-i18n-title="help.title">?</a></legend>
+        <button type="button" class="section-clear" data-i18n="clear" data-clear="tags">クリア</button>
+        <div class="chips" id="tags"></div>
+      </fieldset>
+
+      <fieldset>
+        <legend><span data-i18n="sec.contact">活動時間・連絡先</span> <a class="help" href="/pt-br/guide/#contact" target="_blank" title="使い方を見る" aria-label="使い方を見る" data-i18n-title="help.title">?</a></legend>
+        <button type="button" class="section-clear" data-i18n="clear" data-clear="contact">クリア</button>
+        <label class="field"><span data-i18n="f.hours">活動時間</span>
+          <input name="hours" maxlength="30" data-i18n-ph="ph.hours" placeholder="例：平日22時〜深夜 / 休日いつでも">
+        </label>
+        <div class="row">
+          <label class="field grow">Discord
+            <input name="discord" maxlength="32" placeholder="ユーザー名" data-i18n-ph="ph.discord">
+          </label>
+          <label class="field grow">X
+            <span class="prefix at"><input name="x" maxlength="15" placeholder="ID"></span>
+          </label>
+        </div>
+        <div class="row">
+          <label class="field grow"><span data-i18n="f.twitch">Twitch（配信者向け）</span>
+            <input name="twitch" maxlength="25" placeholder="チャンネル名" data-i18n-ph="ph.twitch">
+          </label>
+          <label class="field grow"><span data-i18n="f.youtube">YouTube（配信者向け）</span>
+            <span class="prefix at"><input name="youtube" maxlength="30" placeholder="ハンドル" data-i18n-ph="ph.youtube"></span>
+          </label>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend><span data-i18n="sec.comment">ひとこと</span> <a class="help" href="/pt-br/guide/#comment" target="_blank" title="使い方を見る" aria-label="使い方を見る" data-i18n-title="help.title">?</a></legend>
+        <button type="button" class="section-clear" data-i18n="clear" data-clear="comment">クリア</button>
+        <label class="field">
+          <textarea name="comment" rows="3" maxlength="80" data-i18n-ph="ph.comment" placeholder="例：ミッドメインです！一緒にランク回せる方募集中"></textarea>
+          <span class="counter" id="comment-count">0 / 80</span>
+        </label>
+      </fieldset>
+
+      <fieldset>
+        <legend><span data-i18n="sec.design">デザイン</span> <a class="help" href="/pt-br/guide/#design" target="_blank" title="使い方を見る" aria-label="使い方を見る" data-i18n-title="help.title">?</a></legend>
+        <button type="button" class="section-clear" data-i18n="clear" data-clear="design">クリア</button>
+        <div class="field"><span data-i18n="f.theme">テーマ</span>
+          <div class="themes" id="themes"></div>
+        </div>
+        <div class="field"><span data-i18n="f.bg">背景</span>
+          <div class="picker-row">
+            <button type="button" class="champ-btn" id="splash-btn" data-pick="splash"></button>
+            <select name="splashSkin" id="skin" class="grow"></select>
+          </div>
+          <div class="picker-row">
+            <label class="btn ghost small upload"><span data-i18n="btn.uploadOwn">自分の画像をアップ</span><input type="file" accept="image/*" id="bg-upload" hidden></label>
+            <button type="button" class="btn ghost small" id="bg-recrop" data-i18n="btn.trim">トリミング</button>
+            <button type="button" class="btn ghost small" id="splash-clear" data-i18n="btn.noBg">背景なし</button>
+          </div>
+        </div>
+        <div id="splash-controls">
+          <div class="row">
+            <label class="field grow"><span data-i18n="f.bgX">横位置</span>
+              <input name="bgOffX" type="range" min="-1" max="1" step="0.005">
+            </label>
+            <label class="field grow"><span data-i18n="f.bgY">縦位置</span>
+              <input name="bgOffY" type="range" min="-1" max="1" step="0.005">
+            </label>
+          </div>
+          <div class="row">
+            <label class="field grow"><span data-i18n="f.zoom">拡大</span>
+              <input name="bgZoom" type="range" min="0.5" max="4" step="0.01">
+            </label>
+            <label class="field grow"><span data-i18n="f.dim">背景の暗さ</span>
+              <input name="dim" type="range" min="0.2" max="0.85" step="0.01">
+            </label>
+          </div>
+          <div class="bg-tools">
+            <span class="hint" data-i18n="hint.drag">プレビューのカードを直接ドラッグして動かしたり、ホイールで拡大することもできます</span>
+            <button type="button" class="btn ghost small" id="bg-pos-reset" data-i18n="btn.posReset">位置リセット</button>
+          </div>
+        </div>
+      </fieldset>
+
+      <label class="credit-toggle">
+        <input type="checkbox" id="show-credit">
+        <span data-i18n="credit">カード右下にサイトのURLを入れる（入れてもらえると広まって嬉しいです）</span>
+      </label>
+
+      <div class="form-footer">
+        <button type="button" class="btn ghost" id="btn-reset-all" data-i18n="btn.resetAll">すべてリセット</button>
+      </div>
+    </form>
+  </main>
+
+  <article class="guide" data-i18n-html="home">
+    <section>
+      <h2>サモナーカードとは？</h2>
+      <p>サモナーカードは、LoL（League of Legends）のプレイヤーが<strong>ランク・ロール・得意チャンピオン・活動時間</strong>などをまとめた自己紹介画像です。Xの「#LoLフレンド募集」や「#サモナーカード」、Discordサーバーの自己紹介チャンネルなどでよく使われています。</p>
+      <p>これまでは配布されているテンプレ画像をダウンロードして、画像編集アプリで文字を書き込むのが一般的でした。SUMMONER CARD なら<strong>テンプレの編集は不要</strong>。項目を入力するだけで、チャンピオンやランクのアイコン入りのサモナーカードが自動で完成します。無料・登録不要で、スマホでも作れます。</p>
+    </section>
+
+    <section>
+      <h2>サモナーカードの作り方（3ステップ）</h2>
+      <ol class="steps">
+        <li><strong>基本情報を入力</strong><br>サモナーネーム・ランク・ロール（メイン／サブ／ノマなら可／NG）を選びます。名前を出したくない人は「DMで教えます」なども選べます。</li>
+        <li><strong>得意チャンピオンとプレイスタイル</strong><br>得意チャンプを最大5体、エンジョイ勢・ランク勢・VCありなどのタグ、活動時間やDiscord・Xを入力します。</li>
+        <li><strong>テーマを選んで保存</strong><br>好きなテーマとスキンの背景を選んで「画像を保存」。そのままXやDiscordにシェアできます。</li>
+      </ol>
+      <p>各項目の詳しい説明は<a href="/pt-br/guide/">使い方ガイド</a>をご覧ください。</p>
+    </section>
+
+    <section>
+      <h2>もっと見る</h2>
+      <div class="link-cards">
+        <a href="/pt-br/guide/"><strong>使い方ガイド</strong><span>入力項目ごとの説明と、フレンド募集で伝わるコツ</span></a>
+        <a href="/pt-br/templates/"><strong>テンプレ一覧</strong><span>15種類以上のテーマの見本。選んでそのまま作成</span></a>
+        <a href="/pt-br/banner/"><strong data-i18n="banner.title">宣伝バナー</strong><span>配信やブログに自由に貼れるバナー素材</span></a>
+        <a href="/pt-br/faq/"><strong>よくある質問</strong><span>スマホでの保存方法、Xのアプリで保存できないとき など</span></a>
+      </div>
+    </section>
+  </article>
+
+  <footer class="site-footer">
+    <nav class="footer-nav" aria-label="サイト情報"><a href="/pt-br/guide/" data-i18n="nav.guide">使い方</a><a href="/pt-br/templates/" data-i18n="nav.templates">テンプレ一覧</a><a href="/pt-br/banner/" data-i18n="nav.banner">宣伝バナー</a><a href="/pt-br/faq/" data-i18n="nav.faq">よくある質問</a><a href="/pt-br/about/" data-i18n="nav.about">運営者・お問い合わせ</a><a href="/pt-br/privacy/" data-i18n="nav.privacy">プライバシーポリシー</a><a href="/pt-br/terms/" data-i18n="nav.terms">利用規約</a></nav>
+    <p data-i18n="footer.storage">入力内容はこのブラウザにだけ保存され、サーバーには送信されません。作成した画像はSNS投稿や配信などに自由に使えます。</p>
+    <p data-i18n-html="footer.contact">不具合・ご要望は <a href="https://x.com/hotaka_1123" target="_blank" rel="noopener">X（@hotaka_1123）</a> までお気軽にどうぞ。</p>
+    <p id="analytics-notice" hidden data-i18n-html="footer.analytics">サイト改善のため、Google Analytics でアクセス数や機能の利用回数を計測しています（入力内容や画像は送信しません）。詳しくは<a href="/pt-br/privacy/">プライバシーポリシー</a>をご覧ください。</p>
+    <p class="legal">SUMMONER CARD isn't endorsed by Riot Games and doesn't reflect the views or opinions of Riot Games or anyone officially involved in producing or managing Riot Games properties. Riot Games, and all associated properties are trademarks or registered trademarks of Riot Games, Inc.</p>
+    <p class="legal">© 2026 SUMMONER CARD</p>
+  </footer>
+
+  <dialog id="picker">
+    <div class="picker-head">
+      <input type="search" id="picker-search">
+      <button type="button" class="btn ghost small" id="picker-close" data-i18n="close">閉じる</button>
+    </div>
+    <div class="picker-roles" id="picker-roles">
+      <span data-i18n="picker.role">ロール</span>
+      <div class="segmented" id="picker-role-buttons"></div>
+    </div>
+    <div class="picker-tabs" id="picker-tabs">
+      <button type="button" data-tab="profile" data-i18n="tab.icons">サモナーアイコン</button>
+      <button type="button" data-tab="champ" data-i18n="tab.champs">チャンピオン</button>
+    </div>
+    <p class="picker-status" id="picker-status"></p>
+    <div class="picker-grid" id="picker-grid"></div>
+  </dialog>
+
+  <dialog id="skin-picker">
+    <div class="picker-head">
+      <strong id="skin-picker-title">スキンを選ぶ</strong>
+      <button type="button" class="btn ghost small" id="skin-picker-close" data-i18n="close">閉じる</button>
+    </div>
+    <p class="picker-status" data-i18n="skin.hint">選んだスキンの画像からアイコンをトリミングできます</p>
+    <div class="skin-grid" id="skin-grid"></div>
+  </dialog>
+
+  <dialog id="cropper">
+    <div class="crop-head">
+      <strong id="crop-title">トリミング</strong>
+      <span class="hint" data-i18n="crop.hint">ドラッグで移動・ホイール／ピンチ／スライダーで拡大</span>
+    </div>
+    <div class="crop-stage" id="crop-stage">
+      <img id="crop-img" alt="" draggable="false">
+      <div class="crop-mask" id="crop-mask"></div>
+    </div>
+    <label class="field crop-zoom"><span data-i18n="f.zoom">拡大</span>
+      <input type="range" id="crop-zoom" min="1" max="5" step="0.01" value="1">
+    </label>
+    <div class="actions">
+      <button type="button" class="btn primary" id="crop-ok" data-i18n="crop.ok">決定</button>
+      <button type="button" class="btn ghost" id="crop-cancel" data-i18n="crop.cancel">キャンセル</button>
+    </div>
+  </dialog>
+
+  <dialog id="banner-dialog">
+    <div class="banner-head">
+      <strong>宣伝バナー</strong>
+      <button type="button" class="btn ghost small" id="banner-close" data-i18n="close">閉じる</button>
+    </div>
+    <img id="banner-img" alt="自分のカード入りのSUMMONER CARD宣伝バナー">
+    <p class="banner-note" data-i18n-html="banner.note">配信画面・Twitchのパネル・Xのヘッダー・ブログなどに自由に使ってOKです。リンクを付けられる場所では <strong>https://summonercard.com/</strong> にリンクしてもらえると嬉しいです🙏<br>連絡は不要ですが、使ってくれたら <a href="https://x.com/hotaka_1123" target="_blank" rel="noopener">X（@hotaka_1123）</a> でひとこと教えてもらえると、とても喜びます！</p>
+    <div class="actions">
+      <button type="button" class="btn primary" id="banner-save" data-i18n="banner.save">バナーを保存</button>
+      <button type="button" class="btn ghost" id="banner-copy-url" data-i18n="banner.copyUrl">リンク先URLをコピー</button>
+    </div>
+  </dialog>
+
+  <dialog id="save-dialog">
+    <p class="save-hint"><strong>画像を長押し</strong>して「写真に保存」「画像を保存」などを選んでください</p>
+    <img id="save-img" alt="作成したサモナーカード">
+    <div class="actions">
+      <button type="button" class="btn ghost" id="save-close" data-i18n="close">閉じる</button>
+    </div>
+  </dialog>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script type="module" src="/js/app.js"></script>
+</body>
+</html>

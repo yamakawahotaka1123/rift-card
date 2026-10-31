@@ -1,7 +1,7 @@
 // Promo banner (3:1) that shows the user's card next to the site name and URL.
 // People can put it on stream overlays, Twitch panels, profiles or personal sites.
 import { THEMES } from './data.js';
-import { t, withCjk } from './i18n.js';
+import { LANG, t, withCjk } from './i18n.js';
 
 export const BANNER_W = 1800;
 export const BANNER_H = 600;
@@ -268,9 +268,14 @@ export function renderBanner(card, state, siteLabel) {
   const centerX = 480;
   ctx.textAlign = 'center';
   ctx.fillStyle = fairy ? theme.text : '#ece6da';
-  ctx.font = `${fairy ? 800 : 500} 42px ${fairy ? ROUNDED : JP}`;
-  ctx.letterSpacing = '4px';
-  ctx.fillText(t('banner.tagline'), centerX, 418);
+  // Thai marks sit on their letters, so it can't be letter-spaced; longer taglines shrink to fit.
+  ctx.letterSpacing = LANG === 'th' ? '0px' : '4px';
+  const tagline = t('banner.tagline');
+  let size = 42;
+  do {
+    ctx.font = `${fairy ? 800 : 500} ${size}px ${fairy ? ROUNDED : JP}`;
+  } while (ctx.measureText(tagline).width > 860 && --size > 28);
+  ctx.fillText(tagline, centerX, 418);
   ctx.letterSpacing = '0px';
 
   // Call-to-action button with the URL under it
@@ -297,7 +302,7 @@ export function renderBanner(card, state, siteLabel) {
   ctx.stroke();
   ctx.fillStyle = '#ffffff';
   ctx.font = `800 40px ${fairy ? ROUNDED : JP}`;
-  ctx.fillText(t('banner.cta'), centerX, btnY + 54);
+  ctx.fillText(t('banner.cta'), centerX, btnY + 54, btnW - 40);
   ctx.font = `700 22px ${fairy ? ROUNDED : JP}`;
   ctx.fillStyle = fairy ? theme.sub : hexToRgba('#ece6da', 0.75);
   ctx.fillText(siteLabel, centerX, btnY + btnH + 34);

@@ -10,6 +10,12 @@ import en from './pages/en.mjs';
 import ko from './pages/ko.mjs';
 import zhCn from './pages/zh-cn.mjs';
 import zhTw from './pages/zh-tw.mjs';
+import th from './pages/th.mjs';
+import vi from './pages/vi.mjs';
+import es from './pages/es.mjs';
+import ptBr from './pages/pt-br.mjs';
+import de from './pages/de.mjs';
+import fr from './pages/fr.mjs';
 import { THEMES } from '../js/data.js';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -18,13 +24,20 @@ const UPDATED = '2026-10-30';
 
 const LEGAL = 'SUMMONER CARD isn\'t endorsed by Riot Games and doesn\'t reflect the views or opinions of Riot Games or anyone officially involved in producing or managing Riot Games properties. Riot Games, and all associated properties are trademarks or registered trademarks of Riot Games, Inc.';
 
-// prefix: URL folder ('' = Japanese at the root). cjk: extra Google Font for Hangul / Chinese.
+// prefix: URL folder ('' = Japanese at the root). id: language id in js/i18n.js.
+// cjk: extra Google Font for scripts the Japanese fonts lack (Hangul, Chinese, Thai).
 const LANGS = [
-  { prefix: '', hreflang: 'ja', label: '日本語', content: ja },
-  { prefix: 'en', hreflang: 'en', label: 'English', content: en },
-  { prefix: 'ko', hreflang: 'ko', label: '한국어', content: ko, cjk: 'Noto Sans KR' },
-  { prefix: 'zh-cn', hreflang: 'zh-Hans', label: '简体中文', content: zhCn, cjk: 'Noto Sans SC' },
-  { prefix: 'zh-tw', hreflang: 'zh-Hant', label: '繁體中文', content: zhTw, cjk: 'Noto Sans TC' },
+  { prefix: '', id: 'ja', hreflang: 'ja', label: '日本語', content: ja },
+  { prefix: 'en', id: 'en', hreflang: 'en', label: 'English', content: en },
+  { prefix: 'ko', id: 'ko', hreflang: 'ko', label: '한국어', content: ko, cjk: 'Noto Sans KR' },
+  { prefix: 'zh-cn', id: 'zh-CN', hreflang: 'zh-Hans', label: '简体中文', content: zhCn, cjk: 'Noto Sans SC' },
+  { prefix: 'zh-tw', id: 'zh-TW', hreflang: 'zh-Hant', label: '繁體中文', content: zhTw, cjk: 'Noto Sans TC' },
+  { prefix: 'th', id: 'th', hreflang: 'th', label: 'ไทย', content: th, cjk: 'Noto Sans Thai' },
+  { prefix: 'vi', id: 'vi', hreflang: 'vi', label: 'Tiếng Việt', content: vi },
+  { prefix: 'es', id: 'es', hreflang: 'es', label: 'Español', content: es },
+  { prefix: 'pt-br', id: 'pt-BR', hreflang: 'pt-BR', label: 'Português', content: ptBr },
+  { prefix: 'de', id: 'de', hreflang: 'de', label: 'Deutsch', content: de },
+  { prefix: 'fr', id: 'fr', hreflang: 'fr', label: 'Français', content: fr },
 ];
 
 // Seasonal themes stay hidden on the pages until their release date; js/page.js reveals them.
@@ -46,7 +59,7 @@ const fontsUrl = (lang) => `https://fonts.googleapis.com/css2?family=Cinzel:wght
 function header(lang, c, slug) {
   const nav = [['', c.nav.make], ['guide', c.nav.guide], ['templates', c.nav.templates], ['banner', c.nav.banner], ['faq', c.nav.faq]]
     .map(([s, label]) => `<a href="/${s ? `${s}/` : ''}"${s === slug ? ' aria-current="page"' : ''}>${label}</a>`).join('');
-  const options = LANGS.map((l) => `<option value="${pageUrl(l, slug).replace(SITE, '')}" data-lang="${l.content === ja ? 'ja' : l.hreflang.replace('zh-Hans', 'zh-CN').replace('zh-Hant', 'zh-TW')}"${l === lang ? ' selected' : ''}>${l.label}</option>`).join('');
+  const options = LANGS.map((l) => `<option value="${pageUrl(l, slug).replace(SITE, '')}" data-lang="${l.id}"${l === lang ? ' selected' : ''}>${l.label}</option>`).join('');
   return `<header class="site-header">
     <select class="lang-select" id="lang-pages" aria-label="Language">${options}</select>
     <a class="logo" href="/">SUMMONER CARD <span>${c.siteSub}</span></a>
@@ -233,6 +246,66 @@ const LANG_PAGES = [
     alt: '用SUMMONER CARD製作的LoL自我介紹卡範例',
     name: 'SUMMONER CARD（召喚師卡片產生器）',
     appDescription: '免費製作英雄聯盟召喚師卡片・自我介紹卡的網頁應用。',
+  },
+  {
+    slug: 'th', lang: 'th', locale: 'th_TH',
+    title: 'Summoner Card Maker | สร้างการ์ดแนะนำตัว LoL ฟรี - SUMMONER CARD',
+    description: 'สร้างการ์ดซัมมอนเนอร์ (การ์ดแนะนำตัว) League of Legends ได้ฟรี แค่เลือกแรงก์ ตำแหน่ง แชมเปี้ยนที่ถนัด และพื้นหลังจากสกิน รูปก็เสร็จทันที ไม่ต้องสมัคร ใช้บนมือถือได้ เหมาะสำหรับหาดูโอ้บน X และ Discord',
+    ogTitle: 'Summoner Card Maker | สร้างการ์ดแนะนำตัว LoL ฟรี',
+    ogDescription: 'ใส่แรงก์ ตำแหน่ง และแชมป์ที่ถนัด แล้วสร้างการ์ดแนะนำตัว LoL ได้ฟรี',
+    alt: 'ตัวอย่างการ์ดแนะนำตัว LoL ที่สร้างด้วย SUMMONER CARD',
+    name: 'SUMMONER CARD (Summoner Card Maker)',
+    appDescription: 'เว็บแอปฟรีสำหรับสร้างการ์ดซัมมอนเนอร์ (การ์ดแนะนำตัว) League of Legends',
+  },
+  {
+    slug: 'vi', lang: 'vi', locale: 'vi_VN',
+    title: 'Summoner Card Maker | Tạo thẻ giới thiệu LMHT miễn phí - SUMMONER CARD',
+    description: 'Tạo thẻ triệu hồi sư (thẻ giới thiệu) Liên Minh Huyền Thoại miễn phí. Chọn rank, vị trí, tướng tủ và hình nền trang phục là xong ảnh. Không cần đăng ký, dùng được trên điện thoại. Hợp để tìm duo trên X và Discord.',
+    ogTitle: 'Summoner Card Maker | Tạo thẻ giới thiệu LMHT miễn phí',
+    ogDescription: 'Điền rank, vị trí và tướng tủ để tạo thẻ giới thiệu LMHT miễn phí.',
+    alt: 'Ví dụ thẻ giới thiệu LMHT tạo bằng SUMMONER CARD',
+    name: 'SUMMONER CARD (Summoner Card Maker)',
+    appDescription: 'Ứng dụng web miễn phí để tạo thẻ triệu hồi sư (thẻ giới thiệu) Liên Minh Huyền Thoại.',
+  },
+  {
+    slug: 'es', lang: 'es', locale: 'es_LA',
+    title: 'Summoner Card Maker | Crea tu tarjeta de perfil de LoL gratis - SUMMONER CARD',
+    description: 'Crea gratis tu tarjeta de invocador (tarjeta de perfil) de League of Legends. Elige tu rango, roles, campeones principales y un fondo de skin y la imagen está lista. Sin registro y funciona en el móvil. Ideal para buscar dúo en X y Discord.',
+    ogTitle: 'Summoner Card Maker | Tarjetas de perfil de LoL gratis',
+    ogDescription: 'Pon tu rango, roles y mains para crear gratis tu tarjeta de perfil de LoL.',
+    alt: 'Ejemplo de tarjeta de perfil de LoL hecha con SUMMONER CARD',
+    name: 'SUMMONER CARD (Summoner Card Maker)',
+    appDescription: 'App web gratuita para crear tarjetas de invocador (tarjetas de perfil) de League of Legends.',
+  },
+  {
+    slug: 'pt-br', lang: 'pt-BR', locale: 'pt_BR',
+    title: 'Summoner Card Maker | Crie seu card de perfil de LoL grátis - SUMMONER CARD',
+    description: 'Crie grátis seu card de invocador (card de perfil) de League of Legends. Escolha elo, rotas, campeões principais e um fundo de skin e a imagem fica pronta. Sem cadastro e funciona no celular. Perfeito para achar duo no X e no Discord.',
+    ogTitle: 'Summoner Card Maker | Cards de perfil de LoL grátis',
+    ogDescription: 'Coloque seu elo, rotas e mains para criar seu card de perfil de LoL grátis.',
+    alt: 'Exemplo de card de perfil de LoL feito com o SUMMONER CARD',
+    name: 'SUMMONER CARD (Summoner Card Maker)',
+    appDescription: 'App web gratuito para criar cards de invocador (cards de perfil) de League of Legends.',
+  },
+  {
+    slug: 'de', lang: 'de', locale: 'de_DE',
+    title: 'Summoner Card Maker | LoL-Profilkarte kostenlos erstellen - SUMMONER CARD',
+    description: 'Erstelle kostenlos deine League-of-Legends-Summoner-Card (Profilkarte). Rang, Rollen, Main-Champions und Skin-Hintergrund wählen, fertig ist das Bild. Ohne Anmeldung, auch am Handy. Ideal für die Duo-Suche auf X und Discord.',
+    ogTitle: 'Summoner Card Maker | LoL-Profilkarten kostenlos',
+    ogDescription: 'Rang, Rollen und Mains eintragen und kostenlos deine LoL-Profilkarte erstellen.',
+    alt: 'Beispiel einer LoL-Profilkarte, erstellt mit SUMMONER CARD',
+    name: 'SUMMONER CARD (Summoner Card Maker)',
+    appDescription: 'Kostenlose Web-App zum Erstellen von League-of-Legends-Summoner-Cards (Profilkarten).',
+  },
+  {
+    slug: 'fr', lang: 'fr', locale: 'fr_FR',
+    title: 'Summoner Card Maker | Crée ta carte de profil LoL gratuitement - SUMMONER CARD',
+    description: 'Crée gratuitement ta carte d’invocateur (carte de profil) League of Legends. Choisis ton rang, tes rôles, tes champions principaux et un fond de skin, et l’image est prête. Sans inscription, compatible mobile. Idéal pour trouver un duo sur X et Discord.',
+    ogTitle: 'Summoner Card Maker | Cartes de profil LoL gratuites',
+    ogDescription: 'Ajoute ton rang, tes rôles et tes mains pour créer ta carte de profil LoL gratuitement.',
+    alt: 'Exemple de carte de profil LoL créée avec SUMMONER CARD',
+    name: 'SUMMONER CARD (Summoner Card Maker)',
+    appDescription: 'Application web gratuite pour créer des cartes d’invocateur (cartes de profil) League of Legends.',
   },
 ];
 

@@ -1,7 +1,7 @@
 // Draws the summoner card onto a canvas. Everything happens in the browser.
 import { CDRAGON, CDRAGON_GAME, DDRAGON, ROLE_LEVELS, ROLES, THEMES, TIERS } from './data.js';
 import { DECOS } from './decos.js';
-import { CJK_FAMILY, levelBadge, t, tagName, tierName, withCjk } from './i18n.js';
+import { CJK_FAMILY, LANG, levelBadge, t, tagName, tierName, withCjk } from './i18n.js';
 
 export const CARD_W = 1200;
 export const CARD_H = 675;
@@ -113,19 +113,32 @@ function fitText(ctx, text, maxWidth, weight, size, minSize, family = FONT_JP) {
   return t;
 }
 
+// Japanese and Chinese wrap anywhere; other languages wrap between words (Thai has no spaces, so
+// this needs Intl.Segmenter). A word too long for a whole line is broken into characters.
+const WORDS = !['ja', 'zh-CN', 'zh-TW'].includes(LANG) && typeof Intl.Segmenter === 'function'
+  ? new Intl.Segmenter(LANG, { granularity: 'word' }) : null;
+const CHARS = typeof Intl.Segmenter === 'function' ? new Intl.Segmenter(LANG, { granularity: 'grapheme' }) : null;
+const chars = (s) => (CHARS ? [...CHARS.segment(s)].map((x) => x.segment) : [...s]);
+
+function wrapUnits(ctx, para, maxWidth) {
+  if (!WORDS) return chars(para);
+  return [...WORDS.segment(para)].flatMap(({ segment }) => (ctx.measureText(segment).width > maxWidth ? chars(segment) : [segment]));
+}
+
 function wrapLines(ctx, text, maxWidth, maxLines) {
   const lines = [];
   for (const para of text.split('\n')) {
     let line = '';
-    for (const ch of para) {
+    for (const ch of wrapUnits(ctx, para, maxWidth)) {
+      if (WORDS && !line && !ch.trim()) continue;
       if (ctx.measureText(line + ch).width > maxWidth && line) {
-        lines.push(line);
-        line = ch;
+        lines.push(WORDS ? line.trimEnd() : line);
+        line = WORDS && !ch.trim() ? '' : ch;
       } else {
         line += ch;
       }
     }
-    lines.push(line);
+    lines.push(WORDS ? line.trimEnd() : line);
   }
   if (lines.length > maxLines) {
     const kept = lines.slice(0, maxLines);
