@@ -111,7 +111,7 @@ export default ({ UPDATED, LEGAL, IMG, HOME }) => ({
 
       <section id="rank">
         <h2>2. Rang</h2>
-        <p>Wähle deine Stufe (Eisen bis Herausforderer) und Division (I–IV), um dein Rangabzeichen zu zeigen. Ab Meister gibt es keine Division. Wenn du keinen Rang zeigen willst, lass es bei „Ohne Rang“.</p>
+        <p>Wähle deine Stufe (Eisen bis Herausforderer) und Division (I–IV), um dein Rangabzeichen zu zeigen. Ab Meister gibt es keine Division. Wenn du keinen Rang zeigen willst, lass es bei „Ungewertet“.</p>
       </section>
 
       <section id="role">

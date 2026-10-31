@@ -140,11 +140,11 @@ const TIER_NAMES = {
   ko: { UNRANKED: '언랭크', IRON: '아이언', BRONZE: '브론즈', SILVER: '실버', GOLD: '골드', PLATINUM: '플래티넘', EMERALD: '에메랄드', DIAMOND: '다이아몬드', MASTER: '마스터', GRANDMASTER: '그랜드마스터', CHALLENGER: '챌린저' },
   'zh-CN': { UNRANKED: '未定级', IRON: '坚韧黑铁', BRONZE: '英勇黄铜', SILVER: '不屈白银', GOLD: '荣耀黄金', PLATINUM: '华贵铂金', EMERALD: '流光翡翠', DIAMOND: '璀璨钻石', MASTER: '超凡大师', GRANDMASTER: '傲世宗师', CHALLENGER: '最强王者' },
   'zh-TW': { UNRANKED: '未分級', IRON: '鐵牌', BRONZE: '銅牌', SILVER: '銀牌', GOLD: '金牌', PLATINUM: '白金', EMERALD: '翡翠', DIAMOND: '鑽石', MASTER: '大師', GRANDMASTER: '宗師', CHALLENGER: '菁英' },
-  th: { UNRANKED: 'ไม่มีแรงก์', IRON: 'ไอรอน', BRONZE: 'บรอนซ์', SILVER: 'ซิลเวอร์', GOLD: 'โกลด์', PLATINUM: 'แพลทินัม', EMERALD: 'เอเมอรัลด์', DIAMOND: 'ไดมอนด์', MASTER: 'มาสเตอร์', GRANDMASTER: 'แกรนด์มาสเตอร์', CHALLENGER: 'ชาเลนเจอร์' },
-  vi: { UNRANKED: 'Chưa xếp hạng', IRON: 'Sắt', BRONZE: 'Đồng', SILVER: 'Bạc', GOLD: 'Vàng', PLATINUM: 'Bạch Kim', EMERALD: 'Lục Bảo', DIAMOND: 'Kim Cương', MASTER: 'Cao Thủ', GRANDMASTER: 'Đại Cao Thủ', CHALLENGER: 'Thách Đấu' },
+  th: { UNRANKED: 'ไม่มีอันดับ', IRON: 'Iron', BRONZE: 'Bronze', SILVER: 'Silver', GOLD: 'Gold', PLATINUM: 'Platinum', EMERALD: 'Emerald', DIAMOND: 'Diamond', MASTER: 'Master', GRANDMASTER: 'Grandmaster', CHALLENGER: 'Challenger' },
+  vi: { UNRANKED: 'Chưa có Xếp Hạng', IRON: 'Sắt', BRONZE: 'Đồng', SILVER: 'Bạc', GOLD: 'Vàng', PLATINUM: 'Bạch Kim', EMERALD: 'Lục Bảo', DIAMOND: 'Kim Cương', MASTER: 'Cao Thủ', GRANDMASTER: 'Đại Cao Thủ', CHALLENGER: 'Thách Đấu' },
   es: { UNRANKED: 'Sin clasificar', IRON: 'Hierro', BRONZE: 'Bronce', SILVER: 'Plata', GOLD: 'Oro', PLATINUM: 'Platino', EMERALD: 'Esmeralda', DIAMOND: 'Diamante', MASTER: 'Maestro', GRANDMASTER: 'Gran Maestro', CHALLENGER: 'Retador' },
-  'pt-BR': { UNRANKED: 'Sem ranque', IRON: 'Ferro', BRONZE: 'Bronze', SILVER: 'Prata', GOLD: 'Ouro', PLATINUM: 'Platina', EMERALD: 'Esmeralda', DIAMOND: 'Diamante', MASTER: 'Mestre', GRANDMASTER: 'Grão-Mestre', CHALLENGER: 'Desafiante' },
-  de: { UNRANKED: 'Ohne Rang', IRON: 'Eisen', BRONZE: 'Bronze', SILVER: 'Silber', GOLD: 'Gold', PLATINUM: 'Platin', EMERALD: 'Smaragd', DIAMOND: 'Diamant', MASTER: 'Meister', GRANDMASTER: 'Großmeister', CHALLENGER: 'Herausforderer' },
+  'pt-BR': { UNRANKED: 'Sem classificação', IRON: 'Ferro', BRONZE: 'Bronze', SILVER: 'Prata', GOLD: 'Ouro', PLATINUM: 'Platina', EMERALD: 'Esmeralda', DIAMOND: 'Diamante', MASTER: 'Mestre', GRANDMASTER: 'Grão-Mestre', CHALLENGER: 'Desafiante' },
+  de: { UNRANKED: 'Ungewertet', IRON: 'Eisen', BRONZE: 'Bronze', SILVER: 'Silber', GOLD: 'Gold', PLATINUM: 'Platin', EMERALD: 'Smaragd', DIAMOND: 'Diamant', MASTER: 'Meister', GRANDMASTER: 'Großmeister', CHALLENGER: 'Herausforderer' },
   fr: { UNRANKED: 'Non classé', IRON: 'Fer', BRONZE: 'Bronze', SILVER: 'Argent', GOLD: 'Or', PLATINUM: 'Platine', EMERALD: 'Émeraude', DIAMOND: 'Diamant', MASTER: 'Maître', GRANDMASTER: 'Grand Maître', CHALLENGER: 'Challenger' },
 };
 

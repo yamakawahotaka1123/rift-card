@@ -111,7 +111,7 @@ export default ({ UPDATED, LEGAL, IMG, HOME }) => ({
 
       <section id="rank">
         <h2>2. Elo</h2>
-        <p>Escolha seu elo (Ferro a Desafiante) e divisão (I–IV) para mostrar o emblema. Do Mestre para cima não há divisão. Se preferir não mostrar o elo, deixe em “Sem ranque”.</p>
+        <p>Escolha seu elo (Ferro a Desafiante) e divisão (I–IV) para mostrar o emblema. Do Mestre para cima não há divisão. Se preferir não mostrar o elo, deixe em “Sem classificação”.</p>
       </section>
 
       <section id="role">

@@ -111,7 +111,7 @@ export default ({ UPDATED, LEGAL, IMG, HOME }) => ({
 
       <section id="rank">
         <h2>2. Rank</h2>
-        <p>Chọn bậc (Sắt đến Thách Đấu) và hạng (I–IV) để hiện huy hiệu rank. Từ Cao Thủ trở lên không có hạng. Nếu không muốn hiện rank, để nguyên “Chưa xếp hạng”.</p>
+        <p>Chọn bậc (Sắt đến Thách Đấu) và hạng (I–IV) để hiện huy hiệu rank. Từ Cao Thủ trở lên không có hạng. Nếu không muốn hiện rank, để nguyên “Chưa có Xếp Hạng”.</p>
       </section>
 
       <section id="role">
