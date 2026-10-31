@@ -23,6 +23,8 @@ export default ({ UPDATED, LEGAL, IMG, HOME }) => ({
     ['halloween', 'Halloween', 'Night purple and pumpkin orange with bats, cobwebs and a jack-o’-lantern. Your icon gets a witch hat. Looks great with a Bewitching skin as the background.'],
     ['christmas', 'Christmas', 'Red and green with a candy-cane border, string lights, snowflakes and a present. Your icon gets a Santa hat. Try it with a winter skin.'],
     ['newyear', 'New Year', 'Crimson and gold with rising-sun rays, plum blossoms and kagami mochi. Your icon gets a folding fan. Perfect for a “Happy New Year” post.'],
+    ['lunar', 'Lunar New Year', 'Bright red and gold with hanging lanterns, coins, plum blossoms and a gold ingot. A lantern hangs by your icon. Great for Lunar New Year and Tết greetings.'],
+    ['valentine', 'Valentine’s', 'Chocolate and rose pink with floating hearts and a heart-shaped gift box. Cupid’s arrow sits on your icon.'],
     ['hextech', 'Hextech', 'The classic gold-and-navy look, close to the LoL client. Goes with any skin background, so pick this if you can’t decide.'],
     ['noxus', 'Noxus', 'A bold red-and-black design. Perfect with skins of Noxian champions like Darius or Sion.'],
     ['freljord', 'Freljord', 'An icy light-blue design. Great with Ashe, Sejuani or any winter skin.'],

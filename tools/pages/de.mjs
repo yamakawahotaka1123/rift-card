@@ -23,6 +23,8 @@ export default ({ UPDATED, LEGAL, IMG, HOME }) => ({
     ['halloween', 'Halloween', 'Nachtlila und Kürbisorange mit Fledermäusen, Spinnweben und einer Kürbislaterne. Dein Symbol bekommt einen Hexenhut. Sieht toll aus mit einem Hexen-Skin als Hintergrund.'],
     ['christmas', 'Weihnachten', 'Rot und Grün mit Zuckerstangen-Rand, Lichterkette, Schneeflocken und einem Geschenk. Dein Symbol bekommt eine Weihnachtsmütze. Probier es mit einem Winter-Skin.'],
     ['newyear', 'Neujahr', 'Karminrot und Gold mit Strahlen der aufgehenden Sonne, Pflaumenblüten und Kagami-Mochi. Dein Symbol bekommt einen Fächer. Perfekt für einen „Frohes neues Jahr“-Post.'],
+    ['lunar', 'Mondneujahr', 'Leuchtendes Rot und Gold mit hängenden Laternen, Münzen, Pflaumenblüten und einem Goldbarren. Neben deinem Symbol hängt eine Laterne. Ideal für Grüße zum Mondneujahr.'],
+    ['valentine', 'Valentinstag', 'Schokobraun und Rosa mit schwebenden Herzen und einer herzförmigen Geschenkbox. Dein Symbol bekommt Amors Pfeil.'],
     ['hextech', 'Hextech', 'Der klassische Gold-Marineblau-Look, nah am LoL-Client. Passt zu jedem Skin-Hintergrund – wenn du dich nicht entscheiden kannst, nimm diesen.'],
     ['noxus', 'Noxus', 'Ein kräftiges Rot-Schwarz-Design. Perfekt mit Skins noxianischer Champions wie Darius oder Sion.'],
     ['freljord', 'Freljord', 'Ein eisig hellblaues Design. Toll mit Ashe, Sejuani oder jedem Winter-Skin.'],

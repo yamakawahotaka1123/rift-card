@@ -621,6 +621,157 @@ function kagamiMochi(ctx, x, y, s) {
   ctx.restore();
 }
 
+// Red paper lantern hanging from (x, y); s is roughly its height.
+function lantern(ctx, x, y, s) {
+  ctx.save();
+  ctx.translate(x, y);
+  ctx.strokeStyle = '#c9952e';
+  ctx.lineWidth = Math.max(1, s * 0.04);
+  ctx.beginPath();
+  ctx.moveTo(0, 0);
+  ctx.lineTo(0, s * 0.12);
+  ctx.stroke();
+  const cy = s * 0.5, rx = s * 0.42, ry = s * 0.34;
+  const g = ctx.createRadialGradient(-rx * 0.3, cy - ry * 0.3, s * 0.03, 0, cy, rx * 1.1);
+  g.addColorStop(0, '#ff6a4a');
+  g.addColorStop(1, '#c4121f');
+  ctx.save();
+  ctx.shadowColor = 'rgba(255,120,60,0.6)';
+  ctx.shadowBlur = s * 0.35;
+  ctx.beginPath();
+  ctx.ellipse(0, cy, rx, ry, 0, 0, Math.PI * 2);
+  ctx.fillStyle = g;
+  ctx.fill();
+  ctx.restore();
+  // Ribs
+  ctx.strokeStyle = 'rgba(120,10,15,0.55)';
+  ctx.lineWidth = Math.max(1, s * 0.025);
+  for (const k of [-0.55, 0, 0.55]) {
+    ctx.beginPath();
+    ctx.ellipse(0, cy, Math.abs(k) * rx || 0.5, ry, 0, -Math.PI / 2, Math.PI / 2, k < 0);
+    ctx.stroke();
+  }
+  // Gold caps and tassel
+  ctx.fillStyle = '#f2c14e';
+  ctx.fillRect(-rx * 0.5, cy - ry - s * 0.06, rx, s * 0.08);
+  ctx.fillRect(-rx * 0.5, cy + ry - s * 0.02, rx, s * 0.08);
+  ctx.strokeStyle = '#f2c14e';
+  ctx.lineWidth = Math.max(1, s * 0.035);
+  for (const dx of [-0.08, 0, 0.08]) {
+    ctx.beginPath();
+    ctx.moveTo(dx * s * 0.5, cy + ry + s * 0.06);
+    ctx.lineTo(dx * s, cy + ry + s * 0.32);
+    ctx.stroke();
+  }
+  ctx.restore();
+}
+
+// Round coin with a square hole.
+function coin(ctx, x, y, r, color) {
+  ctx.beginPath();
+  ctx.arc(x, y, r, 0, Math.PI * 2);
+  ctx.rect(x + r * 0.32, y - r * 0.32, -r * 0.64, r * 0.64);
+  ctx.fillStyle = color;
+  ctx.fill('evenodd');
+  ctx.beginPath();
+  ctx.arc(x, y, r * 0.78, 0, Math.PI * 2);
+  ctx.strokeStyle = 'rgba(120,60,0,0.35)';
+  ctx.lineWidth = Math.max(1, r * 0.08);
+  ctx.stroke();
+}
+
+// Boat-shaped gold ingot.
+function goldIngot(ctx, x, y, s) {
+  ctx.save();
+  ctx.translate(x, y);
+  const g = ctx.createLinearGradient(0, -s * 0.5, 0, s * 0.5);
+  g.addColorStop(0, '#ffe69a');
+  g.addColorStop(1, '#d19a22');
+  ctx.beginPath();
+  ctx.moveTo(-s, -s * 0.25);
+  ctx.quadraticCurveTo(-s * 0.55, -s * 0.05, -s * 0.45, -s * 0.05);
+  ctx.lineTo(s * 0.45, -s * 0.05);
+  ctx.quadraticCurveTo(s * 0.55, -s * 0.05, s, -s * 0.25);
+  ctx.quadraticCurveTo(s * 0.85, s * 0.45, 0, s * 0.45);
+  ctx.quadraticCurveTo(-s * 0.85, s * 0.45, -s, -s * 0.25);
+  ctx.closePath();
+  ctx.fillStyle = g;
+  ctx.fill();
+  ctx.strokeStyle = '#9a6a10';
+  ctx.lineWidth = 1.5;
+  ctx.stroke();
+  // Dome on top
+  ctx.beginPath();
+  ctx.ellipse(0, -s * 0.12, s * 0.45, s * 0.32, 0, Math.PI, 0);
+  ctx.fillStyle = '#ffd866';
+  ctx.fill();
+  ctx.stroke();
+  ctx.restore();
+}
+
+// Heart-shaped chocolate box with a ribbon.
+function heartBox(ctx, x, y, s) {
+  ctx.save();
+  ctx.translate(x, y);
+  heart(ctx, 0, s * 0.15, s * 1.05);
+  ctx.fillStyle = '#8c1530';
+  ctx.fill();
+  heart(ctx, 0, s * 0.08, s * 0.95);
+  const g = ctx.createLinearGradient(0, -s, 0, s * 0.6);
+  g.addColorStop(0, '#ff7aa2');
+  g.addColorStop(1, '#d42a5b');
+  ctx.fillStyle = g;
+  ctx.fill();
+  ctx.fillStyle = '#ffe1ea';
+  ctx.fillRect(-s * 0.08, -s * 0.85, s * 0.16, s * 1.25);
+  ctx.restore();
+  bow(ctx, x, y - s * 0.38, s * 0.42, '#ffe1ea', '#c98aa0', 0);
+}
+
+// Heart pierced by Cupid's arrow; (x, y) is the heart's center.
+function arrowHeart(ctx, x, y, s, rot = 0) {
+  ctx.save();
+  ctx.translate(x, y);
+  ctx.rotate(rot);
+  ctx.strokeStyle = '#f4c58f';
+  ctx.lineWidth = Math.max(2, s * 0.08);
+  ctx.lineCap = 'round';
+  ctx.beginPath();
+  ctx.moveTo(-s * 1.5, 0);
+  ctx.lineTo(-s * 0.6, 0);
+  ctx.stroke();
+  heart(ctx, 0, s * 0.15, s);
+  ctx.fillStyle = '#ff3d6e';
+  ctx.fill();
+  ctx.lineWidth = Math.max(1.5, s * 0.06);
+  ctx.strokeStyle = '#ffffff';
+  ctx.stroke();
+  ctx.strokeStyle = '#f4c58f';
+  ctx.lineWidth = Math.max(2, s * 0.08);
+  ctx.beginPath();
+  ctx.moveTo(s * 0.6, 0);
+  ctx.lineTo(s * 1.35, 0);
+  ctx.stroke();
+  // Head and fletching
+  ctx.fillStyle = '#f4c58f';
+  ctx.beginPath();
+  ctx.moveTo(s * 1.6, 0);
+  ctx.lineTo(s * 1.3, -s * 0.18);
+  ctx.lineTo(s * 1.3, s * 0.18);
+  ctx.closePath();
+  ctx.fill();
+  ctx.strokeStyle = '#ffb3c7';
+  for (const dy of [-1, 1]) {
+    ctx.beginPath();
+    ctx.moveTo(-s * 1.25, 0);
+    ctx.lineTo(-s * 1.5, dy * s * 0.22);
+    ctx.moveTo(-s * 1.05, 0);
+    ctx.lineTo(-s * 1.3, dy * s * 0.22);
+    ctx.stroke();
+  }
+  ctx.restore();
+}
+
 // ---------- Shared pieces ----------
 
 function scriptLabel(color) {
@@ -1178,5 +1329,146 @@ export const DECOS = {
     nameGlow: '#f2d27a',
     commentRight: 110,
     watermarkRight: 150,
+  },
+
+  // 旧正月: bright red and gold, hanging lanterns, coins, plum blossoms, a gold ingot, a lantern on the icon.
+  lunar: {
+    fonts: {
+      jp: MINCHO,
+      en: MINCHO,
+      title: MINCHO,
+      load: ['700 24px "Shippori Mincho"', '800 24px "Shippori Mincho"'],
+    },
+    vertical: true,
+    backdrop: (ctx, W, H, theme, hasImage) => {
+      // Faint auspicious clouds
+      ctx.save();
+      ctx.globalAlpha = hasImage ? 0.5 : 1;
+      for (const [x, y, w] of [[120, 560, 260], [700, 600, 320], [980, 300, 240], [300, 330, 200]]) kumo(ctx, x, y, w, 18, rgba(theme.gold, 0.1));
+      ctx.restore();
+      scatter(2202, 22, W, H, (x, y, rand) => {
+        const k = rand();
+        if (k < 0.4) coin(ctx, x, y, 7 + rand() * 5, rgba(theme.gold, 0.85));
+        else if (k < 0.75) ume(ctx, x, y, 7 + rand() * 5, rgba('#ffd0d8', 0.85), theme.gold);
+        else sparkle(ctx, x, y, 5 + rand() * 4, rgba(theme.gold, 0.9));
+      });
+    },
+    frame: (ctx, W, H, theme) => {
+      ctx.lineWidth = 5;
+      ctx.strokeStyle = theme.gold;
+      ctx.strokeRect(18, 18, W - 36, H - 36);
+      ctx.lineWidth = 1.5;
+      ctx.strokeRect(28, 28, W - 56, H - 56);
+      // Fret corners
+      ctx.lineWidth = 3;
+      for (const [x, y, sx, sy] of [[28, 28, 1, 1], [W - 28, 28, -1, 1], [28, H - 28, 1, -1], [W - 28, H - 28, -1, -1]]) {
+        ctx.beginPath();
+        ctx.moveTo(x + sx * 34, y + sy * 6);
+        ctx.lineTo(x + sx * 6, y + sy * 6);
+        ctx.lineTo(x + sx * 6, y + sy * 34);
+        ctx.moveTo(x + sx * 24, y + sy * 14);
+        ctx.lineTo(x + sx * 14, y + sy * 14);
+        ctx.lineTo(x + sx * 14, y + sy * 24);
+        ctx.stroke();
+      }
+      // A cord of lanterns along the top
+      const x0 = 280, x1 = W - 340, n = 5;
+      ctx.strokeStyle = theme.gold;
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.moveTo(x0 - 30, 18);
+      ctx.quadraticCurveTo((x0 + x1) / 2, 34, x1 + 30, 18);
+      ctx.stroke();
+      for (let i = 0; i < n; i++) {
+        const x = x0 + ((x1 - x0) * i) / (n - 1), t = (x - x0 + 30) / (x1 - x0 + 60);
+        lantern(ctx, x, 18 + 32 * t * (1 - t), i % 2 ? 30 : 38);
+      }
+      goldIngot(ctx, W - 80, H - 66, 36);
+      coin(ctx, W - 136, H - 46, 11, theme.gold);
+      coin(ctx, W - 44, H - 110, 9, theme.gold);
+    },
+    iconDeco: (ctx, cx, cy, r) => {
+      lantern(ctx, cx + r * 0.78, cy - r * 0.95, 46);
+      ume(ctx, cx - r * 0.74, cy + r * 0.7, 15, '#ffd0d8', '#f2c14e');
+      coin(ctx, cx - r * 0.4, cy + r * 0.95, 9, '#f2c14e');
+    },
+    label: (ctx, text, x, y, theme, fonts) => {
+      ctx.save();
+      ctx.translate(x + 6, y - 6);
+      ctx.rotate(Math.PI / 4);
+      ctx.fillStyle = theme.gold;
+      ctx.fillRect(-5, -5, 10, 10);
+      ctx.restore();
+      ctx.font = `800 19px ${fonts.title}`;
+      ctx.fillStyle = theme.text;
+      ctx.letterSpacing = '3px';
+      ctx.fillText(text, x + 18, y);
+      ctx.letterSpacing = '0px';
+    },
+    nameGlow: '#ffcf5a',
+    commentRight: 120,
+    watermarkRight: 160,
+  },
+
+  // バレンタイン: chocolate and rose, floating hearts, a heart-shaped gift box, Cupid's arrow on the icon.
+  valentine: {
+    fonts: ROUNDED_FONTS,
+    vertical: true,
+    backdrop: (ctx, W, H, theme, hasImage) => {
+      // Soft rosy glow
+      const g = ctx.createRadialGradient(W * 0.75, H * 0.2, 20, W * 0.75, H * 0.2, W * 0.6);
+      g.addColorStop(0, rgba(theme.accent, hasImage ? 0.12 : 0.2));
+      g.addColorStop(1, rgba(theme.accent, 0));
+      ctx.fillStyle = g;
+      ctx.fillRect(0, 0, W, H);
+      scatter(1402, 26, W, H, (x, y, rand) => {
+        if (rand() < 0.7) {
+          heart(ctx, x, y, 7 + rand() * 9);
+          ctx.fillStyle = rgba(rand() < 0.5 ? theme.accent : theme.accent2, 0.5 + rand() * 0.4);
+          ctx.fill();
+        } else sparkle(ctx, x, y, 5 + rand() * 4, rgba('#ffffff', 0.85));
+      });
+    },
+    frame: (ctx, W, H, theme) => {
+      ctx.lineWidth = 4;
+      ctx.strokeStyle = theme.accent;
+      ctx.beginPath();
+      ctx.roundRect(20, 20, W - 40, H - 40, 18);
+      ctx.stroke();
+      ctx.lineWidth = 1.5;
+      ctx.strokeStyle = rgba(theme.accent2, 0.8);
+      ctx.setLineDash([2, 7]);
+      ctx.lineCap = 'round';
+      ctx.beginPath();
+      ctx.roundRect(31, 31, W - 62, H - 62, 12);
+      ctx.stroke();
+      ctx.setLineDash([]);
+      // Hearts on the corners and along the top
+      for (const [x, y] of [[20, 20], [W - 20, 20], [20, H - 20]]) {
+        heart(ctx, x, y + 3, 13);
+        ctx.fillStyle = theme.accent;
+        ctx.fill();
+      }
+      for (let x = 300; x <= W - 360; x += 70) {
+        heart(ctx, x, 22, 7);
+        ctx.fillStyle = rgba(theme.accent2, 0.9);
+        ctx.fill();
+      }
+      bow(ctx, W - 56, 50, 22, theme.accent, '#8c1530', 0.2);
+      heartBox(ctx, W - 76, H - 74, 40);
+    },
+    iconDeco: (ctx, cx, cy, r) => {
+      arrowHeart(ctx, cx + r * 0.72, cy - r * 0.72, 20, -0.5);
+      heart(ctx, cx - r * 0.78, cy + r * 0.78, 13);
+      ctx.fillStyle = '#ff3d6e';
+      ctx.fill();
+      heart(ctx, cx - r * 0.45, cy + r * 1.0, 8);
+      ctx.fillStyle = '#ffb3c7';
+      ctx.fill();
+    },
+    label: scriptLabel('accent2'),
+    nameGlow: '#ff5c8a',
+    commentRight: 110,
+    watermark: scriptWatermark(140),
   },
 };

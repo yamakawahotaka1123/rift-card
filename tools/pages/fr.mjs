@@ -23,6 +23,8 @@ export default ({ UPDATED, LEGAL, IMG, HOME }) => ({
     ['halloween', 'Halloween', 'Violet nuit et orange citrouille avec chauves-souris, toiles d’araignée et citrouille lanterne. Ton icône porte un chapeau de sorcière. Superbe avec un skin Ensorcelé en fond.'],
     ['christmas', 'Noël', 'Rouge et vert avec bordure sucre d’orge, guirlande lumineuse, flocons et cadeau. Ton icône porte un bonnet de Père Noël. Essaie-le avec un skin d’hiver.'],
     ['newyear', 'Nouvel An', 'Cramoisi et or avec rayons du soleil levant, fleurs de prunier et kagami mochi. Ton icône reçoit un éventail. Parfait pour un post « Bonne année ».'],
+    ['lunar', 'Nouvel An lunaire', 'Rouge vif et or avec lanternes suspendues, pièces, fleurs de prunier et lingot d’or. Une lanterne pend près de ton icône. Parfait pour souhaiter le Nouvel An lunaire.'],
+    ['valentine', 'Saint-Valentin', 'Chocolat et rose avec des cœurs flottants et une boîte cadeau en forme de cœur. Ton icône reçoit la flèche de Cupidon.'],
     ['hextech', 'Hextech', 'Le look classique or et bleu marine, proche du client LoL. Va avec n’importe quel fond de skin ; si tu hésites, prends celui-ci.'],
     ['noxus', 'Noxus', 'Un design rouge et noir percutant. Parfait avec les skins de champions noxiens comme Darius ou Sion.'],
     ['freljord', 'Freljord', 'Un design bleu glacier. Idéal avec Ashe, Sejuani ou n’importe quel skin d’hiver.'],

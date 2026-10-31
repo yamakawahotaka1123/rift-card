@@ -23,6 +23,8 @@ export default ({ UPDATED, LEGAL, IMG, HOME }) => ({
     ['halloween', 'Halloween', 'Morado nocturno y naranja calabaza con murciélagos, telarañas y una calabaza iluminada. Tu ícono lleva sombrero de bruja. Queda genial con una skin Hechizada de fondo.'],
     ['christmas', 'Navidad', 'Rojo y verde con borde de bastón de caramelo, luces, copos de nieve y un regalo. Tu ícono lleva gorro de Santa. Pruébalo con una skin invernal.'],
     ['newyear', 'Año Nuevo', 'Carmesí y dorado con rayos de sol naciente, flores de ciruelo y kagami mochi. Tu ícono lleva un abanico. Perfecto para un post de “Feliz Año Nuevo”.'],
+    ['lunar', 'Año Nuevo Lunar', 'Rojo intenso y dorado con farolillos colgantes, monedas, flores de ciruelo y un lingote de oro. Un farolillo cuelga junto a tu ícono. Ideal para felicitar el Año Nuevo Lunar.'],
+    ['valentine', 'San Valentín', 'Chocolate y rosa con corazones flotantes y una caja de regalo en forma de corazón. Tu ícono lleva la flecha de Cupido.'],
     ['hextech', 'Hextech', 'El look clásico dorado y azul marino, parecido al cliente de LoL. Combina con cualquier fondo de skin; si no sabes cuál elegir, elige este.'],
     ['noxus', 'Noxus', 'Un diseño rojo y negro contundente. Perfecto con skins de campeones noxianos como Darius o Sion.'],
     ['freljord', 'Freljord', 'Un diseño celeste helado. Ideal con Ashe, Sejuani o cualquier skin invernal.'],

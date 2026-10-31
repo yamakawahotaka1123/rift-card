@@ -23,6 +23,8 @@ export default ({ UPDATED, LEGAL, IMG, HOME }) => ({
     ['halloween', 'Halloween', 'Tím đêm và cam bí ngô cùng dơi, mạng nhện và đèn bí ngô. Biểu tượng được đội mũ phù thủy. Rất hợp với nền trang phục Phù Thủy.'],
     ['christmas', 'Giáng Sinh', 'Đỏ và xanh lá với viền kẹo gậy, dây đèn, bông tuyết và hộp quà. Biểu tượng được đội mũ ông già Noel. Thử với trang phục mùa đông nhé.'],
     ['newyear', 'Năm Mới', 'Đỏ thẫm và vàng với tia nắng bình minh, hoa mai và bánh dày kagami mochi. Biểu tượng có thêm quạt xếp. Hợp để đăng lời chúc năm mới.'],
+    ['lunar', 'Tết', 'Đỏ tươi và vàng với đèn lồng treo, đồng xu, hoa mai và thỏi vàng. Biểu tượng của bạn có thêm một chiếc đèn lồng. Hợp để đăng lời chúc Tết.'],
+    ['valentine', 'Valentine', 'Màu sô-cô-la và hồng hoa hồng với những trái tim bay lơ lửng và hộp quà hình trái tim. Biểu tượng có mũi tên của thần Cupid.'],
     ['hextech', 'Hextech', 'Phong cách cổ điển vàng và xanh navy, gần giống client LMHT. Hợp với mọi hình nền trang phục, phân vân thì chọn cái này.'],
     ['noxus', 'Noxus', 'Thiết kế đỏ đen mạnh mẽ. Rất hợp với trang phục của các tướng Noxus như Darius hay Sion.'],
     ['freljord', 'Freljord', 'Thiết kế xanh băng giá. Hợp với Ashe, Sejuani hoặc trang phục mùa đông.'],

@@ -113,6 +113,16 @@ export const THEMES = [
     bg1: '#5a0a13', bg2: '#8c1520', bgStops: ['#46070f', '#74101a', '#9a1c25'],
     accent: '#e6c15a', accent2: '#fff1d6', gold: '#f2d27a', text: '#fff7ea', sub: '#e9b9aa', panel: 'rgba(48,5,10,0.72)',
   },
+  {
+    id: 'lunar', label: '旧正月', deco: 'lunar', from: '2027-01-15',
+    bg1: '#8e0d14', bg2: '#c81e22', bgStops: ['#760a10', '#a8141a', '#d4282a'],
+    accent: '#ffc94a', accent2: '#ffe9b0', gold: '#f8cf5c', text: '#fff8e8', sub: '#ffc7b0', panel: 'rgba(80,4,8,0.7)',
+  },
+  {
+    id: 'valentine', label: 'バレンタイン', deco: 'valentine', from: '2027-01-25',
+    bg1: '#2b0d14', bg2: '#4d1626', bgStops: ['#22080f', '#3d1120', '#5c1a2e'],
+    accent: '#ff5c8a', accent2: '#ffc2d4', gold: '#f4c58f', text: '#fff1f5', sub: '#d9a3b4', panel: 'rgba(30,6,14,0.72)',
+  },
 ];
 
 export const themeIsOut = (theme, now = new Date()) => !theme.from || now >= new Date(`${theme.from}T00:00:00+09:00`);

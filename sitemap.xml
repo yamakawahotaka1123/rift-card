@@ -9,6 +9,8 @@
     <image:image><image:loc>https://summonercard.com/img/theme-halloween.jpg</image:loc></image:image>
     <image:image><image:loc>https://summonercard.com/img/theme-christmas.jpg</image:loc></image:image>
     <image:image><image:loc>https://summonercard.com/img/theme-newyear.jpg</image:loc></image:image>
+    <image:image><image:loc>https://summonercard.com/img/theme-lunar.jpg</image:loc></image:image>
+    <image:image><image:loc>https://summonercard.com/img/theme-valentine.jpg</image:loc></image:image>
     <image:image><image:loc>https://summonercard.com/img/theme-hextech.jpg</image:loc></image:image>
     <image:image><image:loc>https://summonercard.com/img/theme-noxus.jpg</image:loc></image:image>
     <image:image><image:loc>https://summonercard.com/img/theme-freljord.jpg</image:loc></image:image>
@@ -32,6 +34,8 @@
     <image:image><image:loc>https://summonercard.com/img/en/theme-halloween.jpg</image:loc></image:image>
     <image:image><image:loc>https://summonercard.com/img/en/theme-christmas.jpg</image:loc></image:image>
     <image:image><image:loc>https://summonercard.com/img/en/theme-newyear.jpg</image:loc></image:image>
+    <image:image><image:loc>https://summonercard.com/img/en/theme-lunar.jpg</image:loc></image:image>
+    <image:image><image:loc>https://summonercard.com/img/en/theme-valentine.jpg</image:loc></image:image>
     <image:image><image:loc>https://summonercard.com/img/en/theme-hextech.jpg</image:loc></image:image>
     <image:image><image:loc>https://summonercard.com/img/en/theme-noxus.jpg</image:loc></image:image>
     <image:image><image:loc>https://summonercard.com/img/en/theme-freljord.jpg</image:loc></image:image>
@@ -55,6 +59,8 @@
     <image:image><image:loc>https://summonercard.com/img/ko/theme-halloween.jpg</image:loc></image:image>
     <image:image><image:loc>https://summonercard.com/img/ko/theme-christmas.jpg</image:loc></image:image>
     <image:image><image:loc>https://summonercard.com/img/ko/theme-newyear.jpg</image:loc></image:image>
+    <image:image><image:loc>https://summonercard.com/img/ko/theme-lunar.jpg</image:loc></image:image>
+    <image:image><image:loc>https://summonercard.com/img/ko/theme-valentine.jpg</image:loc></image:image>
     <image:image><image:loc>https://summonercard.com/img/ko/theme-hextech.jpg</image:loc></image:image>
     <image:image><image:loc>https://summonercard.com/img/ko/theme-noxus.jpg</image:loc></image:image>
     <image:image><image:loc>https://summonercard.com/img/ko/theme-freljord.jpg</image:loc></image:image>
@@ -78,6 +84,8 @@
     <image:image><image:loc>https://summonercard.com/img/zh-cn/theme-halloween.jpg</image:loc></image:image>
     <image:image><image:loc>https://summonercard.com/img/zh-cn/theme-christmas.jpg</image:loc></image:image>
     <image:image><image:loc>https://summonercard.com/img/zh-cn/theme-newyear.jpg</image:loc></image:image>
+    <image:image><image:loc>https://summonercard.com/img/zh-cn/theme-lunar.jpg</image:loc></image:image>
+    <image:image><image:loc>https://summonercard.com/img/zh-cn/theme-valentine.jpg</image:loc></image:image>
     <image:image><image:loc>https://summonercard.com/img/zh-cn/theme-hextech.jpg</image:loc></image:image>
     <image:image><image:loc>https://summonercard.com/img/zh-cn/theme-noxus.jpg</image:loc></image:image>
     <image:image><image:loc>https://summonercard.com/img/zh-cn/theme-freljord.jpg</image:loc></image:image>
@@ -101,6 +109,8 @@
     <image:image><image:loc>https://summonercard.com/img/zh-tw/theme-halloween.jpg</image:loc></image:image>
     <image:image><image:loc>https://summonercard.com/img/zh-tw/theme-christmas.jpg</image:loc></image:image>
     <image:image><image:loc>https://summonercard.com/img/zh-tw/theme-newyear.jpg</image:loc></image:image>
+    <image:image><image:loc>https://summonercard.com/img/zh-tw/theme-lunar.jpg</image:loc></image:image>
+    <image:image><image:loc>https://summonercard.com/img/zh-tw/theme-valentine.jpg</image:loc></image:image>
     <image:image><image:loc>https://summonercard.com/img/zh-tw/theme-hextech.jpg</image:loc></image:image>
     <image:image><image:loc>https://summonercard.com/img/zh-tw/theme-noxus.jpg</image:loc></image:image>
     <image:image><image:loc>https://summonercard.com/img/zh-tw/theme-freljord.jpg</image:loc></image:image>
@@ -124,6 +134,8 @@
     <image:image><image:loc>https://summonercard.com/img/th/theme-halloween.jpg</image:loc></image:image>
     <image:image><image:loc>https://summonercard.com/img/th/theme-christmas.jpg</image:loc></image:image>
     <image:image><image:loc>https://summonercard.com/img/th/theme-newyear.jpg</image:loc></image:image>
+    <image:image><image:loc>https://summonercard.com/img/th/theme-lunar.jpg</image:loc></image:image>
+    <image:image><image:loc>https://summonercard.com/img/th/theme-valentine.jpg</image:loc></image:image>
     <image:image><image:loc>https://summonercard.com/img/th/theme-hextech.jpg</image:loc></image:image>
     <image:image><image:loc>https://summonercard.com/img/th/theme-noxus.jpg</image:loc></image:image>
     <image:image><image:loc>https://summonercard.com/img/th/theme-freljord.jpg</image:loc></image:image>
@@ -147,6 +159,8 @@
     <image:image><image:loc>https://summonercard.com/img/vi/theme-halloween.jpg</image:loc></image:image>
     <image:image><image:loc>https://summonercard.com/img/vi/theme-christmas.jpg</image:loc></image:image>
     <image:image><image:loc>https://summonercard.com/img/vi/theme-newyear.jpg</image:loc></image:image>
+    <image:image><image:loc>https://summonercard.com/img/vi/theme-lunar.jpg</image:loc></image:image>
+    <image:image><image:loc>https://summonercard.com/img/vi/theme-valentine.jpg</image:loc></image:image>
     <image:image><image:loc>https://summonercard.com/img/vi/theme-hextech.jpg</image:loc></image:image>
     <image:image><image:loc>https://summonercard.com/img/vi/theme-noxus.jpg</image:loc></image:image>
     <image:image><image:loc>https://summonercard.com/img/vi/theme-freljord.jpg</image:loc></image:image>
@@ -170,6 +184,8 @@
     <image:image><image:loc>https://summonercard.com/img/es/theme-halloween.jpg</image:loc></image:image>
     <image:image><image:loc>https://summonercard.com/img/es/theme-christmas.jpg</image:loc></image:image>
     <image:image><image:loc>https://summonercard.com/img/es/theme-newyear.jpg</image:loc></image:image>
+    <image:image><image:loc>https://summonercard.com/img/es/theme-lunar.jpg</image:loc></image:image>
+    <image:image><image:loc>https://summonercard.com/img/es/theme-valentine.jpg</image:loc></image:image>
     <image:image><image:loc>https://summonercard.com/img/es/theme-hextech.jpg</image:loc></image:image>
     <image:image><image:loc>https://summonercard.com/img/es/theme-noxus.jpg</image:loc></image:image>
     <image:image><image:loc>https://summonercard.com/img/es/theme-freljord.jpg</image:loc></image:image>
@@ -193,6 +209,8 @@
     <image:image><image:loc>https://summonercard.com/img/pt-br/theme-halloween.jpg</image:loc></image:image>
     <image:image><image:loc>https://summonercard.com/img/pt-br/theme-christmas.jpg</image:loc></image:image>
     <image:image><image:loc>https://summonercard.com/img/pt-br/theme-newyear.jpg</image:loc></image:image>
+    <image:image><image:loc>https://summonercard.com/img/pt-br/theme-lunar.jpg</image:loc></image:image>
+    <image:image><image:loc>https://summonercard.com/img/pt-br/theme-valentine.jpg</image:loc></image:image>
     <image:image><image:loc>https://summonercard.com/img/pt-br/theme-hextech.jpg</image:loc></image:image>
     <image:image><image:loc>https://summonercard.com/img/pt-br/theme-noxus.jpg</image:loc></image:image>
     <image:image><image:loc>https://summonercard.com/img/pt-br/theme-freljord.jpg</image:loc></image:image>
@@ -216,6 +234,8 @@
     <image:image><image:loc>https://summonercard.com/img/de/theme-halloween.jpg</image:loc></image:image>
     <image:image><image:loc>https://summonercard.com/img/de/theme-christmas.jpg</image:loc></image:image>
     <image:image><image:loc>https://summonercard.com/img/de/theme-newyear.jpg</image:loc></image:image>
+    <image:image><image:loc>https://summonercard.com/img/de/theme-lunar.jpg</image:loc></image:image>
+    <image:image><image:loc>https://summonercard.com/img/de/theme-valentine.jpg</image:loc></image:image>
     <image:image><image:loc>https://summonercard.com/img/de/theme-hextech.jpg</image:loc></image:image>
     <image:image><image:loc>https://summonercard.com/img/de/theme-noxus.jpg</image:loc></image:image>
     <image:image><image:loc>https://summonercard.com/img/de/theme-freljord.jpg</image:loc></image:image>
@@ -239,6 +259,8 @@
     <image:image><image:loc>https://summonercard.com/img/fr/theme-halloween.jpg</image:loc></image:image>
     <image:image><image:loc>https://summonercard.com/img/fr/theme-christmas.jpg</image:loc></image:image>
     <image:image><image:loc>https://summonercard.com/img/fr/theme-newyear.jpg</image:loc></image:image>
+    <image:image><image:loc>https://summonercard.com/img/fr/theme-lunar.jpg</image:loc></image:image>
+    <image:image><image:loc>https://summonercard.com/img/fr/theme-valentine.jpg</image:loc></image:image>
     <image:image><image:loc>https://summonercard.com/img/fr/theme-hextech.jpg</image:loc></image:image>
     <image:image><image:loc>https://summonercard.com/img/fr/theme-noxus.jpg</image:loc></image:image>
     <image:image><image:loc>https://summonercard.com/img/fr/theme-freljord.jpg</image:loc></image:image>
