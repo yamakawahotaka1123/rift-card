@@ -866,10 +866,32 @@ $('#btn-sample').addEventListener('click', () => {
 
 // ---------- Promo banner ----------
 
-let bannerCanvas = null;
-$('#btn-banner').addEventListener('click', () => {
-  bannerCanvas = renderBanner(canvas, state, new URL(SITE_URL).host);
-  $('#banner-img').src = bannerCanvas.toDataURL('image/png');
+// Twitch panels reject images over 1 MB, so fall back to JPEG when the PNG is too big.
+const BANNER_MAX_BYTES = 1000 * 1000;
+const toBlob = (c, type, quality) => new Promise((resolve) => c.toBlob(resolve, type, quality));
+async function bannerBlob(c) {
+  const png = await toBlob(c, 'image/png');
+  if (png.size <= BANNER_MAX_BYTES) return png;
+  let jpeg;
+  for (const q of [0.92, 0.85, 0.75, 0.6]) {
+    jpeg = await toBlob(c, 'image/jpeg', q);
+    if (jpeg.size <= BANNER_MAX_BYTES) break;
+  }
+  return jpeg;
+}
+
+let bannerFile = null;
+$('#btn-banner').addEventListener('click', async () => {
+  const bannerCanvas = renderBanner(canvas, state, new URL(SITE_URL).host);
+  const blob = await bannerBlob(bannerCanvas);
+  // A data URL (not a blob URL) so long-press saving works in in-app browsers too.
+  const url = await new Promise((resolve) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result);
+    reader.readAsDataURL(blob);
+  });
+  bannerFile = { url, ext: blob.type === 'image/png' ? 'png' : 'jpg' };
+  $('#banner-img').src = bannerFile.url;
   $('#banner-dialog').showModal();
   track('banner_open', { theme: state.theme });
 });
@@ -880,14 +902,10 @@ $('#banner-save').addEventListener('click', () => {
   if (IN_APP || IS_IOS) {
     toast(t('toast.bannerLongPress'));
   } else {
-    bannerCanvas.toBlob((blob) => {
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'summoner-card-banner.png';
-      a.click();
-      setTimeout(() => URL.revokeObjectURL(url), 1000);
-    }, 'image/png');
+    const a = document.createElement('a');
+    a.href = bannerFile.url;
+    a.download = `summoner-card-banner.${bannerFile.ext}`;
+    a.click();
   }
   track('banner_save', { theme: state.theme });
 });
