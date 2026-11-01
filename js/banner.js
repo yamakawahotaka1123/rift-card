@@ -121,6 +121,100 @@ function fitFont(ctx, text, weight, size, family, maxWidth) {
   return s;
 }
 
+// Blurred, shaded copy of the card behind everything, plus the outer frame.
+function drawBackdrop(ctx, card, W, H, theme, fairy, shadeVertical) {
+  ctx.fillStyle = theme.bg1;
+  ctx.fillRect(0, 0, W, H);
+  ctx.save();
+  ctx.filter = 'blur(10px)';
+  const scale = (Math.max(W, (H * card.width) / card.height) * 1.1) / card.width;
+  const bw = card.width * scale;
+  const bh = card.height * scale;
+  ctx.drawImage(card, (W - bw) / 2, (H - bh) / 2, bw, bh);
+  ctx.restore();
+  const shade = shadeVertical ? ctx.createLinearGradient(0, 0, 0, H) : ctx.createLinearGradient(0, 0, W, 0);
+  shade.addColorStop(0, hexToRgba(theme.bg1, fairy ? 0.88 : 0.92));
+  shade.addColorStop(0.5, hexToRgba(theme.bg1, fairy ? 0.6 : 0.7));
+  shade.addColorStop(1, hexToRgba(theme.bg1, fairy ? (shadeVertical ? 0.88 : 0.35) : (shadeVertical ? 0.92 : 0.45)));
+  ctx.fillStyle = shade;
+  ctx.fillRect(0, 0, W, H);
+
+  ctx.save();
+  if (fairy) {
+    ctx.lineWidth = 3;
+    ctx.strokeStyle = hexToRgba(theme.line || theme.accent, 0.6);
+    ctx.setLineDash([3, 9]);
+    ctx.lineCap = 'round';
+    ctx.beginPath();
+    ctx.roundRect(22, 22, W - 44, H - 44, 26);
+    ctx.stroke();
+    ctx.setLineDash([]);
+  } else {
+    ctx.lineWidth = 2;
+    ctx.strokeStyle = hexToRgba(theme.accent, 0.7);
+    ctx.strokeRect(22, 22, W - 44, H - 44);
+    ctx.fillStyle = theme.accent;
+    for (const [x, y] of [[22, 22], [W - 22, 22], [22, H - 22], [W - 22, H - 22]]) {
+      diamond(ctx, x, y, 8);
+      ctx.fill();
+    }
+  }
+  ctx.restore();
+}
+
+// Rounded call-to-action button centered on cx, with the site URL under it.
+function drawCta(ctx, cx, y, w, h, fontSize, theme, fairy, siteLabel) {
+  ctx.beginPath();
+  ctx.roundRect(cx - w / 2, y, w, h, h / 2);
+  const btn = ctx.createLinearGradient(cx - w / 2, 0, cx + w / 2, 0);
+  if (fairy) {
+    btn.addColorStop(0, '#9fb6f7');
+    btn.addColorStop(1, '#c6a8f3');
+  } else {
+    btn.addColorStop(0, '#0e2240');
+    btn.addColorStop(1, '#16335c');
+  }
+  ctx.fillStyle = btn;
+  ctx.shadowColor = fairy ? 'rgba(150,120,220,0.4)' : 'rgba(200,170,110,0.35)';
+  ctx.shadowBlur = 24;
+  ctx.fill();
+  ctx.shadowColor = 'transparent';
+  ctx.lineWidth = 3;
+  ctx.strokeStyle = fairy ? '#ffffff' : theme.accent;
+  ctx.stroke();
+  ctx.textAlign = 'center';
+  ctx.fillStyle = '#ffffff';
+  ctx.font = `800 ${fontSize}px ${fairy ? ROUNDED : JP}`;
+  ctx.fillText(t('banner.cta'), cx, y + h / 2 + fontSize * 0.35, w - 40);
+  ctx.font = `700 ${Math.round(fontSize * 0.55)}px ${fairy ? ROUNDED : JP}`;
+  ctx.fillStyle = fairy ? theme.sub : hexToRgba('#ece6da', 0.75);
+  ctx.fillText(siteLabel, cx, y + h + fontSize * 0.85);
+}
+
+// Card drawn with rounded corners, a soft shadow and an outline.
+function drawCardImage(ctx, card, cx, cy, cw, rot, theme, fairy) {
+  const ch = (card.height / card.width) * cw;
+  ctx.save();
+  ctx.translate(cx, cy);
+  ctx.rotate(rot);
+  ctx.shadowColor = fairy ? 'rgba(120,90,170,0.35)' : 'rgba(0,0,0,0.7)';
+  ctx.shadowBlur = 40;
+  ctx.shadowOffsetY = 16;
+  ctx.beginPath();
+  ctx.roundRect(-cw / 2, -ch / 2, cw, ch, 14);
+  ctx.fillStyle = theme.bg1;
+  ctx.fill();
+  ctx.shadowColor = 'transparent';
+  ctx.save();
+  ctx.clip();
+  ctx.drawImage(card, -cw / 2, -ch / 2, cw, ch);
+  ctx.restore();
+  ctx.lineWidth = 3;
+  ctx.strokeStyle = fairy ? '#ffffff' : hexToRgba(theme.accent, 0.8);
+  ctx.stroke();
+  ctx.restore();
+}
+
 /**
  * Draws the promo banner. `card` is the already rendered card canvas (1200x675).
  * Returns a new canvas of BANNER_W x BANNER_H.
@@ -134,73 +228,13 @@ export function renderBanner(card, state, siteLabel) {
   c.height = BANNER_H;
   const ctx = c.getContext('2d');
 
-  // Background: the card itself, enlarged and blurred, then shaded so the left text reads well.
-  ctx.fillStyle = theme.bg1;
-  ctx.fillRect(0, 0, BANNER_W, BANNER_H);
-  ctx.save();
-  ctx.filter = 'blur(10px)';
-  const scale = (BANNER_W * 1.1) / card.width;
-  const bw = card.width * scale;
-  const bh = card.height * scale;
-  ctx.drawImage(card, (BANNER_W - bw) / 2, (BANNER_H - bh) / 2, bw, bh);
-  ctx.restore();
-  const shade = ctx.createLinearGradient(0, 0, BANNER_W, 0);
-  shade.addColorStop(0, hexToRgba(theme.bg1, fairy ? 0.88 : 0.92));
-  shade.addColorStop(0.5, hexToRgba(theme.bg1, fairy ? 0.6 : 0.7));
-  shade.addColorStop(1, hexToRgba(theme.bg1, fairy ? 0.35 : 0.45));
-  ctx.fillStyle = shade;
-  ctx.fillRect(0, 0, BANNER_W, BANNER_H);
-
-  // Frame
-  ctx.save();
+  drawBackdrop(ctx, card, BANNER_W, BANNER_H, theme, fairy, false);
   if (fairy) {
-    ctx.lineWidth = 3;
-    ctx.strokeStyle = hexToRgba(theme.line || theme.accent, 0.6);
-    ctx.setLineDash([3, 9]);
-    ctx.lineCap = 'round';
-    ctx.beginPath();
-    ctx.roundRect(22, 22, BANNER_W - 44, BANNER_H - 44, 26);
-    ctx.stroke();
-    ctx.setLineDash([]);
-    for (const [x, y, s, col] of [[90, 80, 16, theme.gold], [1000, 70, 12, '#ffffff'], [70, 520, 12, theme.accent], [980, 540, 10, '#ffffff']]) sparkle(ctx, x, y, s, col);
-  } else {
-    ctx.lineWidth = 2;
-    ctx.strokeStyle = hexToRgba(theme.accent, 0.7);
-    ctx.strokeRect(22, 22, BANNER_W - 44, BANNER_H - 44);
-    ctx.fillStyle = theme.accent;
-    for (const [x, y] of [[22, 22], [BANNER_W - 22, 22], [22, BANNER_H - 22], [BANNER_W - 22, BANNER_H - 22]]) {
-      diamond(ctx, x, y, 8);
-      ctx.fill();
-    }
+    for (const [x, y, sz, col] of [[90, 80, 16, theme.gold], [1000, 70, 12, '#ffffff'], [70, 520, 12, theme.accent], [980, 540, 10, '#ffffff']]) sparkle(ctx, x, y, sz, col);
   }
-  ctx.restore();
 
   // Card on the right, slightly tilted with a soft shadow.
-  const cw = 820;
-  const ch = (card.height / card.width) * cw;
-  ctx.save();
-  ctx.translate(1340, 300);
-  ctx.rotate(0.035);
-  ctx.shadowColor = fairy ? 'rgba(120,90,170,0.35)' : 'rgba(0,0,0,0.7)';
-  ctx.shadowBlur = 40;
-  ctx.shadowOffsetY = 16;
-  ctx.beginPath();
-  ctx.roundRect(-cw / 2, -ch / 2, cw, ch, 14);
-  ctx.fillStyle = theme.bg1;
-  ctx.fill();
-  ctx.shadowColor = 'transparent';
-  ctx.clip();
-  ctx.drawImage(card, -cw / 2, -ch / 2, cw, ch);
-  ctx.restore();
-  ctx.save();
-  ctx.translate(1340, 300);
-  ctx.rotate(0.035);
-  ctx.beginPath();
-  ctx.roundRect(-cw / 2, -ch / 2, cw, ch, 14);
-  ctx.lineWidth = 3;
-  ctx.strokeStyle = fairy ? '#ffffff' : hexToRgba(theme.accent, 0.8);
-  ctx.stroke();
-  ctx.restore();
+  drawCardImage(ctx, card, 1340, 300, 820, 0.035, theme, fairy);
 
   // Emblem + title
   drawEmblem(ctx, 175, 210, 82, theme, fairy);
@@ -279,33 +313,65 @@ export function renderBanner(card, state, siteLabel) {
   ctx.letterSpacing = '0px';
 
   // Call-to-action button with the URL under it
-  const btnW = 460;
-  const btnH = 80;
-  const btnY = 448;
-  ctx.beginPath();
-  ctx.roundRect(centerX - btnW / 2, btnY, btnW, btnH, btnH / 2);
-  const btn = ctx.createLinearGradient(centerX - btnW / 2, 0, centerX + btnW / 2, 0);
-  if (fairy) {
-    btn.addColorStop(0, '#9fb6f7');
-    btn.addColorStop(1, '#c6a8f3');
-  } else {
-    btn.addColorStop(0, '#0e2240');
-    btn.addColorStop(1, '#16335c');
-  }
-  ctx.fillStyle = btn;
-  ctx.shadowColor = fairy ? 'rgba(150,120,220,0.4)' : 'rgba(200,170,110,0.35)';
-  ctx.shadowBlur = 24;
-  ctx.fill();
-  ctx.shadowColor = 'transparent';
-  ctx.lineWidth = 3;
-  ctx.strokeStyle = fairy ? '#ffffff' : theme.accent;
-  ctx.stroke();
-  ctx.fillStyle = '#ffffff';
-  ctx.font = `800 40px ${fairy ? ROUNDED : JP}`;
-  ctx.fillText(t('banner.cta'), centerX, btnY + 54, btnW - 40);
-  ctx.font = `700 22px ${fairy ? ROUNDED : JP}`;
-  ctx.fillStyle = fairy ? theme.sub : hexToRgba('#ece6da', 0.75);
-  ctx.fillText(siteLabel, centerX, btnY + btnH + 34);
+  drawCta(ctx, centerX, 448, 460, 80, 40, theme, fairy, siteLabel);
 
+  return c;
+}
+
+export const PANEL_W = 640;
+export const PANEL_H = 760;
+
+/**
+ * Twitch panel version (shown 320px wide on Twitch, so this is drawn at 2x):
+ * title on top, the card in the middle, the button at the bottom.
+ */
+export function renderPanel(card, state, siteLabel) {
+  const theme = THEMES.find((t) => t.id === state.theme) || THEMES[0];
+  const fairy = Boolean(theme.light);
+  const c = document.createElement('canvas');
+  c.width = PANEL_W;
+  c.height = PANEL_H;
+  const ctx = c.getContext('2d');
+  drawBackdrop(ctx, card, PANEL_W, PANEL_H, theme, fairy, true);
+
+  // Emblem + one-line title
+  drawEmblem(ctx, 112, 112, 44, theme, fairy);
+  const family = fairy ? ROUNDED : SERIF;
+  const weight = fairy ? 800 : 700;
+  ctx.textAlign = 'left';
+  const size = fitFont(ctx, 'SUMMONER', weight, 64, family, 400);
+  const g = ctx.createLinearGradient(0, 60, 0, 170);
+  if (fairy) {
+    g.addColorStop(0, '#9fb6f7');
+    g.addColorStop(1, theme.accent);
+  } else {
+    g.addColorStop(0, '#ffffff');
+    g.addColorStop(0.5, '#fbe7b5');
+    g.addColorStop(1, theme.accent);
+  }
+  if (fairy) {
+    ctx.lineWidth = 8;
+    ctx.strokeStyle = '#ffffff';
+    ctx.lineJoin = 'round';
+    ctx.strokeText('SUMMONER', 186, 104);
+    ctx.strokeText('CARD', 186, 104 + size);
+  }
+  ctx.fillStyle = g;
+  ctx.fillText('SUMMONER', 186, 104);
+  ctx.fillText('CARD', 186, 104 + size);
+
+  drawCardImage(ctx, card, PANEL_W / 2, 400, 580, 0, theme, fairy);
+
+  // Tagline
+  ctx.textAlign = 'center';
+  ctx.fillStyle = fairy ? theme.text : '#ece6da';
+  const tagline = t('banner.tagline');
+  let ts = 32;
+  do {
+    ctx.font = `${fairy ? 800 : 500} ${ts}px ${fairy ? ROUNDED : JP}`;
+  } while (ctx.measureText(tagline).width > 560 && --ts > 20);
+  ctx.fillText(tagline, PANEL_W / 2, 610);
+
+  drawCta(ctx, PANEL_W / 2, 632, 400, 64, 32, theme, fairy, siteLabel);
   return c;
 }

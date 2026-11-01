@@ -190,4 +190,6 @@ export default {
   'riot.games': '{wr}% · {n} partidas',
   'riot.points': '{pts} pts',
   'riot.top5': 'Adicionar os 5 primeiros',
+  'banner.wide': 'Horizontal',
+  'banner.panel': 'Painel de Twitch',
 };

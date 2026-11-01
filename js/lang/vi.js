@@ -190,4 +190,6 @@ export default {
   'riot.games': '{wr}% · {n} trận',
   'riot.points': '{pts} điểm',
   'riot.top5': 'Thêm 5 tướng đầu',
+  'banner.wide': 'Ngang',
+  'banner.panel': 'Bảng Twitch',
 };

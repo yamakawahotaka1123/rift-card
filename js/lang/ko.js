@@ -190,4 +190,6 @@ export default {
   'riot.games': '{wr}% · {n}게임',
   'riot.points': '{pts}점',
   'riot.top5': '위에서 5개 넣기',
+  'banner.wide': '가로형',
+  'banner.panel': 'Twitch 패널',
 };

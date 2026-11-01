@@ -6,7 +6,7 @@ import { CARD_H, CARD_W, SITE_URL, champSquareUrl, loadSplash, profileIconUrl, r
 import { cropImage } from './cropper.js';
 import { initAds } from './ads.js';
 import { initAnalytics, track } from './analytics.js';
-import { renderBanner } from './banner.js';
+import { renderBanner, renderPanel } from './banner.js';
 import { initRiotImport } from './riot.js';
 import {
   LANG, LANG_INFO, SHARE_HASHTAGS, allNamePresets, applyI18n, levelLabel, namePresets, t, tagName, themeName, tierName,
@@ -881,8 +881,10 @@ async function bannerBlob(c) {
 }
 
 let bannerFile = null;
-$('#btn-banner').addEventListener('click', async () => {
-  const bannerCanvas = renderBanner(canvas, state, new URL(SITE_URL).host);
+let bannerSize = 'wide';
+async function showBanner() {
+  const render = bannerSize === 'panel' ? renderPanel : renderBanner;
+  const bannerCanvas = render(canvas, state, new URL(SITE_URL).host);
   const blob = await bannerBlob(bannerCanvas);
   // A data URL (not a blob URL) so long-press saving works in in-app browsers too.
   const url = await new Promise((resolve) => {
@@ -892,9 +894,20 @@ $('#btn-banner').addEventListener('click', async () => {
   });
   bannerFile = { url, ext: blob.type === 'image/png' ? 'png' : 'jpg' };
   $('#banner-img').src = bannerFile.url;
+  $('#banner-img').classList.toggle('panel', bannerSize === 'panel');
+  for (const b of document.querySelectorAll('.banner-sizes [data-size]')) b.setAttribute('aria-pressed', String(b.dataset.size === bannerSize));
+}
+$('#btn-banner').addEventListener('click', async () => {
+  await showBanner();
   $('#banner-dialog').showModal();
   track('banner_open', { theme: state.theme });
 });
+for (const b of document.querySelectorAll('.banner-sizes [data-size]')) {
+  b.addEventListener('click', () => {
+    bannerSize = b.dataset.size;
+    showBanner();
+  });
+}
 $('#banner-close').addEventListener('click', () => $('#banner-dialog').close());
 
 $('#banner-save').addEventListener('click', () => {
@@ -904,10 +917,10 @@ $('#banner-save').addEventListener('click', () => {
   } else {
     const a = document.createElement('a');
     a.href = bannerFile.url;
-    a.download = `summoner-card-banner.${bannerFile.ext}`;
+    a.download = `summoner-card-${bannerSize === 'panel' ? 'twitch-panel' : 'banner'}.${bannerFile.ext}`;
     a.click();
   }
-  track('banner_save', { theme: state.theme });
+  track('banner_save', { theme: state.theme, size: bannerSize });
 });
 
 $('#banner-copy-url').addEventListener('click', async () => {

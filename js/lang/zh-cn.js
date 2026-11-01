@@ -190,4 +190,6 @@ export default {
   'riot.games': '{wr}% · {n}场',
   'riot.points': '{pts}点',
   'riot.top5': '填入前 5 个',
+  'banner.wide': '横幅',
+  'banner.panel': 'Twitch 面板',
 };

@@ -190,4 +190,6 @@ export default {
   'riot.games': '{wr}% · {n} เกม',
   'riot.points': '{pts} แต้ม',
   'riot.top5': 'ใส่ 5 ตัวแรก',
+  'banner.wide': 'แนวนอน',
+  'banner.panel': 'แผง Twitch',
 };

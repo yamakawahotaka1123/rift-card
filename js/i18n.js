@@ -138,6 +138,8 @@ const STRINGS = {
     'riot.games': '{wr}%・{n}戦',
     'riot.points': '{pts}pt',
     'riot.top5': '上から5体を入れる',
+    'banner.wide': '横長',
+    'banner.panel': 'Twitchパネル',
     'card.name': 'サモナーネーム',
     'sample.hours': 'T1の試合がない日',
     'sample.comment': '世界大会優勝経験あります（5回くらい）。ミッド以外はやりません。\n※ネタのサンプルです',
