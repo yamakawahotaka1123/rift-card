@@ -38,6 +38,8 @@ export default ({ UPDATED, LEGAL, IMG, HOME }) => ({
     ['guardian', 'Sternenwächterin', 'Ein helles, süßes Design für Sternenwächterinnen- und Magical-Girl-Skins.'],
     ['jirai', 'Jirai-kei', 'Der schwarz-rosa japanische „Jirai-kei“-Stil mit Schleifen, Herzen, Spitzenrand und Vichy-Karo.'],
     ['ryousan', 'Ryousan-kei', 'Der süße weiß-zartrosa japanische „Ryousan-kei“-Stil mit Perlen, Spitze und Schleifen.'],
+    ['yamikawa', 'Yami-kawaii', 'Ein „Yami-kawaii“-Design (krank-süß) in Lavendel und Mint, mit Kapseln, Pflastern, Sanitätskreuzen und Karopapier-Hintergrund. Dein Symbol bekommt ein Pflaster.'],
+    ['gothloli', 'Gothic Lolita', 'Ein Gothic-Lolita-Design in Schwarz und Weinrot: schwarzer Spitzenrand, rote Rosen und goldene Kreuze.'],
     ['y2k', 'Y2K', 'Chromsterne, Smileys, Schmetterlinge und ein Regenbogenrahmen für den Y2K-Retro-Look.'],
     ['gaming', 'Gaming-RGB', 'RGB-Regenbogen-Neonrahmen, leuchtende Schrift und ein Synthwave-Gitter auf Schwarz. Pure Gaming-PC-Energie.'],
     ['wafu', 'Japanisch', 'Ein modernes japanisches Design: Washi-Papier, Rot, Weiß und Gold, Seigaiha-Wellen, Kirschblütenblätter und Mincho-Schrift.'],

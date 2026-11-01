@@ -38,6 +38,8 @@ export default ({ UPDATED, LEGAL, IMG, HOME }) => ({
     ['guardian', 'Gardienne des étoiles', 'Un design clair, lumineux et mignon pour les skins Gardienne des étoiles et magical girl.'],
     ['jirai', 'Jirai-kei', 'Le style japonais « jirai-kei » noir et rose avec rubans, cœurs, bordure en dentelle et vichy.'],
     ['ryousan', 'Ryousan-kei', 'Le doux style japonais « ryousan-kei » blanc et rose pâle avec perles, dentelle et rubans.'],
+    ['yamikawa', 'Yami-kawaii', 'Un design « yami-kawaii » (mignon et maladif) lavande et menthe, avec gélules, pansements, croix médicales et fond de papier quadrillé. Ton icône porte un pansement.'],
+    ['gothloli', 'Gothic Lolita', 'Un design gothic lolita noir et rouge vin : bordure en dentelle noire, roses rouges et croix dorées.'],
     ['y2k', 'Y2K', 'Étoiles chromées, smileys, papillons et cadre arc-en-ciel pour un look rétro Y2K.'],
     ['gaming', 'Gaming RGB', 'Cadre néon arc-en-ciel RGB, texte lumineux et grille synthwave sur fond noir. Ambiance PC gamer à fond.'],
     ['wafu', 'Japonais', 'Un design japonais moderne : papier washi, rouge, blanc et or, vagues seigaiha, pétales de cerisier et police Mincho.'],

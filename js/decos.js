@@ -900,6 +900,113 @@ function waterBowl(ctx, x, y, s) {
   jasmine(ctx, x + s * 0.3, y - s * 0.22, s * 0.22, 0.3);
 }
 
+// Two-tone capsule pill centered on (x, y); s is half its length.
+function capsule(ctx, x, y, s, rot, c1, c2) {
+  const w = s * 0.42;
+  ctx.save();
+  ctx.translate(x, y);
+  ctx.rotate(rot);
+  ctx.beginPath();
+  ctx.roundRect(-s, -w, s * 2, w * 2, w);
+  ctx.clip();
+  ctx.fillStyle = c1;
+  ctx.fillRect(-s, -w, s, w * 2);
+  ctx.fillStyle = c2;
+  ctx.fillRect(0, -w, s, w * 2);
+  ctx.fillStyle = 'rgba(255,255,255,0.55)';
+  ctx.fillRect(-s * 0.75, -w * 0.6, s * 1.5, w * 0.35);
+  ctx.restore();
+}
+
+// Adhesive bandage centered on (x, y); s is half its length.
+function plaster(ctx, x, y, s, rot, color) {
+  const w = s * 0.36;
+  ctx.save();
+  ctx.translate(x, y);
+  ctx.rotate(rot);
+  ctx.beginPath();
+  ctx.roundRect(-s, -w, s * 2, w * 2, w);
+  ctx.fillStyle = color;
+  ctx.fill();
+  ctx.lineWidth = 1.5;
+  ctx.strokeStyle = 'rgba(0,0,0,0.12)';
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.roundRect(-s * 0.32, -w * 0.72, s * 0.64, w * 1.44, 3);
+  ctx.fillStyle = 'rgba(255,255,255,0.75)';
+  ctx.fill();
+  ctx.fillStyle = 'rgba(0,0,0,0.12)';
+  for (const dx of [-0.66, -0.5, 0.5, 0.66]) {
+    for (const dy of [-0.35, 0.35]) {
+      ctx.beginPath();
+      ctx.arc(dx * s, dy * w, Math.max(1, s * 0.035), 0, Math.PI * 2);
+      ctx.fill();
+    }
+  }
+  ctx.restore();
+}
+
+// Rounded medical plus sign.
+function medCross(ctx, x, y, s, color) {
+  ctx.fillStyle = color;
+  ctx.beginPath();
+  ctx.roundRect(x - s * 0.3, y - s, s * 0.6, s * 2, s * 0.15);
+  ctx.roundRect(x - s, y - s * 0.3, s * 2, s * 0.6, s * 0.15);
+  ctx.fill();
+}
+
+// Rose seen from above: rings of petals around a curled center.
+function rose(ctx, x, y, s, color, dark) {
+  ctx.save();
+  ctx.translate(x, y);
+  ctx.fillStyle = color;
+  ctx.strokeStyle = dark;
+  ctx.lineWidth = Math.max(1, s * 0.07);
+  for (const [n, d, r, off] of [[5, 0.55, 0.5, 0], [4, 0.3, 0.38, 0.6]]) {
+    for (let i = 0; i < n; i++) {
+      const a = off + (Math.PI * 2 * i) / n;
+      ctx.beginPath();
+      ctx.arc(Math.cos(a) * s * d, Math.sin(a) * s * d, s * r, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+    }
+  }
+  ctx.beginPath();
+  ctx.arc(0, 0, s * 0.28, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.beginPath();
+  ctx.arc(0, 0, s * 0.18, 0.4, Math.PI * 1.7);
+  ctx.moveTo(s * 0.08, 0);
+  ctx.arc(0, 0, s * 0.08, 0, Math.PI * 1.4);
+  ctx.stroke();
+  ctx.restore();
+}
+
+function roseLeaf(ctx, x, y, s, rot, color) {
+  ctx.save();
+  ctx.translate(x, y);
+  ctx.rotate(rot);
+  ctx.beginPath();
+  ctx.moveTo(0, 0);
+  ctx.quadraticCurveTo(s * 0.5, -s * 0.45, s, 0);
+  ctx.quadraticCurveTo(s * 0.5, s * 0.45, 0, 0);
+  ctx.fillStyle = color;
+  ctx.fill();
+  ctx.restore();
+}
+
+// Cross with round ends and a boss in the middle.
+function gothicCross(ctx, x, y, s, color) {
+  ctx.fillStyle = color;
+  ctx.fillRect(x - s * 0.1, y - s * 0.9, s * 0.2, s * 2);
+  ctx.fillRect(x - s * 0.62, y - s * 0.4, s * 1.24, s * 0.2);
+  for (const [dx, dy] of [[0, -0.95], [-0.68, -0.3], [0.68, -0.3], [0, 1.12], [0, -0.3]]) {
+    ctx.beginPath();
+    ctx.arc(x + dx * s, y + dy * s, s * (dy === -0.3 && dx === 0 ? 0.2 : 0.16), 0, Math.PI * 2);
+    ctx.fill();
+  }
+}
+
 // ---------- Shared pieces ----------
 
 function scriptLabel(color) {
@@ -1801,6 +1908,148 @@ export const DECOS = {
       ctx.letterSpacing = '0px';
     },
     nameGlow: '#ffd36b',
+    commentRight: 110,
+    watermarkRight: 150,
+  },
+  // 病みかわ: pastel lavender and mint, pills, bandages and medical crosses.
+  yamikawa: {
+    fonts: {
+      jp: ROUNDED,
+      en: ROUNDED,
+      title: ROUNDED,
+      load: ['500 24px "M PLUS Rounded 1c"', '700 24px "M PLUS Rounded 1c"', '800 24px "M PLUS Rounded 1c"'],
+    },
+    vertical: true,
+    backdrop: (ctx, W, H, theme, hasImage) => {
+      if (!hasImage) {
+        // Graph-paper grid
+        ctx.fillStyle = rgba(theme.accent, 0.08);
+        for (let x = 0; x < W; x += 24) ctx.fillRect(x, 0, 1, H);
+        for (let y = 0; y < H; y += 24) ctx.fillRect(0, y, W, 1);
+      }
+      scatter(6601, 26, W, H, (x, y, rand) => {
+        const k = rand(), rot = rand() * Math.PI;
+        if (k < 0.3) capsule(ctx, x, y, 9 + rand() * 4, rot, theme.accent2, '#ffffff');
+        else if (k < 0.5) capsule(ctx, x, y, 9 + rand() * 4, rot, theme.accent, theme.gold);
+        else if (k < 0.68) medCross(ctx, x, y, 5 + rand() * 3, rgba(theme.accent2, 0.85));
+        else if (k < 0.85) {
+          heart(ctx, x, y, 7 + rand() * 5);
+          ctx.fillStyle = rgba(theme.accent, 0.7);
+          ctx.fill();
+        } else sparkle(ctx, x, y, 5 + rand() * 4, '#ffffff');
+      });
+    },
+    frame: (ctx, W, H, theme) => {
+      ctx.lineWidth = 3;
+      ctx.strokeStyle = theme.accent;
+      ctx.beginPath();
+      ctx.roundRect(22, 22, W - 44, H - 44, 18);
+      ctx.stroke();
+      // Stitches
+      ctx.setLineDash([8, 6]);
+      ctx.lineWidth = 2;
+      ctx.strokeStyle = theme.accent2;
+      ctx.beginPath();
+      ctx.roundRect(32, 32, W - 64, H - 64, 12);
+      ctx.stroke();
+      ctx.setLineDash([]);
+      // Tape over two corners
+      for (const [x, y] of [[34, 34], [W - 34, H - 34]]) {
+        ctx.save();
+        ctx.translate(x, y);
+        ctx.rotate(-0.75);
+        ctx.fillStyle = rgba('#ffffff', 0.7);
+        ctx.fillRect(-36, -11, 72, 22);
+        ctx.fillStyle = rgba(theme.accent2, 0.45);
+        for (let i = -30; i < 36; i += 12) ctx.fillRect(i, -11, 5, 22);
+        ctx.restore();
+      }
+      plaster(ctx, W - 66, 58, 34, 0.7, '#f6d3c0');
+      plaster(ctx, W - 66, 58, 34, -0.7, '#f6d3c0');
+      capsule(ctx, W - 110, H - 46, 15, 0.4, theme.accent2, '#ffffff');
+      capsule(ctx, W - 54, H - 104, 13, -0.9, theme.accent, theme.gold);
+    },
+    iconDeco: (ctx, cx, cy, r, theme) => {
+      plaster(ctx, cx + r * 0.72, cy - r * 0.72, 30, 0.75, '#f6d3c0');
+      plaster(ctx, cx + r * 0.72, cy - r * 0.72, 30, -0.75, '#f6d3c0');
+      capsule(ctx, cx - r * 0.78, cy + r * 0.78, 16, -0.6, theme.accent2, '#ffffff');
+    },
+    label: (ctx, text, x, y, theme, fonts) => {
+      medCross(ctx, x + 7, y - 6, 7, theme.accent2);
+      ctx.font = `800 19px ${fonts.title}`;
+      ctx.fillStyle = theme.text;
+      ctx.letterSpacing = '3px';
+      ctx.fillText(text, x + 22, y);
+      ctx.letterSpacing = '0px';
+    },
+    commentRight: 110,
+    watermarkRight: 150,
+  },
+
+  // ゴスロリ: black and wine red, roses, gothic crosses, antique gold.
+  gothloli: {
+    fonts: {
+      jp: MINCHO,
+      en: `"Cinzel", ${MINCHO}`,
+      title: `"Cinzel", ${MINCHO}`,
+      load: ['700 24px "Cinzel"', '700 24px "Shippori Mincho"', '800 24px "Shippori Mincho"'],
+    },
+    vertical: true,
+    backdrop: (ctx, W, H, theme, hasImage) => {
+      if (!hasImage) {
+        // Faint diamond lattice
+        ctx.strokeStyle = rgba(theme.accent, 0.12);
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        for (let x = -H; x < W; x += 36) {
+          ctx.moveTo(x, 0);
+          ctx.lineTo(x + H, H);
+          ctx.moveTo(x + H, 0);
+          ctx.lineTo(x, H);
+        }
+        ctx.stroke();
+      }
+      scatter(7701, 22, W, H, (x, y, rand) => {
+        const k = rand();
+        if (k < 0.4) rose(ctx, x, y, 7 + rand() * 4, rgba(theme.accent, 0.85), rgba('#000000', 0.45));
+        else if (k < 0.7) gothicCross(ctx, x, y, 7 + rand() * 4, rgba(theme.gold, 0.7));
+        else sparkle(ctx, x, y, 4 + rand() * 4, rgba(theme.accent2, 0.8));
+      });
+    },
+    frame: (ctx, W, H, theme) => {
+      laceFrame(ctx, W, H, 22, '#050203', rgba(theme.accent, 0.9));
+      ctx.lineWidth = 2.5;
+      ctx.strokeStyle = theme.gold;
+      ctx.strokeRect(32, 32, W - 64, H - 64);
+      ctx.lineWidth = 1;
+      ctx.strokeRect(38, 38, W - 76, H - 76);
+      // Rose clusters on the right corners
+      const cluster = (x, y, s, up) => {
+        roseLeaf(ctx, x, y, s * 1.6, up ? 2.6 : -2.6, '#2f4a2c');
+        roseLeaf(ctx, x, y, s * 1.5, up ? 1.7 : -1.2, '#2f4a2c');
+        rose(ctx, x, y, s, theme.accent, '#3a0812');
+        rose(ctx, x - s * 1.1, y + (up ? -s * 0.6 : s * 0.6), s * 0.65, '#7a1226', '#2a050c');
+      };
+      cluster(W - 62, 60, 22, false);
+      cluster(W - 62, H - 60, 20, true);
+      gothicCross(ctx, W - 48, H - 140, 13, theme.gold);
+    },
+    iconDeco: (ctx, cx, cy, r, theme) => {
+      const x = cx - r * 0.78, y = cy + r * 0.78;
+      roseLeaf(ctx, x, y, 30, 2.4, '#2f4a2c');
+      roseLeaf(ctx, x, y, 28, -0.4, '#2f4a2c');
+      rose(ctx, x, y, 20, theme.accent, '#3a0812');
+      gothicCross(ctx, cx + r * 0.8, cy - r * 0.8, 15, theme.gold);
+    },
+    label: (ctx, text, x, y, theme, fonts) => {
+      gothicCross(ctx, x + 7, y - 7, 8, theme.gold);
+      ctx.font = `700 19px ${fonts.title}`;
+      ctx.fillStyle = theme.text;
+      ctx.letterSpacing = '3px';
+      ctx.fillText(text, x + 22, y);
+      ctx.letterSpacing = '0px';
+    },
+    nameGlow: '#b0213a',
     commentRight: 110,
     watermarkRight: 150,
   },

@@ -38,6 +38,8 @@ export default ({ UPDATED, LEGAL, IMG, HOME }) => ({
     ['guardian', 'Vệ Binh Tinh Tú', 'Thiết kế sáng và dễ thương cho trang phục Vệ Binh Tinh Tú và phong cách thiếu nữ phép thuật.'],
     ['jirai', 'Jirai-kei', 'Phong cách “jirai-kei” Nhật Bản đen hồng với nơ, trái tim, viền ren và họa tiết caro.'],
     ['ryousan', 'Ryousan-kei', 'Phong cách “ryousan-kei” Nhật Bản trắng hồng ngọt ngào với ngọc trai, ren và nơ.'],
+    ['yamikawa', 'Yami-kawaii', 'Thiết kế "yami-kawaii" (dễ thương kiểu ốm yếu) tông tím oải hương và bạc hà, với viên thuốc, băng cá nhân, dấu chữ thập y tế và nền giấy kẻ ô. Biểu tượng của bạn được dán băng cá nhân.'],
+    ['gothloli', 'Gothic Lolita', 'Thiết kế gothic lolita đen và đỏ rượu vang: viền ren đen, hoa hồng đỏ và thánh giá vàng.'],
     ['y2k', 'Y2K', 'Ngôi sao chrome, mặt cười, bươm bướm và khung cầu vồng cho vẻ retro Y2K.'],
     ['gaming', 'Gaming RGB', 'Khung neon cầu vồng RGB, chữ phát sáng và lưới synthwave trên nền đen. Chuẩn chất PC gaming.'],
     ['wafu', 'Phong cách Nhật', 'Thiết kế Nhật hiện đại: giấy washi, đỏ trắng vàng, sóng seigaiha, cánh hoa anh đào và chữ Mincho.'],

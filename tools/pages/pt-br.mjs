@@ -38,6 +38,8 @@ export default ({ UPDATED, LEGAL, IMG, HOME }) => ({
     ['guardian', 'Guardiã Estelar', 'Um design claro, brilhante e fofo para skins de Guardiã Estelar e de garota mágica.'],
     ['jirai', 'Jirai-kei', 'O estilo japonês “jirai-kei” em preto e rosa com laços, corações, borda de renda e xadrez vichy.'],
     ['ryousan', 'Ryousan-kei', 'O doce estilo japonês “ryousan-kei” em branco e rosa-claro com pérolas, renda e laços.'],
+    ['yamikawa', 'Yami-kawaii', 'Um design "yami-kawaii" (fofo e doentinho) em lavanda e menta, com cápsulas, curativos, cruzes médicas e fundo de papel quadriculado. Seu ícone ganha um curativo.'],
+    ['gothloli', 'Gothic Lolita', 'Um design gothic lolita em preto e vinho: borda de renda preta, rosas vermelhas e cruzes douradas.'],
     ['y2k', 'Y2K', 'Estrelas cromadas, carinhas sorridentes, borboletas e moldura arco-íris para um visual retrô Y2K.'],
     ['gaming', 'Gamer RGB', 'Moldura neon arco-íris RGB, texto brilhante e grade synthwave sobre preto. Pura energia de PC gamer.'],
     ['wafu', 'Japonês', 'Um design japonês moderno: papel washi, vermelho, branco e dourado, ondas seigaiha, pétalas de cerejeira e fonte Mincho.'],

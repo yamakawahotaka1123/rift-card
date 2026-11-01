@@ -83,6 +83,16 @@ export const THEMES = [
     accent: '#ef8fb1', accent2: '#f7bcd0', gold: '#e9a9bf', line: '#e8a3bb', text: '#6b3a4c', sub: '#b88a9a', panel: 'rgba(255,255,255,0.8)',
   },
   {
+    id: 'yamikawa', label: '病みかわ', light: true, deco: 'yamikawa',
+    bg1: '#f3e9ff', bg2: '#e3f7f4', bgStops: ['#f3e9ff', '#fde4f1', '#e3f7f4'],
+    accent: '#b18cf0', accent2: '#ff9ccc', gold: '#8fd9cf', line: '#b39ddb', text: '#4a3a66', sub: '#9a8bb5', panel: 'rgba(255,255,255,0.8)',
+  },
+  {
+    id: 'gothloli', label: 'ゴスロリ', deco: 'gothloli',
+    bg1: '#0c0608', bg2: '#2a0d16', bgStops: ['#0a0507', '#1c0a10', '#2a0d16'],
+    accent: '#b0213a', accent2: '#e8d5b0', gold: '#c9a96a', text: '#f6ece4', sub: '#b49aa0', panel: 'rgba(10,4,6,0.74)',
+  },
+  {
     id: 'y2k', label: 'Y2K', light: true, deco: 'y2k',
     bg1: '#e9f1ff', bg2: '#ffd6f6', bgStops: ['#cfe6ff', '#f2d4ff', '#ffd6ec', '#d8fff4'],
     accent: '#6b4dff', accent2: '#ff5cc8', gold: '#ffb800', line: '#2a2350', text: '#231d4a', sub: '#6f6aa0', panel: 'rgba(255,255,255,0.75)',

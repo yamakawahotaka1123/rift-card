@@ -38,6 +38,8 @@ export default ({ UPDATED, LEGAL, IMG, HOME }) => ({
     ['guardian', 'Star Guardian', 'A bright and cute light design for Star Guardian and magical-girl skins.'],
     ['jirai', 'Jirai-kei', 'The black-and-pink Japanese “jirai-kei” style with ribbons, hearts, a lace border and gingham.'],
     ['ryousan', 'Ryousan-kei', 'The sweet white-and-pale-pink Japanese “ryousan-kei” style with pearls, lace and ribbons.'],
+    ['yamikawa', 'Yami-kawaii', 'A lavender and mint "yami-kawaii" (sick-cute) design with capsules, bandages, medical crosses and a graph-paper background. Your icon gets a bandage.'],
+    ['gothloli', 'Gothic Lolita', 'A black and wine-red gothic lolita design: black lace border, red roses and gold crosses.'],
     ['y2k', 'Y2K', 'Chrome stars, smileys, butterflies and a rainbow frame for a Y2K retro look.'],
     ['gaming', 'Gaming RGB', 'RGB rainbow neon frame, glowing text and a synthwave grid on black. Pure gaming-PC energy.'],
     ['wafu', 'Japanese', 'A modern Japanese design: washi paper, red, white and gold, seigaiha waves, cherry petals and Mincho type.'],
