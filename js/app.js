@@ -4,6 +4,7 @@ import {
 } from './data.js';
 import { CARD_H, CARD_W, SITE_URL, champSquareUrl, loadSplash, profileIconUrl, renderCard } from './card.js';
 import { cropImage } from './cropper.js';
+import { initAds } from './ads.js';
 import { initAnalytics, track } from './analytics.js';
 import { renderBanner } from './banner.js';
 import { initRiotImport } from './riot.js';
@@ -926,6 +927,7 @@ $('#btn-reset-all').addEventListener('click', resetAll);
 async function init() {
   applyI18n();
   initAnalytics();
+  initAds();
   if (IN_APP) track('in_app_browser');
   buildStaticUI();
   syncUI();

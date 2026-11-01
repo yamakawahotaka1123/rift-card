@@ -628,6 +628,14 @@ dialog::backdrop { background: rgba(0, 0, 0, 0.7); }
 }
 .toast.show { opacity: 1; transform: translate(-50%, 0); }
 
+.ad-slot {
+  max-width: 1000px;
+  min-height: 100px;
+  margin: 40px auto 0;
+  padding: 0 24px;
+}
+.ad-slot[hidden] { display: none; }
+
 .guide {
   max-width: 1000px;
   margin: 40px auto 0;

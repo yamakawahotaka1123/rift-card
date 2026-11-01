@@ -1,7 +1,9 @@
 // Script for the static subpages (guide, FAQ, banner…): analytics, copy buttons and the language menu.
 import { initAnalytics, track } from './analytics.js';
+import { initAds } from './ads.js';
 
 initAnalytics();
+initAds();
 
 // Seasonal themes are in the HTML ahead of time; show them once their release date (JST) arrives.
 for (const el of document.querySelectorAll('[data-from]')) {

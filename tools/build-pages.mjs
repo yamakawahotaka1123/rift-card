@@ -40,6 +40,9 @@ const LANGS = [
   { prefix: 'fr', id: 'fr', hreflang: 'fr', label: 'Français', content: fr },
 ];
 
+// Pages that get an ad unit under their text; the legal and contact pages stay ad-free.
+const AD_PAGES = ['guide', 'templates', 'faq', 'banner'];
+
 // Seasonal themes stay hidden on the pages until their release date; js/page.js reveals them.
 const RELEASE = Object.fromEntries(THEMES.filter((t) => t.from).map((t) => [t.id, t.from]));
 const gate = (id) => (RELEASE[id] ? ` data-from="${RELEASE[id]}" hidden` : '');
@@ -138,7 +141,7 @@ ${ld}
 ${body.trim()}
       <p class="cta"><a class="btn primary" href="/">${c.cta}</a></p>
     </article>
-  </main>
+${AD_PAGES.includes(slug) ? '    <div class="ad-slot" data-ad="page" hidden></div>\n' : ''}  </main>
 
   ${footer(c)}
 
