@@ -318,60 +318,56 @@ export function renderBanner(card, state, siteLabel) {
   return c;
 }
 
-export const PANEL_W = 640;
-export const PANEL_H = 760;
+export const PANEL_BAND = 190;
 
 /**
- * Twitch panel version (shown 320px wide on Twitch, so this is drawn at 2x):
- * title on top, the card in the middle, the button at the bottom.
+ * Twitch panel version. Twitch shows panels only 320px wide, so the card fills the
+ * whole width with no margin, and a band with the site name sits under it.
  */
 export function renderPanel(card, state, siteLabel) {
   const theme = THEMES.find((t) => t.id === state.theme) || THEMES[0];
   const fairy = Boolean(theme.light);
+  const W = card.width;
   const c = document.createElement('canvas');
-  c.width = PANEL_W;
-  c.height = PANEL_H;
+  c.width = W;
+  c.height = card.height + PANEL_BAND;
   const ctx = c.getContext('2d');
-  drawBackdrop(ctx, card, PANEL_W, PANEL_H, theme, fairy, true);
+  ctx.drawImage(card, 0, 0);
 
-  // Emblem + one-line title
-  drawEmblem(ctx, 112, 112, 44, theme, fairy);
-  const family = fairy ? ROUNDED : SERIF;
-  const weight = fairy ? 800 : 700;
+  // Band under the card
+  const y = card.height;
+  const band = ctx.createLinearGradient(0, y, 0, c.height);
+  band.addColorStop(0, fairy ? '#ffffff' : theme.bg2 || theme.bg1);
+  band.addColorStop(1, theme.bg1);
+  ctx.fillStyle = band;
+  ctx.fillRect(0, y, W, PANEL_BAND);
+  ctx.fillStyle = theme.accent;
+  ctx.fillRect(0, y, W, 6);
+
+  drawEmblem(ctx, 110, y + PANEL_BAND / 2 + 3, 58, theme, fairy);
   ctx.textAlign = 'left';
-  const size = fitFont(ctx, 'SUMMONER', weight, 64, family, 400);
-  const g = ctx.createLinearGradient(0, 60, 0, 170);
-  if (fairy) {
-    g.addColorStop(0, '#9fb6f7');
-    g.addColorStop(1, theme.accent);
-  } else {
-    g.addColorStop(0, '#ffffff');
-    g.addColorStop(0.5, '#fbe7b5');
-    g.addColorStop(1, theme.accent);
-  }
-  if (fairy) {
-    ctx.lineWidth = 8;
-    ctx.strokeStyle = '#ffffff';
-    ctx.lineJoin = 'round';
-    ctx.strokeText('SUMMONER', 186, 104);
-    ctx.strokeText('CARD', 186, 104 + size);
-  }
-  ctx.fillStyle = g;
-  ctx.fillText('SUMMONER', 186, 104);
-  ctx.fillText('CARD', 186, 104 + size);
+  ctx.textBaseline = 'middle';
+  const family = fairy ? ROUNDED : SERIF;
+  fitFont(ctx, 'SUMMONER CARD', fairy ? 800 : 700, 92, family, 640);
+  ctx.fillStyle = fairy ? theme.accent : '#f6e2b0';
+  ctx.fillText('SUMMONER CARD', 205, y + 72);
+  ctx.font = `700 52px ${fairy ? ROUNDED : JP}`;
+  ctx.fillStyle = fairy ? theme.text : '#ffffff';
+  ctx.fillText(siteLabel, 205, y + 145);
 
-  drawCardImage(ctx, card, PANEL_W / 2, 400, 580, 0, theme, fairy);
-
-  // Tagline
+  // Arrow button on the right
+  const bx = W - 200, by = y + 40, bw = 160, bh = PANEL_BAND - 80;
+  ctx.beginPath();
+  ctx.roundRect(bx, by, bw, bh, bh / 2);
+  ctx.fillStyle = fairy ? theme.accent : '#16335c';
+  ctx.fill();
+  ctx.lineWidth = 4;
+  ctx.strokeStyle = fairy ? '#ffffff' : theme.accent;
+  ctx.stroke();
   ctx.textAlign = 'center';
-  ctx.fillStyle = fairy ? theme.text : '#ece6da';
-  const tagline = t('banner.tagline');
-  let ts = 32;
-  do {
-    ctx.font = `${fairy ? 800 : 500} ${ts}px ${fairy ? ROUNDED : JP}`;
-  } while (ctx.measureText(tagline).width > 560 && --ts > 20);
-  ctx.fillText(tagline, PANEL_W / 2, 610);
-
-  drawCta(ctx, PANEL_W / 2, 632, 400, 64, 32, theme, fairy, siteLabel);
+  ctx.fillStyle = '#ffffff';
+  ctx.font = `800 72px ${JP}`;
+  ctx.fillText('›', bx + bw / 2, by + bh / 2 + 2);
+  ctx.textBaseline = 'alphabetic';
   return c;
 }
