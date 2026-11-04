@@ -5,7 +5,7 @@ export default {
   title: '召唤师卡片生成器｜免费制作LoL自我介绍卡 - SUMMONER CARD',
   'inapp.text': '当前在应用内浏览器中打开。如果无法保存或分享图片，请点击右上角的「…」并选择<strong>「在浏览器中打开」</strong>。',
   'inapp.copy': '复制网址',
-  'logo.sub': '召唤师卡片生成器｜LoL自我介绍卡',
+  'logo.sub': '召唤师卡片生成器',
   loading: '加载中…',
   'btn.save': '保存图片',
   'btn.copy': '复制图片',

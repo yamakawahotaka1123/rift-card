@@ -5,7 +5,7 @@ export default {
   title: 'Summoner Card Maker | Crie seu card de perfil de LoL grátis - SUMMONER CARD',
   'inapp.text': 'Você está no navegador de um app. Se não conseguir salvar ou compartilhar, escolha <strong>“Abrir no navegador”</strong> no menu “…” no canto superior direito.',
   'inapp.copy': 'Copiar URL',
-  'logo.sub': 'Criador de card de invocador | Perfil de LoL',
+  'logo.sub': 'Criador de card de invocador',
   loading: 'Carregando…',
   'btn.save': 'Salvar imagem',
   'btn.copy': 'Copiar imagem',

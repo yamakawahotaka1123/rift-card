@@ -5,7 +5,7 @@ export default {
   title: 'Summoner Card Maker | Tạo thẻ giới thiệu LMHT miễn phí - SUMMONER CARD',
   'inapp.text': 'Bạn đang mở trong trình duyệt của ứng dụng. Nếu không lưu hoặc chia sẻ được, hãy chọn <strong>“Mở trong trình duyệt”</strong> từ menu “…” ở góc trên bên phải.',
   'inapp.copy': 'Sao chép URL',
-  'logo.sub': 'Tạo thẻ triệu hồi sư | Thẻ giới thiệu LMHT',
+  'logo.sub': 'Tạo thẻ triệu hồi sư',
   loading: 'Đang tải…',
   'btn.save': 'Lưu ảnh',
   'btn.copy': 'Sao chép ảnh',

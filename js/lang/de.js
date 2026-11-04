@@ -5,7 +5,7 @@ export default {
   title: 'Summoner Card Maker | LoL-Profilkarte kostenlos erstellen - SUMMONER CARD',
   'inapp.text': 'Du bist in einem In-App-Browser. Wenn Speichern oder Teilen nicht klappt, wähle <strong>„Im Browser öffnen“</strong> im „…“-Menü oben rechts.',
   'inapp.copy': 'URL kopieren',
-  'logo.sub': 'Summoner-Card-Generator | LoL-Profilkarte',
+  'logo.sub': 'Summoner-Card-Generator',
   loading: 'Wird geladen…',
   'btn.save': 'Bild speichern',
   'btn.copy': 'Bild kopieren',

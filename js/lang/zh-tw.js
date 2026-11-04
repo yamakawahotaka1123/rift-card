@@ -5,7 +5,7 @@ export default {
   title: '召喚師卡片產生器｜免費製作LoL自我介紹卡 - SUMMONER CARD',
   'inapp.text': '目前在 App 內建瀏覽器中開啟。如果無法儲存或分享圖片，請點右上角的「…」並選擇<strong>「以瀏覽器開啟」</strong>。',
   'inapp.copy': '複製網址',
-  'logo.sub': '召喚師卡片產生器｜LoL自我介紹卡',
+  'logo.sub': '召喚師卡片產生器',
   loading: '載入中…',
   'btn.save': '儲存圖片',
   'btn.copy': '複製圖片',

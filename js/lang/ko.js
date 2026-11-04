@@ -5,7 +5,7 @@ export default {
   title: '서머너 카드 메이커 | 롤 자기소개 카드 무료 제작 - SUMMONER CARD',
   'inapp.text': '앱 내 브라우저로 열려 있어요. 이미지 저장이나 공유가 안 되면 오른쪽 위 「…」에서 <strong>「브라우저로 열기」</strong>를 선택해 주세요.',
   'inapp.copy': 'URL 복사',
-  'logo.sub': '서머너 카드 메이커 | 롤 자기소개 카드',
+  'logo.sub': '서머너 카드 메이커',
   loading: '불러오는 중…',
   'btn.save': '이미지 저장',
   'btn.copy': '이미지 복사',
