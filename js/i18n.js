@@ -295,6 +295,6 @@ export function applyI18n() {
   const prefix = LANG_INFO.path.slice(0, -1);
   for (const link of document.querySelectorAll('a[href^="/"]')) {
     const href = link.getAttribute('href');
-    if (/^\/((guide|templates|banner|faq|privacy|terms|about)\/.*)?(\?.*)?$/.test(href)) link.setAttribute('href', prefix + href);
+    if (/^\/((guide|templates|banner|faq|privacy|terms|about|articles)\/.*)?(\?.*)?$/.test(href)) link.setAttribute('href', prefix + href);
   }
 }

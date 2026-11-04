@@ -681,6 +681,7 @@ dialog::backdrop { background: rgba(0, 0, 0, 0.7); }
 .footer-nav a:hover { color: var(--gold2); text-decoration: underline; }
 
 /* Links from the top page to the subpages */
+.link-cards + .cta { margin-top: 24px; }
 .link-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; }
 .link-cards a {
   display: flex;

@@ -102,6 +102,7 @@ export default {
       <a href="/templates/"><strong>Templates</strong><span>Samples of all 15+ themes. Pick one and start</span></a>
       <a href="/banner/"><strong>Promo banners</strong><span>Free banners for your stream or blog</span></a>
       <a href="/faq/"><strong>FAQ</strong><span>Saving on a phone, when the X app won’t save and more</span></a>
+      <a href="/articles/"><strong>Articles</strong><span>Writing duo posts that get replies, card tips by role and more</span></a>
     </div>
   </section>`,
   'picker.role': 'Role',

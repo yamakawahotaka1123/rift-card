@@ -21,6 +21,7 @@ import { THEMES } from '../js/data.js';
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const SITE = 'https://summonercard.com';
 const UPDATED = '2026-10-30';
+const ARTICLES_UPDATED = '2026-11-04';
 
 const LEGAL = 'SUMMONER CARD isn\'t endorsed by Riot Games and doesn\'t reflect the views or opinions of Riot Games or anyone officially involved in producing or managing Riot Games properties. Riot Games, and all associated properties are trademarks or registered trademarks of Riot Games, Inc.';
 
@@ -40,8 +41,15 @@ const LANGS = [
   { prefix: 'fr', id: 'fr', hreflang: 'fr', label: 'Français', content: fr },
 ];
 
+// Articles (/articles/ and /articles/<slug>/) for the languages that have a tools/articles/<lang>.mjs.
+for (const lang of LANGS) {
+  const name = lang.prefix || 'ja';
+  if (fs.existsSync(path.join(ROOT, 'tools', 'articles', `${name}.mjs`))) lang.articles = (await import(`./articles/${name}.mjs`)).default;
+}
+
 // Pages that get an ad unit under their text; the legal and contact pages stay ad-free.
-const AD_PAGES = ['guide', 'templates', 'faq', 'banner'];
+const AD_PAGES = ['guide', 'templates', 'faq', 'banner', 'articles'];
+const hasAd = (slug) => AD_PAGES.includes(slug.split('/')[0]);
 
 // Seasonal themes stay hidden on the pages until their release date; js/page.js reveals them.
 const RELEASE = Object.fromEntries(THEMES.filter((t) => t.from).map((t) => [t.id, t.from]));
@@ -54,15 +62,15 @@ const ogImage = (lang) => `${SITE}/og${lang.prefix ? `-${lang.prefix}` : ''}.jpg
 const imgDir = (lang) => (lang.prefix ? `/img/${lang.prefix}` : '/img');
 
 // Internal page links are written as Japanese paths; point them at the same language.
-const PAGE_LINK = new RegExp(`href="/((?:${SLUGS.join('|')})/[^"]*)?(\\?[^"]*)?"`, 'g');
+const PAGE_LINK = new RegExp(`href="/((?:${[...SLUGS, 'articles'].join('|')})/[^"]*)?(\\?[^"]*)?"`, 'g');
 const localizeLinks = (html, lang) => html.replace(PAGE_LINK, (_, p = '', q = '') => `href="${base(lang)}/${p}${q}"`);
 
 const fontsUrl = (lang) => `https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=M+PLUS+1p:wght@400;500;700;800${lang.cjk ? `&family=${lang.cjk.replace(/ /g, '+')}:wght@400;500;700;800` : ''}&display=swap`;
 
-function header(lang, c, slug) {
+function header(lang, c, slug, langs = LANGS) {
   const nav = [['', c.nav.make], ['guide', c.nav.guide], ['templates', c.nav.templates], ['banner', c.nav.banner], ['faq', c.nav.faq]]
     .map(([s, label]) => `<a href="/${s ? `${s}/` : ''}"${s === slug ? ' aria-current="page"' : ''}>${label}</a>`).join('');
-  const options = LANGS.map((l) => `<option value="${pageUrl(l, slug).replace(SITE, '')}" data-lang="${l.id}"${l === lang ? ' selected' : ''}>${l.label}</option>`).join('');
+  const options = LANGS.map((l) => `<option value="${pageUrl(l, langs.includes(l) ? slug : '').replace(SITE, '')}" data-lang="${l.id}"${l === lang ? ' selected' : ''}>${l.label}</option>`).join('');
   return `<header class="site-header">
     <select class="lang-select" id="lang-pages" aria-label="Language">${options}</select>
     <a class="logo" href="/">SUMMONER CARD <span>${c.siteSub}</span></a>
@@ -70,9 +78,9 @@ function header(lang, c, slug) {
   </header>`;
 }
 
-function footer(c) {
+function footer(c, articles) {
   const f = c.footerNav;
-  const links = [['guide', f.guide], ['templates', f.templates], ['banner', f.banner], ['faq', f.faq], ['about', f.about], ['privacy', f.privacy], ['terms', f.terms]]
+  const links = [['guide', f.guide], ['templates', f.templates], ['banner', f.banner], ['faq', f.faq], ...(articles ? [['articles', articles.nav]] : []), ['about', f.about], ['privacy', f.privacy], ['terms', f.terms]]
     .map(([s, label]) => `<a href="/${s}/">${label}</a>`).join('');
   return `<footer class="site-footer">
     <nav class="footer-nav" aria-label="${c.aria.siteInfo}">${links}</nav>
@@ -84,17 +92,16 @@ function footer(c) {
   </footer>`;
 }
 
-function layout(lang, c, slug, { title, description, h1, body, jsonld = [] }) {
+function layout(lang, c, slug, { title, description, h1, body, jsonld = [], parent, langs = LANGS }) {
   const url = pageUrl(lang, slug);
+  // parent: [name, slug] of the page one level up (articles), shown in the breadcrumbs.
+  const trail = [['SUMMONER CARD', ''], ...(parent ? [parent] : []), [h1, slug]];
   const crumbs = {
     '@type': 'BreadcrumbList',
-    itemListElement: [
-      { '@type': 'ListItem', position: 1, name: 'SUMMONER CARD', item: pageUrl(lang, '') },
-      { '@type': 'ListItem', position: 2, name: h1, item: url },
-    ],
+    itemListElement: trail.map(([name, s], i) => ({ '@type': 'ListItem', position: i + 1, name, item: pageUrl(lang, s) })),
   };
   const ld = JSON.stringify({ '@context': 'https://schema.org', '@graph': [crumbs, ...jsonld] }, null, 2);
-  const alternates = [...LANGS.map((l) => `  <link rel="alternate" hreflang="${l.hreflang}" href="${pageUrl(l, slug)}">`),
+  const alternates = [...langs.map((l) => `  <link rel="alternate" hreflang="${l.hreflang}" href="${pageUrl(l, slug)}">`),
     `  <link rel="alternate" hreflang="x-default" href="${pageUrl(LANGS[0], slug)}">`].join('\n');
   const fonts = fontsUrl(lang);
   const htmlAttrs = lang.cjk ? ` style="--font-cjk: '${lang.cjk}'"` : '';
@@ -132,18 +139,18 @@ ${ld}
   </script>
 </head>
 <body class="subpage" data-copied="${c.copied}" data-copy-failed="${c.copyFailed}">
-  ${header(lang, c, slug)}
+  ${header(lang, c, slug, langs)}
 
   <main class="doc">
-    <nav class="breadcrumbs" aria-label="${c.aria.breadcrumbs}"><a href="/">${c.top}</a> › <span>${h1}</span></nav>
+    <nav class="breadcrumbs" aria-label="${c.aria.breadcrumbs}"><a href="/">${c.top}</a> › ${parent ? `<a href="/${parent[1]}/">${parent[0]}</a> › ` : ''}<span>${h1}</span></nav>
     <article class="guide">
       <h1>${h1}</h1>
 ${body.trim()}
       <p class="cta"><a class="btn primary" href="/">${c.cta}</a></p>
     </article>
-${AD_PAGES.includes(slug) ? '    <div class="ad-slot" data-ad="page" hidden></div>\n' : ''}  </main>
+${hasAd(slug) ? '    <div class="ad-slot" data-ad="page" hidden></div>\n' : ''}  </main>
 
-  ${footer(c)}
+  ${footer(c, lang.articles)}
 
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
   <script type="module" src="/js/page.js"></script>
@@ -204,6 +211,39 @@ for (const lang of LANGS) {
     sitemap.push({ loc: pageUrl(lang, slug) });
   }
   console.log('wrote', `${lang.prefix || '(ja)'}: ${SLUGS.join(', ')}`);
+
+  const a = lang.articles;
+  if (!a) continue;
+  const langs = LANGS.filter((l) => l.articles);
+  const write = (slug, page) => {
+    const dir = path.join(ROOT, lang.prefix, slug);
+    fs.mkdirSync(dir, { recursive: true });
+    fs.writeFileSync(path.join(dir, 'index.html'), layout(lang, c, slug, { ...page, langs }));
+    sitemap.push({ loc: pageUrl(lang, slug) });
+  };
+  const cards = (items) => items.map((x) => `          <a href="/articles/${x.slug}/"><strong>${x.h1}</strong><span>${x.lead}</span></a>`).join('\n');
+  write('articles', {
+    ...a.index,
+    body: `${a.index.intro}
+      <div class="link-cards">
+${cards(a.items)}
+      </div>`,
+  });
+  for (const it of a.items) {
+    write(`articles/${it.slug}`, {
+      ...it,
+      parent: [a.nav, 'articles'],
+      body: `${it.body}
+      <section>
+        <h2>${a.nav}</h2>
+        <div class="link-cards">
+${cards(a.items.filter((x) => x !== it))}
+        </div>
+      </section>`,
+      jsonld: [{ '@type': 'Article', headline: it.h1, description: it.description, inLanguage: c.htmlLang, author: { '@type': 'Person', name: 'hotaka' }, publisher: { '@type': 'Organization', name: 'SUMMONER CARD' }, dateModified: ARTICLES_UPDATED }],
+    });
+  }
+  console.log('wrote', `${lang.prefix || '(ja)'}: articles (${a.items.length})`);
 }
 
 // ---------- Tool page in other languages ----------
