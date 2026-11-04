@@ -151,7 +151,7 @@ function buildStaticUI() {
   $('#name-presets').innerHTML = namePresets(NAME_PRESETS)
     .map((p) => `<button type="button" class="chip" data-name-preset="${p}">${p}</button>`).join('');
 
-  $('#themes').innerHTML = availableThemes().map((theme) => `
+  $('#themes').innerHTML = availableThemes(undefined, state.theme).map((theme) => `
     <button type="button" class="theme" data-theme="${theme.id}" style="--a:${theme.accent};--b:${theme.bg1};--c:${theme.bg2}">
       <i></i><span>${themeName(theme)}</span>
     </button>`).join('');

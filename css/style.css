@@ -688,6 +688,7 @@ dialog::backdrop { background: rgba(0, 0, 0, 0.7); }
 
 /* Links from the top page to the subpages */
 .link-cards + .cta { margin-top: 24px; }
+.theme-item .season { margin: -4px 0 8px; font-size: 13px; color: var(--gold); }
 .link-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; }
 .link-cards a {
   display: flex;

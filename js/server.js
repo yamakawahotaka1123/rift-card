@@ -79,7 +79,7 @@ function buildUI() {
   const options = RANK_TIERS.map((t) => `<option value="${t.id}">${tierName(t)}</option>`).join('');
   $('#sv-rank-from').innerHTML = any + options;
   $('#sv-rank-to').innerHTML = any + options;
-  $('#sv-themes').innerHTML = availableThemes().map((theme) => `
+  $('#sv-themes').innerHTML = availableThemes(undefined, state.theme).map((theme) => `
     <button type="button" class="theme" data-theme="${theme.id}" style="--a:${theme.accent};--b:${theme.bg1};--c:${theme.bg2}">
       <i></i><span>${themeName(theme)}</span>
     </button>`).join('');

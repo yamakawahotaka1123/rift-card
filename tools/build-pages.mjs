@@ -54,9 +54,19 @@ for (const lang of LANGS) {
 const AD_PAGES = ['guide', 'templates', 'faq', 'banner', 'articles', 'server'];
 const hasAd = (slug) => AD_PAGES.includes(slug.split('/')[0]);
 
-// Seasonal themes stay hidden on the pages until their release date; js/page.js reveals them.
-const RELEASE = Object.fromEntries(THEMES.filter((t) => t.from).map((t) => [t.id, t.from]));
-const gate = (id) => (RELEASE[id] ? ` data-from="${RELEASE[id]}" hidden` : '');
+// Seasonal themes are listed all year with their window ("Limited time: Oct 1 – Oct 31");
+// js/page.js shows the "make with this theme" button only during the window.
+const SEASON = Object.fromEntries(THEMES.filter((t) => t.season).map((t) => [t.id, t.season]));
+const LIMITED = { ja: '期間限定', en: 'Limited time', ko: '기간 한정', 'zh-CN': '限时', 'zh-TW': '限時', th: 'ช่วงเวลาจำกัด', vi: 'Có thời hạn', es: 'Por tiempo limitado', 'pt-BR': 'Por tempo limitado', de: 'Nur für kurze Zeit', fr: 'Durée limitée' };
+// Regular themes first, then seasonal ones in calendar order.
+const byCalendar = (themes) => [...themes].sort(([a], [b]) => (SEASON[a] ? 1 : 0) - (SEASON[b] ? 1 : 0) || (SEASON[a] && SEASON[b] ? SEASON[a][0].localeCompare(SEASON[b][0]) : 0));
+function seasonLabel(lang, id) {
+  const fmt = new Intl.DateTimeFormat(lang.id, { month: 'short', day: 'numeric', timeZone: 'UTC' });
+  const day = (md) => fmt.format(new Date(`2000-${md}T00:00:00Z`));
+  const [from, to] = SEASON[id];
+  if (lang.id === 'ja') return `${LIMITED.ja}：${from.replace(/^0?(\d+)-0?(\d+)$/, '$1/$2')}〜${to.replace(/^0?(\d+)-0?(\d+)$/, '$1/$2')}`;
+  return `${LIMITED[lang.id]}: ${day(from)} – ${day(to)}`;
+}
 
 const SLUGS = ['guide', 'templates', 'banner', 'faq', 'privacy', 'terms', 'about'];
 const base = (lang) => (lang.prefix ? `/${lang.prefix}` : '');
@@ -179,18 +189,19 @@ function pagesFor(lang, c) {
       ...c.templates,
       body: `${c.templates.intro}
       <div class="theme-list">
-${c.themes.map(([id, name, text]) => `        <section class="theme-item"${gate(id)}>
-          <h2>${name}</h2>
+${byCalendar(c.themes).map(([id, name, text]) => `        <section class="theme-item">
+          <h2>${name}</h2>${SEASON[id] ? `
+          <p class="season">${seasonLabel(lang, id)}</p>` : ''}
           <img src="${IMG}/theme-${id}.jpg" width="600" height="338" loading="lazy" alt="${c.templates.alt(name)}">
           <p>${text}</p>
-          <a class="btn small" href="/?theme=${id}">${c.templates.button}</a>
+          <a class="btn small" href="/?theme=${id}"${SEASON[id] ? ` data-season="${SEASON[id]}" hidden` : ''}>${c.templates.button}</a>
         </section>`).join('\n')}
       </div>`,
     },
     banner: {
       ...c.banner,
       body: c.banner.body.replace('<!--BANNERS-->', `<div class="gallery banners">
-${c.themes.map(([id, name]) => `          <figure${gate(id)}><a href="${IMG}/banner-${id}.jpg" target="_blank" rel="noopener"><img src="${IMG}/banner-${id}.jpg" width="1800" height="600" loading="lazy" alt="SUMMONER CARD banner: ${name}"></a><figcaption>${name}</figcaption></figure>`).join('\n')}
+${byCalendar(c.themes).map(([id, name]) => `          <figure><a href="${IMG}/banner-${id}.jpg" target="_blank" rel="noopener"><img src="${IMG}/banner-${id}.jpg" width="1800" height="600" loading="lazy" alt="SUMMONER CARD banner: ${name}"></a><figcaption>${name}${SEASON[id] ? `<br><small>${seasonLabel(lang, id)}</small>` : ''}</figcaption></figure>`).join('\n')}
         </div>`),
     },
     faq: {

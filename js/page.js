@@ -1,14 +1,13 @@
 // Script for the static subpages (guide, FAQ, banner…): analytics, copy buttons and the language menu.
 import { initAnalytics, track } from './analytics.js';
 import { initAds } from './ads.js';
+import { inSeason } from './data.js';
 
 initAnalytics();
 initAds();
 
-// Seasonal themes are in the HTML ahead of time; show them once their release date (JST) arrives.
-for (const el of document.querySelectorAll('[data-from]')) {
-  if (new Date() >= new Date(`${el.dataset.from}T00:00:00+09:00`)) el.hidden = false;
-}
+// Seasonal themes stay listed all year; their "make with this theme" button only shows in season.
+for (const el of document.querySelectorAll('[data-season]')) el.hidden = !inSeason(el.dataset.season.split(','));
 
 function toast(message) {
   const el = document.getElementById('toast');

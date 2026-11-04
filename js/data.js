@@ -108,50 +108,57 @@ export const THEMES = [
     accent: '#b3242c', accent2: '#c9a24a', gold: '#c9a24a', line: '#8a6a2e', text: '#2b1d14', sub: '#8a7560', panel: 'rgba(255,251,242,0.82)',
   },
   {
-    id: 'halloween', label: 'ハロウィン', deco: 'halloween',
+    id: 'halloween', label: 'ハロウィン', deco: 'halloween', season: ['10-01', '10-31'],
     bg1: '#140a1f', bg2: '#2a1238', bgStops: ['#120820', '#24103a', '#3a1530'],
     accent: '#ff8a1f', accent2: '#b57bff', gold: '#ffb347', text: '#fff3e6', sub: '#bba6cc', panel: 'rgba(16,6,24,0.72)',
   },
   {
-    id: 'christmas', label: 'クリスマス', deco: 'christmas',
+    id: 'christmas', label: 'クリスマス', deco: 'christmas', season: ['12-01', '12-25'],
     bg1: '#0b2a1c', bg2: '#14402a', bgStops: ['#0a2418', '#123a26', '#1c4a30'],
     accent: '#e8414f', accent2: '#f6f1e7', gold: '#e6c46a', text: '#fff8ef', sub: '#b6cbb8', panel: 'rgba(6,24,15,0.7)',
   },
   {
-    // Shows up on its own from `from` (JST); until then only direct renders can use it.
-    id: 'newyear', label: 'お正月', deco: 'newyear', from: '2026-12-01',
+    id: 'newyear', label: 'お正月', deco: 'newyear', season: ['12-26', '01-15'],
     bg1: '#5a0a13', bg2: '#8c1520', bgStops: ['#46070f', '#74101a', '#9a1c25'],
     accent: '#e6c15a', accent2: '#fff1d6', gold: '#f2d27a', text: '#fff7ea', sub: '#e9b9aa', panel: 'rgba(48,5,10,0.72)',
   },
   {
-    id: 'lunar', label: '旧正月', deco: 'lunar', from: '2027-01-15',
+    id: 'lunar', label: '旧正月', deco: 'lunar', season: ['01-15', '02-20'],
     bg1: '#8e0d14', bg2: '#c81e22', bgStops: ['#760a10', '#a8141a', '#d4282a'],
     accent: '#ffc94a', accent2: '#ffe9b0', gold: '#f8cf5c', text: '#fff8e8', sub: '#ffc7b0', panel: 'rgba(80,4,8,0.7)',
   },
   {
-    id: 'valentine', label: 'バレンタイン', deco: 'valentine', from: '2027-01-25',
+    id: 'valentine', label: 'バレンタイン', deco: 'valentine', season: ['01-25', '02-14'],
     bg1: '#2b0d14', bg2: '#4d1626', bgStops: ['#22080f', '#3d1120', '#5c1a2e'],
     accent: '#ff5c8a', accent2: '#ffc2d4', gold: '#f4c58f', text: '#fff1f5', sub: '#d9a3b4', panel: 'rgba(30,6,14,0.72)',
   },
   {
-    id: 'yozakura', label: '夜桜', deco: 'yozakura', from: '2027-03-01',
+    id: 'yozakura', label: '夜桜', deco: 'yozakura', season: ['03-01', '04-15'],
     bg1: '#0e0b24', bg2: '#2a1640', bgStops: ['#0b0a20', '#1c1236', '#3a1a48'],
     accent: '#ff5fa2', accent2: '#ffc1dc', gold: '#ffd9a8', text: '#fff3f8', sub: '#c3a9cf', panel: 'rgba(12,8,30,0.72)',
   },
   {
-    id: 'songkran', label: 'ソンクラーン', deco: 'songkran', from: '2027-03-25',
+    id: 'songkran', label: 'ソンクラーン', deco: 'songkran', season: ['03-25', '04-20'],
     bg1: '#0a8fc4', bg2: '#38c6e8', bgStops: ['#0677b0', '#16a2d6', '#5fd6ef'],
     accent: '#ffffff', accent2: '#ff7ab6', gold: '#ffe066', text: '#ffffff', sub: '#d6f4ff', panel: 'rgba(0,60,100,0.55)',
   },
   {
-    id: 'hanabi', label: '花火', deco: 'hanabi', from: '2027-07-01',
+    id: 'hanabi', label: '花火', deco: 'hanabi', season: ['07-01', '08-31'],
     bg1: '#050a24', bg2: '#0e1a46', bgStops: ['#03061a', '#0a1236', '#152456'],
     accent: '#ffd36b', accent2: '#ff6b8b', gold: '#f3c968', text: '#fffaf0', sub: '#a9b6dc', panel: 'rgba(4,8,30,0.72)',
   },
 ];
 
-export const themeIsOut = (theme, now = new Date()) => !theme.from || now >= new Date(`${theme.from}T00:00:00+09:00`);
-export const availableThemes = (now) => THEMES.filter((t) => themeIsOut(t, now));
+// Seasonal themes have `season: ['MM-DD', 'MM-DD']` (JST, both days included, may wrap past New Year)
+// and can only be picked during that window every year.
+export function inSeason(season, now = new Date()) {
+  if (!season) return true;
+  const md = new Date(now.getTime() + 9 * 3600 * 1000).toISOString().slice(5, 10);
+  const [from, to] = season;
+  return from <= to ? md >= from && md <= to : md >= from || md <= to;
+}
+// `keep`: a theme id to list even out of season, so a card made with it can still be edited.
+export const availableThemes = (now, keep) => THEMES.filter((t) => t.id === keep || inSeason(t.season, now));
 
 export const DEFAULT_STATE = {
   name: '',
