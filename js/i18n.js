@@ -35,6 +35,9 @@ function fromTag(tag) {
 }
 
 function detect() {
+  // Subpages state their language, since some (like /server/) exist in only a few languages.
+  const fixed = document.documentElement.dataset.pageLang;
+  if (LANGS.some((l) => l.id === fixed)) return fixed;
   const byPath = LANGS.find((l) => l.path !== '/' && location.pathname.startsWith(l.path));
   if (byPath) return byPath.id;
   const param = new URLSearchParams(location.search).get('lang');
@@ -140,6 +143,8 @@ const STRINGS = {
     'riot.top5': '上から5体を入れる',
     'banner.wide': '横長',
     'banner.panel': 'Twitchパネル',
+    'nav.server': 'サーバー紹介',
+    'server.btn': '🏠 Discordサーバーの紹介カードも作れます<small>メンバー募集の画像に</small>',
     'card.name': 'サモナーネーム',
     'sample.hours': 'T1の試合がない日',
     'sample.comment': '世界大会優勝経験あります（5回くらい）。ミッド以外はやりません。\n※ネタのサンプルです',
@@ -295,6 +300,8 @@ export function applyI18n() {
   const prefix = LANG_INFO.path.slice(0, -1);
   for (const link of document.querySelectorAll('a[href^="/"]')) {
     const href = link.getAttribute('href');
-    if (/^\/((guide|templates|banner|faq|privacy|terms|about|articles)\/.*)?(\?.*)?$/.test(href)) link.setAttribute('href', prefix + href);
+    if (/^\/((guide|templates|banner|faq|privacy|terms|about)\/.*)?(\?.*)?$/.test(href)) link.setAttribute('href', prefix + href);
+    // Articles and the server card maker exist only in Japanese and English.
+    else if (/^\/(articles|server)\//.test(href)) link.setAttribute('href', `/en${href}`);
   }
 }

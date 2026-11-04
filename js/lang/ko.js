@@ -192,4 +192,6 @@ export default {
   'riot.top5': '위에서 5개 넣기',
   'banner.wide': '가로형',
   'banner.panel': 'Twitch 패널',
+  'nav.server': '서버 소개',
+  'server.btn': '🏠 디스코드 서버 소개 카드도 만들 수 있어요<small>멤버 모집 이미지로</small>',
 };

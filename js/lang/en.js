@@ -193,4 +193,6 @@ export default {
   'riot.top5': 'Add the top 5',
   'banner.wide': 'Wide',
   'banner.panel': 'Twitch panel',
+  'nav.server': 'Server cards',
+  'server.btn': '🏠 Make a Discord server card too<small>For recruiting members</small>',
 };

@@ -192,4 +192,6 @@ export default {
   'riot.top5': '填入前 5 个',
   'banner.wide': '横幅',
   'banner.panel': 'Twitch 面板',
+  'nav.server': '服务器介绍',
+  'server.btn': '🏠 也能制作 Discord 服务器介绍卡<small>用于招募成员</small>',
 };

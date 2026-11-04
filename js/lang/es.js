@@ -192,4 +192,6 @@ export default {
   'riot.top5': 'Añadir los 5 primeros',
   'banner.wide': 'Horizontal',
   'banner.panel': 'Panel de Twitch',
+  'nav.server': 'Tarjetas de servidor',
+  'server.btn': '🏠 Crea también una tarjeta de servidor de Discord<small>Para reclutar miembros</small>',
 };

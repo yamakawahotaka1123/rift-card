@@ -192,4 +192,6 @@ export default {
   'riot.top5': 'Thêm 5 tướng đầu',
   'banner.wide': 'Ngang',
   'banner.panel': 'Bảng Twitch',
+  'nav.server': 'Thẻ máy chủ',
+  'server.btn': '🏠 Làm cả thẻ giới thiệu máy chủ Discord<small>Để tuyển thành viên</small>',
 };

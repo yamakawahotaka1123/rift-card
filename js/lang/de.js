@@ -192,4 +192,6 @@ export default {
   'riot.top5': 'Top 5 übernehmen',
   'banner.wide': 'Breit',
   'banner.panel': 'Twitch-Panel',
+  'nav.server': 'Serverkarten',
+  'server.btn': '🏠 Erstelle auch eine Discord-Serverkarte<small>Zum Mitglieder finden</small>',
 };

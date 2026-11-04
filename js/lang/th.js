@@ -192,4 +192,6 @@ export default {
   'riot.top5': 'ใส่ 5 ตัวแรก',
   'banner.wide': 'แนวนอน',
   'banner.panel': 'แผง Twitch',
+  'nav.server': 'การ์ดเซิร์ฟเวอร์',
+  'server.btn': '🏠 ทำการ์ดแนะนำเซิร์ฟเวอร์ Discord ได้ด้วย<small>สำหรับรับสมาชิก</small>',
 };

@@ -50,6 +50,7 @@ button { cursor: pointer; }
   border-style: dashed;
 }
 .banner-btn small { margin-top: 2px; font-size: 12px; font-weight: 500; color: var(--muted); }
+a.banner-btn { text-decoration: none; margin-top: 10px; }
 
 dialog#banner-dialog {
   width: min(1000px, calc(100vw - 24px));
@@ -156,6 +157,11 @@ dialog#save-dialog::backdrop { background: rgba(0, 0, 0, 0.8); }
   aspect-ratio: 1200 / 675;
 }
 #card.draggable { cursor: grab; touch-action: none; }
+/* Discord server card maker (/server/) */
+#server-card { display: block; width: 100%; height: auto; aspect-ratio: 1200 / 675; }
+.server-tool { margin: 20px 0 40px; line-height: 1.5; }
+.server-tool .actions { margin: 14px 0 20px; }
+#sv-save-dialog img { display: block; width: 100%; height: auto; border-radius: 8px; -webkit-touch-callout: default; }
 #card.draggable:active { cursor: grabbing; }
 .bg-tools { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: 10px; }
 .bg-tools .hint { margin: 0; }

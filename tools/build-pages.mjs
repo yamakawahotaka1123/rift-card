@@ -41,14 +41,17 @@ const LANGS = [
   { prefix: 'fr', id: 'fr', hreflang: 'fr', label: 'Français', content: fr },
 ];
 
-// Articles (/articles/ and /articles/<slug>/) for the languages that have a tools/articles/<lang>.mjs.
+// Articles (/articles/…) and the Discord server card maker (/server/) exist only in the languages
+// that have a tools/articles/<lang>.mjs or tools/server/<lang>.mjs.
 for (const lang of LANGS) {
   const name = lang.prefix || 'ja';
-  if (fs.existsSync(path.join(ROOT, 'tools', 'articles', `${name}.mjs`))) lang.articles = (await import(`./articles/${name}.mjs`)).default;
+  for (const kind of ['articles', 'server']) {
+    if (fs.existsSync(path.join(ROOT, 'tools', kind, `${name}.mjs`))) lang[kind] = (await import(`./${kind}/${name}.mjs`)).default;
+  }
 }
 
 // Pages that get an ad unit under their text; the legal and contact pages stay ad-free.
-const AD_PAGES = ['guide', 'templates', 'faq', 'banner', 'articles'];
+const AD_PAGES = ['guide', 'templates', 'faq', 'banner', 'articles', 'server'];
 const hasAd = (slug) => AD_PAGES.includes(slug.split('/')[0]);
 
 // Seasonal themes stay hidden on the pages until their release date; js/page.js reveals them.
@@ -62,13 +65,20 @@ const ogImage = (lang) => `${SITE}/og${lang.prefix ? `-${lang.prefix}` : ''}.jpg
 const imgDir = (lang) => (lang.prefix ? `/img/${lang.prefix}` : '/img');
 
 // Internal page links are written as Japanese paths; point them at the same language.
-const PAGE_LINK = new RegExp(`href="/((?:${[...SLUGS, 'articles'].join('|')})/[^"]*)?(\\?[^"]*)?"`, 'g');
-const localizeLinks = (html, lang) => html.replace(PAGE_LINK, (_, p = '', q = '') => `href="${base(lang)}/${p}${q}"`);
+const PAGE_LINK = new RegExp(`href="/((?:${[...SLUGS, 'articles', 'server'].join('|')})/[^"]*)?(\\?[^"]*)?"`, 'g');
+// /articles/ and /server/ exist only in some languages; elsewhere those links go to the English page.
+const localizeLinks = (html, lang) => html.replace(PAGE_LINK, (_, p = '', q = '') => {
+  const kind = p.split('/')[0];
+  const target = (kind === 'articles' || kind === 'server') && !lang[kind] ? LANGS.find((l) => l.id === 'en') : lang;
+  return `href="${base(target)}/${p}${q}"`;
+});
 
-const fontsUrl = (lang) => `https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=M+PLUS+1p:wght@400;500;700;800${lang.cjk ? `&family=${lang.cjk.replace(/ /g, '+')}:wght@400;500;700;800` : ''}&display=swap`;
+// Pages that draw cards (the server card maker) also need every theme's fonts.
+const THEME_FONTS = '&family=Dancing+Script:wght@700&family=M+PLUS+Rounded+1c:wght@500;700;800&family=Orbitron:wght@700&family=Bungee&family=Creepster&family=Shippori+Mincho:wght@700;800';
+const fontsUrl = (lang, themes = false) => `https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=M+PLUS+1p:wght@400;500;700;800${themes ? THEME_FONTS : ''}${lang.cjk ? `&family=${lang.cjk.replace(/ /g, '+')}:wght@400;500;700;800` : ''}&display=swap`;
 
 function header(lang, c, slug, langs = LANGS) {
-  const nav = [['', c.nav.make], ['guide', c.nav.guide], ['templates', c.nav.templates], ['banner', c.nav.banner], ['faq', c.nav.faq]]
+  const nav = [['', c.nav.make], ...(lang.server ? [['server', lang.server.nav]] : []), ['guide', c.nav.guide], ['templates', c.nav.templates], ['banner', c.nav.banner], ['faq', c.nav.faq]]
     .map(([s, label]) => `<a href="/${s ? `${s}/` : ''}"${s === slug ? ' aria-current="page"' : ''}>${label}</a>`).join('');
   const options = LANGS.map((l) => `<option value="${pageUrl(l, langs.includes(l) ? slug : '').replace(SITE, '')}" data-lang="${l.id}"${l === lang ? ' selected' : ''}>${l.label}</option>`).join('');
   return `<header class="site-header">
@@ -103,10 +113,10 @@ function layout(lang, c, slug, { title, description, h1, body, jsonld = [], pare
   const ld = JSON.stringify({ '@context': 'https://schema.org', '@graph': [crumbs, ...jsonld] }, null, 2);
   const alternates = [...langs.map((l) => `  <link rel="alternate" hreflang="${l.hreflang}" href="${pageUrl(l, slug)}">`),
     `  <link rel="alternate" hreflang="x-default" href="${pageUrl(LANGS[0], slug)}">`].join('\n');
-  const fonts = fontsUrl(lang);
+  const fonts = fontsUrl(lang, slug === 'server');
   const htmlAttrs = lang.cjk ? ` style="--font-cjk: '${lang.cjk}'"` : '';
   const html = `<!doctype html>
-<html lang="${c.htmlLang}"${htmlAttrs}>
+<html lang="${c.htmlLang}" data-page-lang="${lang.id}"${htmlAttrs}>
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -211,6 +221,14 @@ for (const lang of LANGS) {
     sitemap.push({ loc: pageUrl(lang, slug) });
   }
   console.log('wrote', `${lang.prefix || '(ja)'}: ${SLUGS.join(', ')}`);
+
+  if (lang.server) {
+    const dir = path.join(ROOT, lang.prefix, 'server');
+    fs.mkdirSync(dir, { recursive: true });
+    fs.writeFileSync(path.join(dir, 'index.html'), layout(lang, c, 'server', { ...lang.server, langs: LANGS.filter((l) => l.server) }));
+    sitemap.push({ loc: pageUrl(lang, 'server') });
+    console.log('wrote', `${lang.prefix || '(ja)'}: server`);
+  }
 
   const a = lang.articles;
   if (!a) continue;

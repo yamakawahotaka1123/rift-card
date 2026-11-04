@@ -80,14 +80,14 @@ export async function loadSplash(id, key, num) {
   if (!path) return null;
   return loadImage(`${CDRAGON_GAME}/default/${path.replace('/lol-game-data/assets/', '').toLowerCase()}`);
 }
-const emblemUrl = (tier) => `${CDRAGON}/images/ranked-emblem/emblem-${tier.toLowerCase()}.png`;
+export const emblemUrl = (tier) => `${CDRAGON}/images/ranked-emblem/emblem-${tier.toLowerCase()}.png`;
 
-function hexToRgba(hex, alpha) {
+export function hexToRgba(hex, alpha) {
   const n = parseInt(hex.slice(1), 16);
   return `rgba(${(n >> 16) & 255},${(n >> 8) & 255},${n & 255},${alpha})`;
 }
 
-function roundRect(ctx, x, y, w, h, r) {
+export function roundRect(ctx, x, y, w, h, r) {
   ctx.beginPath();
   ctx.moveTo(x + r, y);
   ctx.arcTo(x + w, y, x + w, y + h, r);
@@ -98,7 +98,7 @@ function roundRect(ctx, x, y, w, h, r) {
 }
 
 // Shrinks the font until the text fits, then truncates with an ellipsis as a last resort.
-function fitText(ctx, text, maxWidth, weight, size, minSize, family = FONT_JP) {
+export function fitText(ctx, text, maxWidth, weight, size, minSize, family = FONT_JP) {
   let s = size;
   ctx.font = `${weight} ${s}px ${family}`;
   while (ctx.measureText(text).width > maxWidth && s > minSize) {
@@ -125,7 +125,7 @@ function wrapUnits(ctx, para, maxWidth) {
   return [...WORDS.segment(para)].flatMap(({ segment }) => (ctx.measureText(segment).width > maxWidth ? chars(segment) : [segment]));
 }
 
-function wrapLines(ctx, text, maxWidth, maxLines) {
+export function wrapLines(ctx, text, maxWidth, maxLines) {
   const lines = [];
   for (const para of text.split('\n')) {
     let line = '';
@@ -160,7 +160,7 @@ function drawPlaced(ctx, img, w, h, offX, offY, zoom = 1) {
   ctx.drawImage(img, (w - dw) / 2 + offX * w, (h - dh) / 2 + offY * h, dw, dh);
 }
 
-function sectionLabel(ctx, text, x, y, theme) {
+export function sectionLabel(ctx, text, x, y, theme) {
   ctx.textAlign = 'left';
   const deco = DECOS[theme.deco];
   if (deco?.label) {
@@ -178,10 +178,10 @@ function sectionLabel(ctx, text, x, y, theme) {
 }
 
 // Make sure the web fonts (and the unicode-range subsets for the actual text) are ready.
-async function ensureFonts(state, theme) {
+export async function ensureFonts(texts, theme) {
   if (!document.fonts) return;
   const extra = DECOS[theme.deco]?.fonts?.load || [];
-  const text = [state.name, state.tag, state.hours, state.discord, state.x, state.twitch, state.youtube, state.comment, ...state.tags.map(tagName), tierName(TIERS.find((x) => x.id === state.tier) || TIERS[0]), ...(state._names || [])].join('');
+  const text = texts.filter(Boolean).join('');
   const sample = `${text}0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ#.・〜`;
   // Don't let a slow font download block the preview; the app redraws when fonts finish loading.
   await Promise.race([
@@ -197,45 +197,19 @@ async function ensureFonts(state, theme) {
   ]);
 }
 
-export async function renderCard(canvas, state, ctxData) {
-  const { version, champions } = ctxData;
-  const theme = THEMES.find((t) => t.id === state.theme) || THEMES[0];
-  const tier = TIERS.find((t) => t.id === state.tier) || TIERS[0];
-  const champName = (id) => champions[id]?.name || id;
-  state = { ...state, _names: state.champs.map((c) => champName(c.id)) };
 
-  const iconSrc = state.iconUpload
-    || (state.iconId ? profileIconUrl(state.iconId) : null)
-    || (state.iconChamp ? champSquareUrl(version, state.iconChamp) : null);
-
-  const [splash, icon, emblem, champImgs, roleImgs, badgeImgs] = await Promise.all([
-    state.bgUpload ? loadImage(state.bgUpload)
-      : state.splashChamp ? loadSplash(state.splashChamp, champions[state.splashChamp]?.key, state.splashSkin) : null,
-    iconSrc ? loadImage(iconSrc) : null,
-    tier.id !== 'UNRANKED' ? loadImage(emblemUrl(tier.id)) : null,
-    Promise.all(state.champs.map((c) => loadImage(c.img || champSquareUrl(version, c.id)))),
-    Promise.all(ROLES.map((r) => {
-      const level = state.roleLevels?.[r.id];
-      const active = level === 'main' || level === 'sub' || level === 'normal';
-      return loadRoleIcon(r.id, active ? theme.accent : theme.sub);
-    })),
-    Promise.all(state.champs.map((c) => (c.role ? loadRoleIcon(c.role, theme.accent) : null))),
-    ensureFonts(state, theme),
-  ]);
-
+// Sets the fonts for the theme's decoration set; call right before drawing.
+export function useThemeFonts(theme) {
   const deco = DECOS[theme.deco] || {};
   const fonts = deco.fonts || DEFAULT_FONTS;
   FONT_JP = withCjk(fonts.jp);
   FONT_EN = withCjk(fonts.en);
   FONT_TITLE = withCjk(fonts.title);
+  return { deco, fonts, jp: FONT_JP, en: FONT_EN, title: FONT_TITLE };
+}
 
-  // Draw into an offscreen canvas first so the preview never shows a half-drawn card.
-  const off = document.createElement('canvas');
-  off.width = CARD_W;
-  off.height = CARD_H;
-  const ctx = off.getContext('2d');
-  ctx.textBaseline = 'alphabetic';
-
+// Theme background, the background image (with its shading), backdrop decorations and frame.
+export function drawBase(ctx, theme, deco, splash, state) {
   // Background
   const bgGrad = deco.vertical ? ctx.createLinearGradient(0, 0, 0, CARD_H) : ctx.createLinearGradient(0, 0, CARD_W, CARD_H);
   const stops = theme.bgStops || [theme.bg1, theme.bg2];
@@ -299,10 +273,13 @@ export async function renderCard(canvas, state, ctxData) {
     }
   }
 
-  // Icon
-  const ix = 60, iy = 56, is = 150;
+}
+
+// Rounded-square or round icon with its ring and the theme's icon decoration.
+// Without an image, the first letter of `fallback` is shown.
+export function drawIcon(ctx, icon, ix, iy, is, shape, theme, deco, fallback) {
   ctx.save();
-  if (state.iconShape === 'circle') {
+  if (shape === 'circle') {
     ctx.beginPath();
     ctx.arc(ix + is / 2, iy + is / 2, is / 2, 0, Math.PI * 2);
   } else {
@@ -317,12 +294,12 @@ export async function renderCard(canvas, state, ctxData) {
     ctx.fillStyle = theme.accent;
     ctx.font = `800 64px ${FONT_JP}`;
     ctx.textAlign = 'center';
-    ctx.fillText((state.name || '?').slice(0, 1), ix + is / 2, iy + is / 2 + 22);
+    ctx.fillText((fallback || '?').slice(0, 1), ix + is / 2, iy + is / 2 + 22);
   }
   ctx.restore();
   ctx.strokeStyle = theme.accent;
   ctx.lineWidth = 4;
-  if (state.iconShape === 'circle') {
+  if (shape === 'circle') {
     ctx.beginPath();
     ctx.arc(ix + is / 2, iy + is / 2, is / 2, 0, Math.PI * 2);
   } else {
@@ -330,6 +307,105 @@ export async function renderCard(canvas, state, ctxData) {
   }
   ctx.stroke();
   deco.iconDeco?.(ctx, ix + is / 2, iy + is / 2, is / 2, theme);
+}
+
+// One row of tag pills; tags that don't fit are left out.
+export function drawTags(ctx, tags, theme, ty = 452) {
+  ctx.textAlign = 'left';
+  let tx = 60;
+  ctx.font = `700 19px ${FONT_JP}`;
+  const tagsShown = [];
+  for (const tag of tags) {
+    const w = ctx.measureText(tag).width + 32;
+    if (tx + w > CARD_W - 60) break;
+    tagsShown.push([tag, tx, w]);
+    tx += w + 10;
+  }
+  for (const [tag, x, w] of tagsShown) {
+    roundRect(ctx, x, ty, w, 38, 19);
+    ctx.fillStyle = hexToRgba(theme.accent, 0.16);
+    ctx.fill();
+    ctx.strokeStyle = hexToRgba(theme.accent, 0.7);
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+    ctx.fillStyle = theme.text;
+    ctx.font = `700 19px ${FONT_JP}`;
+    ctx.fillText(tag, x + 16, ty + 26);
+  }
+}
+
+// Two-line comment box along the bottom.
+export function drawComment(ctx, text, theme, deco) {
+  // Some themes keep the bottom-right corner free for their corner art.
+  const bx = 60, by = 512, bw = CARD_W - 120 - (deco.commentRight || 0), bh = 112;
+  roundRect(ctx, bx, by, bw, bh, 14);
+  ctx.fillStyle = theme.panel;
+  ctx.fill();
+  ctx.strokeStyle = hexToRgba(theme.accent, 0.35);
+  ctx.lineWidth = 1.5;
+  ctx.stroke();
+  ctx.fillStyle = theme.accent;
+  ctx.fillRect(bx, by + 16, 4, bh - 32);
+  ctx.font = `500 25px ${FONT_JP}`;
+  ctx.fillStyle = theme.text;
+  const lines = wrapLines(ctx, text, bw - 56, 2);
+  const lh = 38;
+  const startY = by + bh / 2 - ((lines.length - 1) * lh) / 2 + 9;
+  lines.forEach((l, i) => ctx.fillText(l, bx + 30, startY + i * lh));
+}
+
+// Watermark: site name, plus the URL so people who see a shared card can find the site.
+export function drawWatermark(ctx, theme, deco, fonts, showCredit) {
+  ctx.textAlign = 'right';
+  const credit = showCredit ? SITE_URL_SHORT : '';
+  if (deco.watermark) {
+    deco.watermark(ctx, CARD_W, CARD_H, theme, credit, fonts);
+  } else {
+    ctx.font = `700 13px ${FONT_EN}`;
+    ctx.fillStyle = hexToRgba(theme.text, 0.5);
+    ctx.fillText(credit ? `SUMMONER CARD · ${credit}` : 'SUMMONER CARD', CARD_W - (deco.watermarkRight || 32), CARD_H - 30);
+  }
+}
+
+export async function renderCard(canvas, state, ctxData) {
+  const { version, champions } = ctxData;
+  const theme = THEMES.find((t) => t.id === state.theme) || THEMES[0];
+  const tier = TIERS.find((t) => t.id === state.tier) || TIERS[0];
+  const champName = (id) => champions[id]?.name || id;
+  state = { ...state, _names: state.champs.map((c) => champName(c.id)) };
+
+  const iconSrc = state.iconUpload
+    || (state.iconId ? profileIconUrl(state.iconId) : null)
+    || (state.iconChamp ? champSquareUrl(version, state.iconChamp) : null);
+
+  const [splash, icon, emblem, champImgs, roleImgs, badgeImgs] = await Promise.all([
+    state.bgUpload ? loadImage(state.bgUpload)
+      : state.splashChamp ? loadSplash(state.splashChamp, champions[state.splashChamp]?.key, state.splashSkin) : null,
+    iconSrc ? loadImage(iconSrc) : null,
+    tier.id !== 'UNRANKED' ? loadImage(emblemUrl(tier.id)) : null,
+    Promise.all(state.champs.map((c) => loadImage(c.img || champSquareUrl(version, c.id)))),
+    Promise.all(ROLES.map((r) => {
+      const level = state.roleLevels?.[r.id];
+      const active = level === 'main' || level === 'sub' || level === 'normal';
+      return loadRoleIcon(r.id, active ? theme.accent : theme.sub);
+    })),
+    Promise.all(state.champs.map((c) => (c.role ? loadRoleIcon(c.role, theme.accent) : null))),
+    ensureFonts([state.name, state.tag, state.hours, state.discord, state.x, state.twitch, state.youtube, state.comment, ...state.tags.map(tagName), tierName(tier), ...state._names], theme),
+  ]);
+
+  const { deco, fonts } = useThemeFonts(theme);
+
+  // Draw into an offscreen canvas first so the preview never shows a half-drawn card.
+  const off = document.createElement('canvas');
+  off.width = CARD_W;
+  off.height = CARD_H;
+  const ctx = off.getContext('2d');
+  ctx.textBaseline = 'alphabetic';
+
+  drawBase(ctx, theme, deco, splash, state);
+
+  const ix = 60, iy = 56, is = 150;
+  drawIcon(ctx, icon, ix, iy, is, state.iconShape, theme, deco, state.name);
 
   if (state.level) {
     const label = `Lv.${state.level}`;
@@ -532,60 +608,11 @@ export async function renderCard(canvas, state, ctxData) {
     }
   }
 
-  // Tags
-  ctx.textAlign = 'left';
-  let tx = 60;
-  const ty = 452;
-  ctx.font = `700 19px ${FONT_JP}`;
-  const tagsShown = [];
-  for (const tag of state.tags.map(tagName)) {
-    const w = ctx.measureText(tag).width + 32;
-    if (tx + w > CARD_W - 60) break;
-    tagsShown.push([tag, tx, w]);
-    tx += w + 10;
-  }
-  for (const [tag, x, w] of tagsShown) {
-    roundRect(ctx, x, ty, w, 38, 19);
-    ctx.fillStyle = hexToRgba(theme.accent, 0.16);
-    ctx.fill();
-    ctx.strokeStyle = hexToRgba(theme.accent, 0.7);
-    ctx.lineWidth = 1.5;
-    ctx.stroke();
-    ctx.fillStyle = theme.text;
-    ctx.font = `700 19px ${FONT_JP}`;
-    ctx.fillText(tag, x + 16, ty + 26);
-  }
+  drawTags(ctx, state.tags.map(tagName), theme);
 
-  // Comment
-  if (state.comment) {
-    // Some themes keep the bottom-right corner free for their corner art.
-    const bx = 60, by = 512, bw = CARD_W - 120 - (deco.commentRight || 0), bh = 112;
-    roundRect(ctx, bx, by, bw, bh, 14);
-    ctx.fillStyle = theme.panel;
-    ctx.fill();
-    ctx.strokeStyle = hexToRgba(theme.accent, 0.35);
-    ctx.lineWidth = 1.5;
-    ctx.stroke();
-    ctx.fillStyle = theme.accent;
-    ctx.fillRect(bx, by + 16, 4, bh - 32);
-    ctx.font = `500 25px ${FONT_JP}`;
-    ctx.fillStyle = theme.text;
-    const lines = wrapLines(ctx, state.comment, bw - 56, 2);
-    const lh = 38;
-    const startY = by + bh / 2 - ((lines.length - 1) * lh) / 2 + 9;
-    lines.forEach((l, i) => ctx.fillText(l, bx + 30, startY + i * lh));
-  }
+  if (state.comment) drawComment(ctx, state.comment, theme, deco);
 
-  // Watermark: site name, plus the URL so people who see a shared card can find the site.
-  ctx.textAlign = 'right';
-  const credit = state.showCredit !== false ? SITE_URL_SHORT : '';
-  if (deco.watermark) {
-    deco.watermark(ctx, CARD_W, CARD_H, theme, credit, fonts);
-  } else {
-    ctx.font = `700 13px ${FONT_EN}`;
-    ctx.fillStyle = hexToRgba(theme.text, 0.5);
-    ctx.fillText(credit ? `SUMMONER CARD · ${credit}` : 'SUMMONER CARD', CARD_W - (deco.watermarkRight || 32), CARD_H - 30);
-  }
+  drawWatermark(ctx, theme, deco, fonts, state.showCredit !== false);
 
   canvas.width = CARD_W;
   canvas.height = CARD_H;
