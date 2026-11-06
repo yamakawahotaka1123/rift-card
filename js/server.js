@@ -11,11 +11,11 @@ const root = $('#server-tool');
 const form = $('#sv-form');
 const canvas = $('#server-card');
 const L = root.dataset;
-const labels = { allRanks: L.allRanks, name: L.name, inviteEmpty: L.inviteEmpty };
+const labels = { allRanks: L.allRanks, name: L.name, inviteEmpty: L.inviteEmpty, joinText: L.joinText };
 const SAMPLE = JSON.parse(L.sample);
 
 const DEFAULT = {
-  theme: 'hextech', name: '', iconUpload: '', iconShape: 'square', members: '', hours: '', invite: '',
+  theme: 'hextech', name: '', iconUpload: '', iconShape: 'square', members: '', hours: '', joinMode: 'link', invite: '', joinText: '',
   rankFrom: '', rankTo: '', about: '', tags: [], customTags: '', message: '',
   splashChamp: '', splashSkin: 0, bgUpload: '', bgOffX: 0, bgOffY: 0, bgZoom: 1, dim: 0.55, showCredit: true, showQr: true,
 };
@@ -91,9 +91,15 @@ function syncUI() {
     if (el.type === 'checkbox') el.checked = Boolean(state[el.name]);
     else el.value = state[el.name] ?? '';
   }
+  syncJoin();
   for (const b of $('#sv-tags').children) b.classList.toggle('on', state.tags.includes(b.dataset.tag));
   for (const b of $('#sv-themes').children) b.classList.toggle('on', b.dataset.theme === state.theme);
   if (document.activeElement !== $('#sv-champ')) $('#sv-champ').value = ctxData.champions[state.splashChamp]?.name || '';
+}
+
+// Show the invite fields or the free-text field, depending on how people join.
+function syncJoin() {
+  for (const el of form.querySelectorAll('[data-join]')) el.hidden = el.dataset.join !== state.joinMode;
 }
 
 form.addEventListener('input', (e) => {
@@ -103,6 +109,7 @@ form.addEventListener('input', (e) => {
     : el.type === 'range' || el.name === 'splashSkin' ? Number(el.value) : el.value;
   state = { ...state, [el.name]: value };
   save();
+  if (el.name === 'joinMode') syncJoin();
   render();
 });
 

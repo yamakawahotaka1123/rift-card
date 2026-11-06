@@ -10,6 +10,8 @@ const s = {
   secBasic: 'Basics', name: 'Server name', icon: 'Server icon', upload: 'Upload image', clear: 'None',
   square: 'Rounded', circle: 'Circle',
   members: 'Members', membersPh: 'e.g. 120', hours: 'Active hours', hoursPh: 'e.g. Every night from 9 pm',
+  join: 'How to join', joinLink: 'Show an invite link', joinPrivate: 'Don’t show it (write something like “DM me”)',
+  joinText: 'How to join (text)', joinTextPh: 'DM me for an invite',
   invite: 'Invite link', qr: 'Add a QR code for the invite link', rankFrom: 'Rank range (from)', rankTo: 'Rank range (to)',
   secAbout: 'About', about: 'Description', aboutPh: 'e.g. A chill LoL server. Someone is in voice chat most nights.',
   tags: 'Tags',

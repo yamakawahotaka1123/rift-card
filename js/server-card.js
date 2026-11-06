@@ -33,7 +33,7 @@ function panel(ctx, x, y, w, h, theme) {
 }
 
 /**
- * labels: { allRanks, name } in the page language.
+ * labels: { allRanks, name, inviteEmpty, joinText } in the page language.
  * ctxData: { champions } from Data Dragon, used for the skin background.
  */
 export async function renderServerCard(canvas, state, ctxData, labels) {
@@ -47,7 +47,7 @@ export async function renderServerCard(canvas, state, ctxData, labels) {
       : state.splashChamp ? loadSplash(state.splashChamp, ctxData.champions[state.splashChamp]?.key, state.splashSkin) : null,
     state.iconUpload ? loadImage(state.iconUpload) : null,
     Promise.all(ends.map((id) => loadImage(emblemUrl(id)))),
-    ensureFonts([state.name, state.members, state.hours, state.invite, state.about, state.message, range, ...tags], theme),
+    ensureFonts([state.name, state.members, state.hours, state.invite, state.joinText, labels.joinText, state.about, state.message, range, ...tags], theme),
   ]);
 
   const { deco, fonts, jp, en } = useThemeFonts(theme);
@@ -140,9 +140,22 @@ export async function renderServerCard(canvas, state, ctxData, labels) {
   panel(ctx, 790, 292, 350, 144, theme);
   ctx.textAlign = 'center';
   ctx.fillStyle = theme.text;
-  const invite = (state.invite || '').trim().replace(/^https?:\/\//, '');
+  const invite = state.joinMode === 'text' ? '' : (state.invite || '').trim().replace(/^https?:\/\//, '');
   const qr = invite && state.showQr !== false ? qrMatrix(`https://${invite}`) : null;
-  if (qr) {
+  if (state.joinMode === 'text') {
+    // No public link: a short note such as "DM me" instead, on one or two lines.
+    const note = (state.joinText || '').trim() || labels.joinText;
+    let size = 30;
+    ctx.font = `800 ${size}px ${jp}`;
+    let lines = wrapLines(ctx, note, 310, 2);
+    if (lines.length > 1) {
+      size = 26;
+      ctx.font = `800 ${size}px ${jp}`;
+      lines = wrapLines(ctx, note, 310, 2);
+    }
+    const lh = size + 10;
+    lines.forEach((l, i) => ctx.fillText(l, 965, 374 + i * lh - ((lines.length - 1) * lh) / 2));
+  } else if (qr) {
     // White tile with a quiet zone, so phones can scan it on any theme
     // Whole-pixel modules keep the edges sharp, which scanners need.
     const tile = 136, tx = 796, ty = 296;

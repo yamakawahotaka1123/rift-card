@@ -67,7 +67,7 @@
       <h1>Discordサーバー紹介カードを作る</h1>
 <p>LoLのDiscordサーバーのメンバー募集に使える、<strong>サーバー紹介カード</strong>を無料で作れます。サーバー名や対象ランク、タグ、招待リンクを入れるだけで、チャンピオンのスキン背景つきの画像が完成します。Xの「#LoLフレンド募集」やサーバー掲示板への投稿にどうぞ。</p>
 
-      <div class="server-tool" id="server-tool" data-all-ranks="全ランク歓迎" data-name="サーバー名" data-invite-empty="招待リンクを入力" data-any="指定なし" data-default-skin="デフォルト" data-copied="画像をコピーしました" data-copy-failed="コピーできませんでした。「画像を保存」を使ってください" data-long-press="画像を長押しして保存してください" data-sample="{&quot;name&quot;:&quot;LoL ゆるふわ部&quot;,&quot;members&quot;:&quot;120人&quot;,&quot;hours&quot;:&quot;毎日21時〜&quot;,&quot;invite&quot;:&quot;discord.gg/example&quot;,&quot;about&quot;:&quot;LoLをゆるく楽しむサーバーです。毎晩だれかしらVCにいて、週末はカスタムもやっています。&quot;,&quot;tags&quot;:[&quot;初心者歓迎&quot;,&quot;VCあり&quot;,&quot;カスタム&quot;,&quot;社会人多め&quot;],&quot;message&quot;:&quot;まずは見学だけでも大歓迎！気軽にどうぞ&quot;,&quot;rankFrom&quot;:&quot;IRON&quot;,&quot;rankTo&quot;:&quot;DIAMOND&quot;,&quot;splashChamp&quot;:&quot;Lux&quot;,&quot;splashSkin&quot;:0}">
+      <div class="server-tool" id="server-tool" data-all-ranks="全ランク歓迎" data-name="サーバー名" data-invite-empty="招待リンクを入力" data-join-text="DMで気軽に声かけてね" data-any="指定なし" data-default-skin="デフォルト" data-copied="画像をコピーしました" data-copy-failed="コピーできませんでした。「画像を保存」を使ってください" data-long-press="画像を長押しして保存してください" data-sample="{&quot;name&quot;:&quot;LoL ゆるふわ部&quot;,&quot;members&quot;:&quot;120人&quot;,&quot;hours&quot;:&quot;毎日21時〜&quot;,&quot;invite&quot;:&quot;discord.gg/example&quot;,&quot;about&quot;:&quot;LoLをゆるく楽しむサーバーです。毎晩だれかしらVCにいて、週末はカスタムもやっています。&quot;,&quot;tags&quot;:[&quot;初心者歓迎&quot;,&quot;VCあり&quot;,&quot;カスタム&quot;,&quot;社会人多め&quot;],&quot;message&quot;:&quot;まずは見学だけでも大歓迎！気軽にどうぞ&quot;,&quot;rankFrom&quot;:&quot;IRON&quot;,&quot;rankTo&quot;:&quot;DIAMOND&quot;,&quot;splashChamp&quot;:&quot;Lux&quot;,&quot;splashSkin&quot;:0}">
         <div class="canvas-wrap">
           <canvas id="server-card" width="1200" height="675"></canvas>
         </div>
@@ -102,14 +102,24 @@
               </label>
             </div>
             <div class="row">
+              <label class="field grow"><span>参加方法</span>
+                <select name="joinMode"><option value="link">招待リンクを載せる</option><option value="text">載せない（DMで、など文字で書く）</option></select>
+              </label>
+            </div>
+            <div class="row" data-join="link">
               <label class="field grow"><span>招待リンク</span>
                 <input name="invite" maxlength="40" placeholder="discord.gg/xxxxxx" inputmode="url">
               </label>
             </div>
-            <label class="credit-toggle">
+            <label class="credit-toggle" data-join="link">
               <input type="checkbox" name="showQr">
               <span>招待リンクのQRコードを入れる</span>
             </label>
+            <div class="row" data-join="text" hidden>
+              <label class="field grow"><span>参加方法の文字</span>
+                <input name="joinText" maxlength="24" placeholder="DMで気軽に声かけてね">
+              </label>
+            </div>
             <div class="row">
               <label class="field grow"><span>対象ランク（下）</span><select name="rankFrom" id="sv-rank-from"></select></label>
               <label class="field grow"><span>対象ランク（上）</span><select name="rankTo" id="sv-rank-to"></select></label>

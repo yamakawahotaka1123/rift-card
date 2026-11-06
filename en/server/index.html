@@ -67,7 +67,7 @@
       <h1>Make a Discord server card</h1>
 <p>Make a free <strong>server card</strong> to recruit members for your League of Legends Discord server. Add the server name, rank range, tags and invite link, and you get an image with a champion skin background. Post it on X or on server listing sites.</p>
 
-      <div class="server-tool" id="server-tool" data-all-ranks="All ranks welcome" data-name="Server name" data-invite-empty="Add an invite link" data-any="Any" data-default-skin="Default" data-copied="Image copied" data-copy-failed="Couldn’t copy. Please use “Save image” instead" data-long-press="Long-press the image to save it" data-sample="{&quot;name&quot;:&quot;Chill Rift Club&quot;,&quot;members&quot;:&quot;120&quot;,&quot;hours&quot;:&quot;Every night from 9 pm&quot;,&quot;invite&quot;:&quot;discord.gg/example&quot;,&quot;about&quot;:&quot;A chill LoL server. Someone is in voice chat most nights, and we run custom games on weekends.&quot;,&quot;tags&quot;:[&quot;Beginners welcome&quot;,&quot;Voice chat&quot;,&quot;Customs&quot;,&quot;Mostly adults&quot;],&quot;message&quot;:&quot;Feel free to just drop by and look around!&quot;,&quot;rankFrom&quot;:&quot;IRON&quot;,&quot;rankTo&quot;:&quot;DIAMOND&quot;,&quot;splashChamp&quot;:&quot;Lux&quot;,&quot;splashSkin&quot;:0}">
+      <div class="server-tool" id="server-tool" data-all-ranks="All ranks welcome" data-name="Server name" data-invite-empty="Add an invite link" data-join-text="DM me for an invite" data-any="Any" data-default-skin="Default" data-copied="Image copied" data-copy-failed="Couldn’t copy. Please use “Save image” instead" data-long-press="Long-press the image to save it" data-sample="{&quot;name&quot;:&quot;Chill Rift Club&quot;,&quot;members&quot;:&quot;120&quot;,&quot;hours&quot;:&quot;Every night from 9 pm&quot;,&quot;invite&quot;:&quot;discord.gg/example&quot;,&quot;about&quot;:&quot;A chill LoL server. Someone is in voice chat most nights, and we run custom games on weekends.&quot;,&quot;tags&quot;:[&quot;Beginners welcome&quot;,&quot;Voice chat&quot;,&quot;Customs&quot;,&quot;Mostly adults&quot;],&quot;message&quot;:&quot;Feel free to just drop by and look around!&quot;,&quot;rankFrom&quot;:&quot;IRON&quot;,&quot;rankTo&quot;:&quot;DIAMOND&quot;,&quot;splashChamp&quot;:&quot;Lux&quot;,&quot;splashSkin&quot;:0}">
         <div class="canvas-wrap">
           <canvas id="server-card" width="1200" height="675"></canvas>
         </div>
@@ -102,14 +102,24 @@
               </label>
             </div>
             <div class="row">
+              <label class="field grow"><span>How to join</span>
+                <select name="joinMode"><option value="link">Show an invite link</option><option value="text">Don’t show it (write something like “DM me”)</option></select>
+              </label>
+            </div>
+            <div class="row" data-join="link">
               <label class="field grow"><span>Invite link</span>
                 <input name="invite" maxlength="40" placeholder="discord.gg/xxxxxx" inputmode="url">
               </label>
             </div>
-            <label class="credit-toggle">
+            <label class="credit-toggle" data-join="link">
               <input type="checkbox" name="showQr">
               <span>Add a QR code for the invite link</span>
             </label>
+            <div class="row" data-join="text" hidden>
+              <label class="field grow"><span>How to join (text)</span>
+                <input name="joinText" maxlength="24" placeholder="DM me for an invite">
+              </label>
+            </div>
             <div class="row">
               <label class="field grow"><span>Rank range (from)</span><select name="rankFrom" id="sv-rank-from"></select></label>
               <label class="field grow"><span>Rank range (to)</span><select name="rankTo" id="sv-rank-to"></select></label>

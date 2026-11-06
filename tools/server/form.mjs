@@ -4,7 +4,7 @@ const attr = (s) => String(s).replace(/&/g, '&amp;').replace(/"/g, '&quot;');
 
 export function serverTool(s) {
   return `
-      <div class="server-tool" id="server-tool" data-all-ranks="${attr(s.allRanks)}" data-name="${attr(s.namePh)}" data-invite-empty="${attr(s.inviteEmpty)}" data-any="${attr(s.any)}" data-default-skin="${attr(s.defaultSkin)}" data-copied="${attr(s.copied)}" data-copy-failed="${attr(s.copyFailed)}" data-long-press="${attr(s.longPress)}" data-sample="${attr(JSON.stringify(s.sample))}">
+      <div class="server-tool" id="server-tool" data-all-ranks="${attr(s.allRanks)}" data-name="${attr(s.namePh)}" data-invite-empty="${attr(s.inviteEmpty)}" data-join-text="${attr(s.joinTextPh)}" data-any="${attr(s.any)}" data-default-skin="${attr(s.defaultSkin)}" data-copied="${attr(s.copied)}" data-copy-failed="${attr(s.copyFailed)}" data-long-press="${attr(s.longPress)}" data-sample="${attr(JSON.stringify(s.sample))}">
         <div class="canvas-wrap">
           <canvas id="server-card" width="1200" height="675"></canvas>
         </div>
@@ -39,14 +39,24 @@ export function serverTool(s) {
               </label>
             </div>
             <div class="row">
+              <label class="field grow"><span>${s.join}</span>
+                <select name="joinMode"><option value="link">${s.joinLink}</option><option value="text">${s.joinPrivate}</option></select>
+              </label>
+            </div>
+            <div class="row" data-join="link">
               <label class="field grow"><span>${s.invite}</span>
                 <input name="invite" maxlength="40" placeholder="discord.gg/xxxxxx" inputmode="url">
               </label>
             </div>
-            <label class="credit-toggle">
+            <label class="credit-toggle" data-join="link">
               <input type="checkbox" name="showQr">
               <span>${s.qr}</span>
             </label>
+            <div class="row" data-join="text" hidden>
+              <label class="field grow"><span>${s.joinText}</span>
+                <input name="joinText" maxlength="24" placeholder="${attr(s.joinTextPh)}">
+              </label>
+            </div>
             <div class="row">
               <label class="field grow"><span>${s.rankFrom}</span><select name="rankFrom" id="sv-rank-from"></select></label>
               <label class="field grow"><span>${s.rankTo}</span><select name="rankTo" id="sv-rank-to"></select></label>
