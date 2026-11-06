@@ -43,6 +43,10 @@ export function serverTool(s) {
                 <input name="invite" maxlength="40" placeholder="discord.gg/xxxxxx" inputmode="url">
               </label>
             </div>
+            <label class="credit-toggle">
+              <input type="checkbox" name="showQr">
+              <span>${s.qr}</span>
+            </label>
             <div class="row">
               <label class="field grow"><span>${s.rankFrom}</span><select name="rankFrom" id="sv-rank-from"></select></label>
               <label class="field grow"><span>${s.rankTo}</span><select name="rankTo" id="sv-rank-to"></select></label>

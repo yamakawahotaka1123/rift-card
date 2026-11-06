@@ -10,7 +10,7 @@ const s = {
   secBasic: 'Basics', name: 'Server name', icon: 'Server icon', upload: 'Upload image', clear: 'None',
   square: 'Rounded', circle: 'Circle',
   members: 'Members', membersPh: 'e.g. 120', hours: 'Active hours', hoursPh: 'e.g. Every night from 9 pm',
-  invite: 'Invite link', rankFrom: 'Rank range (from)', rankTo: 'Rank range (to)',
+  invite: 'Invite link', qr: 'Add a QR code for the invite link', rankFrom: 'Rank range (from)', rankTo: 'Rank range (to)',
   secAbout: 'About', about: 'Description', aboutPh: 'e.g. A chill LoL server. Someone is in voice chat most nights.',
   tags: 'Tags',
   tagList: ['Beginners welcome', 'Veterans welcome', 'Voice chat', 'Listen-only OK', 'Ranked', 'Normals', 'ARAM', 'Customs', 'Clash & tournaments', 'Mostly adults', 'Mostly students', 'Chat-focused', 'Streamers', '18+'],

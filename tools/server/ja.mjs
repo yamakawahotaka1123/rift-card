@@ -10,7 +10,7 @@ const s = {
   secBasic: '基本情報', name: 'サーバー名', icon: 'サーバーアイコン', upload: '画像をアップ', clear: 'なし',
   square: '角丸', circle: '丸',
   members: 'メンバー数', membersPh: '例：120人', hours: '活動時間', hoursPh: '例：毎日21時〜',
-  invite: '招待リンク', rankFrom: '対象ランク（下）', rankTo: '対象ランク（上）',
+  invite: '招待リンク', qr: '招待リンクのQRコードを入れる', rankFrom: '対象ランク（下）', rankTo: '対象ランク（上）',
   secAbout: '紹介', about: '紹介文', aboutPh: '例：LoLをゆるく楽しむサーバーです。毎晩だれかしらVCにいます。',
   tags: 'タグ',
   tagList: ['初心者歓迎', '経験者歓迎', 'VCあり', '聞き専OK', 'ランク', 'ノーマル', 'ARAM', 'カスタム', '大会・クラッシュ', '社会人多め', '学生多め', '雑談メイン', '配信者いる', '18歳以上'],

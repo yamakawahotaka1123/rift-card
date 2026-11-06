@@ -6,6 +6,7 @@ import {
   hexToRgba, loadImage, loadSplash, roundRect, sectionLabel, useThemeFonts, wrapLines,
 } from './card.js';
 import { tierName } from './i18n.js';
+import { qrMatrix } from './qr.js';
 
 // The tiers people can pick as the bottom and top of the server's rank range.
 export const RANK_TIERS = TIERS.filter((t) => t.id !== 'UNRANKED');
@@ -18,6 +19,9 @@ export function rankRange(state, allRanks) {
   if (from && to && from === to) return tierName(from);
   return `${from ? tierName(from) : ''} 〜 ${to ? tierName(to) : ''}`.trim();
 }
+
+// discord.com/invite/abc and discord.gg/abc are the same invite; show the short form.
+const shortInvite = (invite) => invite.replace(/^(www\.)?discord(app)?\.com\/invite\//i, 'discord.gg/');
 
 function panel(ctx, x, y, w, h, theme) {
   roundRect(ctx, x, y, w, h, 14);
@@ -136,9 +140,46 @@ export async function renderServerCard(canvas, state, ctxData, labels) {
   panel(ctx, 790, 292, 350, 144, theme);
   ctx.textAlign = 'center';
   ctx.fillStyle = theme.text;
-  if (state.invite) {
-    const invite = state.invite.replace(/^https?:\/\//, '');
-    ctx.fillText(fitText(ctx, invite, 310, 800, 30, 16), 965, 374);
+  const invite = (state.invite || '').trim().replace(/^https?:\/\//, '');
+  const qr = invite && state.showQr !== false ? qrMatrix(`https://${invite}`) : null;
+  if (qr) {
+    // White tile with a quiet zone, so phones can scan it on any theme
+    // Whole-pixel modules keep the edges sharp, which scanners need.
+    const tile = 136, tx = 796, ty = 296;
+    const cell = Math.floor((tile - 8) / qr.length);
+    const ox = tx + Math.floor((tile - cell * qr.length) / 2), oy = ty + Math.floor((tile - cell * qr.length) / 2);
+    roundRect(ctx, tx, ty, tile, tile, 10);
+    ctx.fillStyle = '#ffffff';
+    ctx.fill();
+    ctx.fillStyle = '#16161a';
+    qr.forEach((row, y) => row.forEach((dark, x) => {
+      if (dark) ctx.fillRect(ox + x * cell, oy + y * cell, cell, cell);
+    }));
+    ctx.font = `700 14px ${en}`;
+    ctx.fillStyle = theme.accent;
+    ctx.letterSpacing = '2px';
+    ctx.fillText('SCAN TO JOIN', 1036, 344);
+    ctx.letterSpacing = '0px';
+    // One line if it fits at a readable size, otherwise "discord.gg/" over the code.
+    const label = shortInvite(invite);
+    const cut = label.lastIndexOf('/') + 1;
+    let size = 21;
+    const fits = (parts) => parts.every((p) => ctx.measureText(p).width <= 180);
+    ctx.font = `800 ${size}px ${jp}`;
+    let lines = [label];
+    while (!fits(lines) && size > 17) ctx.font = `800 ${--size}px ${jp}`;
+    if (!fits(lines)) {
+      lines = cut > 0 && cut < label.length ? [label.slice(0, cut), label.slice(cut)] : [label];
+      size = 21;
+      ctx.font = `800 ${size}px ${jp}`;
+      while (!fits(lines) && size > 13) ctx.font = `800 ${--size}px ${jp}`;
+      lines = lines.map((l) => fitText(ctx, l, 180, 800, size, size));
+    }
+    ctx.fillStyle = theme.text;
+    const lh = size + 7;
+    lines.forEach((l, i) => ctx.fillText(l, 1036, 382 + i * lh - ((lines.length - 1) * lh) / 2));
+  } else if (invite) {
+    ctx.fillText(fitText(ctx, shortInvite(invite), 310, 800, 30, 16), 965, 374);
   } else {
     ctx.font = `700 22px ${jp}`;
     ctx.fillStyle = theme.sub;

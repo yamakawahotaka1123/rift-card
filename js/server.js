@@ -17,7 +17,7 @@ const SAMPLE = JSON.parse(L.sample);
 const DEFAULT = {
   theme: 'hextech', name: '', iconUpload: '', iconShape: 'square', members: '', hours: '', invite: '',
   rankFrom: '', rankTo: '', about: '', tags: [], customTags: '', message: '',
-  splashChamp: '', splashSkin: 0, bgUpload: '', bgOffX: 0, bgOffY: 0, bgZoom: 1, dim: 0.55, showCredit: true,
+  splashChamp: '', splashSkin: 0, bgUpload: '', bgOffX: 0, bgOffY: 0, bgZoom: 1, dim: 0.55, showCredit: true, showQr: true,
 };
 const ctxData = { version: '', champions: {} };
 
