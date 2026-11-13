@@ -1,8 +1,6 @@
-// チャンピオン ティアリストメーカー（/tierlist/）。個人が作って画像として共有するための、バックエンド不要のツール。
+// チャンピオン／アイテム ティアリストメーカー（/tierlist/）。個人が作って画像として共有するための、バックエンド不要のツール。
 // データ取得は summonercard.com 本体・フィアレスドラフトと同じく Data Dragon から直接。
 import { DDRAGON } from './data.js';
-
-const champSquareUrl = (version, id) => `${DDRAGON}/cdn/${version}/img/champion/${id}.png`;
 
 const TIERS = [
   { id: 'S', color: '#ff7f7f' },
@@ -12,36 +10,53 @@ const TIERS = [
   { id: 'D', color: '#bfff7f' },
   { id: 'F', color: '#7fbfff' },
 ];
-const STORAGE_KEY = 'sc-tierlist-v1';
+const STORAGE_KEY = 'sc-tierlist-v2';
+const MODE_LABEL = { champ: 'チャンピオン', item: 'アイテム' };
 
 const $ = (sel) => document.querySelector(sel);
 
-const ctx = { version: '', champions: {}, list: [] };
-// state.tiers: { S: [championId...], ... }、state.pool: [championId...]
+const ctx = { version: '', champions: {}, champList: [], items: {}, itemList: [] };
+let mode = 'champ';
+// state[mode].tiers: { S: [id...], ... }、state[mode].pool: [id...]、state[mode].title: string
 let state = null;
 
-function defaultState(ids) {
+function idsOf(m) {
+  return m === 'champ' ? ctx.champList.map((c) => c.id) : ctx.itemList.map((it) => it.id);
+}
+
+function defaultBoard(ids) {
   const tiers = {};
   for (const t of TIERS) tiers[t.id] = [];
   return { title: '', tiers, pool: [...ids] };
 }
 
-function loadSavedState(ids) {
+function defaultState() {
+  return { champ: defaultBoard(idsOf('champ')), item: defaultBoard(idsOf('item')) };
+}
+
+function sanitizeBoard(saved, ids) {
+  if (!saved || typeof saved !== 'object' || !saved.tiers || !Array.isArray(saved.pool)) return null;
+  const known = new Set(ids);
+  const placed = new Set();
+  const tiers = {};
+  for (const t of TIERS) {
+    const arr = Array.isArray(saved.tiers[t.id]) ? saved.tiers[t.id].filter((id) => known.has(id) && !placed.has(id)) : [];
+    arr.forEach((id) => placed.add(id));
+    tiers[t.id] = arr;
+  }
+  const pool = ids.filter((id) => !placed.has(id));
+  return { title: typeof saved.title === 'string' ? saved.title.slice(0, 40) : '', tiers, pool };
+}
+
+function loadSavedState() {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) return null;
     const saved = JSON.parse(raw);
-    if (!saved || typeof saved !== 'object' || !saved.tiers || !Array.isArray(saved.pool)) return null;
-    const known = new Set(ids);
-    const placed = new Set();
-    const tiers = {};
-    for (const t of TIERS) {
-      const arr = Array.isArray(saved.tiers[t.id]) ? saved.tiers[t.id].filter((id) => known.has(id) && !placed.has(id)) : [];
-      arr.forEach((id) => placed.add(id));
-      tiers[t.id] = arr;
-    }
-    const pool = ids.filter((id) => !placed.has(id));
-    return { title: typeof saved.title === 'string' ? saved.title.slice(0, 40) : '', tiers, pool };
+    const champ = sanitizeBoard(saved?.champ, idsOf('champ'));
+    const item = sanitizeBoard(saved?.item, idsOf('item'));
+    if (!champ && !item) return null;
+    return { champ: champ || defaultBoard(idsOf('champ')), item: item || defaultBoard(idsOf('item')) };
   } catch {
     return null;
   }
@@ -64,16 +79,30 @@ function showToast(text) {
   toastTimer = setTimeout(() => el.classList.remove('show'), 2200);
 }
 
-async function loadChampions() {
+async function loadData() {
   const versions = await fetch(`${DDRAGON}/api/versions.json`).then((r) => r.json());
   ctx.version = versions[0];
-  const json = await fetch(`${DDRAGON}/cdn/${ctx.version}/data/ja_JP/champion.json`).then((r) => r.json());
-  ctx.champions = json.data;
-  ctx.list = Object.values(json.data).sort((a, b) => a.name.localeCompare(b.name, 'ja'));
+  const [champJson, itemJson] = await Promise.all([
+    fetch(`${DDRAGON}/cdn/${ctx.version}/data/ja_JP/champion.json`).then((r) => r.json()),
+    fetch(`${DDRAGON}/cdn/${ctx.version}/data/ja_JP/item.json`).then((r) => r.json()),
+  ]);
+  ctx.champions = champJson.data;
+  ctx.champList = Object.values(champJson.data)
+    .map((c) => ({ id: c.id, name: c.name }))
+    .sort((a, b) => a.name.localeCompare(b.name, 'ja'));
+
+  ctx.items = itemJson.data;
+  ctx.itemList = Object.entries(itemJson.data)
+    .filter(([, it]) => it.gold?.purchasable && it.maps?.['11'])
+    .map(([id, it]) => ({ id, name: it.name }))
+    .sort((a, b) => a.name.localeCompare(b.name, 'ja'));
 }
 
-function champName(id) {
-  return ctx.champions[id]?.name || id;
+function iconUrl(m, id) {
+  return m === 'champ' ? `${DDRAGON}/cdn/${ctx.version}/img/champion/${id}.png` : `${DDRAGON}/cdn/${ctx.version}/img/item/${id}.png`;
+}
+function nameOf(m, id) {
+  return m === 'champ' ? (ctx.champions[id]?.name || id) : (ctx.items[id]?.name || id);
 }
 
 // ------------------------------------------------------------ 描画
@@ -83,13 +112,13 @@ function buildTileEl(id, removable) {
   tile.className = 'tile';
   tile.dataset.id = id;
   const img = document.createElement('img');
-  img.src = champSquareUrl(ctx.version, id);
-  img.alt = champName(id);
+  img.src = iconUrl(mode, id);
+  img.alt = nameOf(mode, id);
   img.loading = 'lazy';
   tile.appendChild(img);
   const name = document.createElement('div');
   name.className = 'name';
-  name.textContent = champName(id);
+  name.textContent = nameOf(mode, id);
   tile.appendChild(name);
   if (removable) {
     const rm = document.createElement('div');
@@ -98,7 +127,7 @@ function buildTileEl(id, removable) {
     rm.addEventListener('pointerdown', (e) => e.stopPropagation());
     rm.addEventListener('click', (e) => {
       e.stopPropagation();
-      moveChampion(id, 'pool');
+      moveItem(id, 'pool');
       renderAll();
       save();
     });
@@ -111,6 +140,7 @@ function buildTileEl(id, removable) {
 function renderTiers() {
   const wrap = $('#tiers');
   wrap.innerHTML = '';
+  const board = state[mode];
   for (const t of TIERS) {
     const row = document.createElement('div');
     row.className = 'tier-row';
@@ -121,7 +151,7 @@ function renderTiers() {
     const zone = document.createElement('div');
     zone.className = 'tier-zone';
     zone.dataset.zone = t.id;
-    for (const id of state.tiers[t.id]) zone.appendChild(buildTileEl(id, true));
+    for (const id of board.tiers[t.id]) zone.appendChild(buildTileEl(id, true));
     row.appendChild(label);
     row.appendChild(zone);
     wrap.appendChild(row);
@@ -132,20 +162,29 @@ function renderPool(filter = '') {
   const zone = $('#pool-zone');
   zone.innerHTML = '';
   zone.dataset.zone = 'pool';
+  const board = state[mode];
   const q = filter.trim().toLowerCase();
-  const ids = state.pool.filter((id) => !q || champName(id).toLowerCase().includes(q) || id.toLowerCase().includes(q));
-  if (state.pool.length === 0) {
+  const ids = board.pool.filter((id) => !q || nameOf(mode, id).toLowerCase().includes(q) || id.toLowerCase().includes(q));
+  if (board.pool.length === 0) {
     const empty = document.createElement('div');
     empty.id = 'pool-empty';
-    empty.textContent = '全員ランク分けしたよ！';
+    empty.textContent = '全部ランク分けしたよ！';
     zone.appendChild(empty);
   } else {
     for (const id of ids) zone.appendChild(buildTileEl(id, false));
   }
-  $('#pool-count').textContent = `${state.pool.length}/${ctx.list.length}`;
+  $('#pool-count').textContent = `${board.pool.length}/${idsOf(mode).length}`;
+  $('#pool-head h2').textContent = `${MODE_LABEL[mode]}一覧`;
+  $('#search').placeholder = `${MODE_LABEL[mode]}検索…`;
+}
+
+function renderTabs() {
+  document.querySelectorAll('#mode-tabs .tab').forEach((b) => b.classList.toggle('active', b.dataset.mode === mode));
 }
 
 function renderAll() {
+  $('#title-input').value = state[mode].title;
+  renderTabs();
   renderTiers();
   renderPool($('#search').value);
 }
@@ -153,16 +192,18 @@ function renderAll() {
 // ------------------------------------------------------------ データ操作
 
 function zoneArray(zoneId) {
-  return zoneId === 'pool' ? state.pool : state.tiers[zoneId];
+  const board = state[mode];
+  return zoneId === 'pool' ? board.pool : board.tiers[zoneId];
 }
 
-function moveChampion(id, toZone, toIndex = -1) {
+function moveItem(id, toZone, toIndex = -1) {
+  const board = state[mode];
   for (const t of TIERS) {
-    const i = state.tiers[t.id].indexOf(id);
-    if (i !== -1) state.tiers[t.id].splice(i, 1);
+    const i = board.tiers[t.id].indexOf(id);
+    if (i !== -1) board.tiers[t.id].splice(i, 1);
   }
-  const pi = state.pool.indexOf(id);
-  if (pi !== -1) state.pool.splice(pi, 1);
+  const pi = board.pool.indexOf(id);
+  if (pi !== -1) board.pool.splice(pi, 1);
   const arr = zoneArray(toZone);
   if (toIndex < 0 || toIndex > arr.length) arr.push(id);
   else arr.splice(toIndex, 0, id);
@@ -170,7 +211,7 @@ function moveChampion(id, toZone, toIndex = -1) {
 
 // ------------------------------------------------------------ ドラッグ（Pointer Events。マウス/タッチ共通）
 
-let drag = null; // { id, ghost, fromZone }
+let drag = null;
 
 function zoneElements() {
   return [...document.querySelectorAll('.tier-zone, #pool-zone')];
@@ -251,7 +292,7 @@ function onTilePointerUp(e) {
   if (target) {
     const toZone = target.dataset.zone;
     const idx = indexInZone(target, e.clientX, e.clientY);
-    moveChampion(id, toZone, toZone === fromZone ? idx : idx);
+    moveItem(id, toZone, idx);
     save();
   }
   drag = null;
@@ -271,16 +312,17 @@ async function loadImage(src) {
 }
 
 async function exportImage() {
+  const board = state[mode];
   const TILE = 64;
   const GAP = 6;
   const LABEL_W = 84;
   const PAD = 16;
-  const TITLE_H = state.title.trim() ? 48 : 0;
+  const TITLE_H = board.title.trim() ? 48 : 0;
   const CANVAS_W = 960;
   const cols = Math.max(1, Math.floor((CANVAS_W - LABEL_W - PAD * 2) / (TILE + GAP)));
 
   const rows = TIERS.map((t) => {
-    const ids = state.tiers[t.id];
+    const ids = board.tiers[t.id];
     const lineCount = Math.max(1, Math.ceil(ids.length / cols));
     return { ...t, ids, height: lineCount * (TILE + GAP) + GAP };
   });
@@ -298,14 +340,14 @@ async function exportImage() {
     g.fillStyle = '#f0e6d2';
     g.font = '700 22px "M PLUS 1p", sans-serif';
     g.textBaseline = 'top';
-    g.fillText(state.title.trim().slice(0, 40), PAD, y);
+    g.fillText(board.title.trim().slice(0, 40), PAD, y);
     y += TITLE_H;
   }
 
   const images = new Map();
   const allIds = rows.flatMap((r) => r.ids);
   await Promise.all(allIds.map(async (id) => {
-    images.set(id, await loadImage(champSquareUrl(ctx.version, id)));
+    images.set(id, await loadImage(iconUrl(mode, id)));
   }));
 
   for (const r of rows) {
@@ -359,7 +401,7 @@ async function onSaveClick() {
     const url = canvas.toDataURL('image/png');
     const a = document.createElement('a');
     a.href = url;
-    a.download = `tierlist_${Date.now()}.png`;
+    a.download = `tierlist_${mode}_${Date.now()}.png`;
     document.body.appendChild(a);
     a.click();
     a.remove();
@@ -375,20 +417,25 @@ async function onSaveClick() {
 // ------------------------------------------------------------ 起動
 
 async function main() {
-  await loadChampions();
-  const ids = ctx.list.map((c) => c.id);
-  state = loadSavedState(ids) || defaultState(ids);
+  await loadData();
+  state = loadSavedState() || defaultState();
 
-  $('#title-input').value = state.title;
+  document.querySelectorAll('#mode-tabs .tab').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      mode = btn.dataset.mode;
+      $('#search').value = '';
+      renderAll();
+    });
+  });
+
   $('#title-input').addEventListener('input', (e) => {
-    state.title = e.target.value.slice(0, 40);
+    state[mode].title = e.target.value.slice(0, 40);
     save();
   });
   $('#search').addEventListener('input', (e) => renderPool(e.target.value));
   $('#reset-btn').addEventListener('click', () => {
-    if (!confirm('ティア分けと タイトルを全部リセットするよ。いい？')) return;
-    state = defaultState(ids);
-    $('#title-input').value = '';
+    if (!confirm(`${MODE_LABEL[mode]}のタブだけリセットするよ。いい？`)) return;
+    state[mode] = defaultBoard(idsOf(mode));
     renderAll();
     save();
   });
@@ -399,5 +446,5 @@ async function main() {
 
 main().catch((e) => {
   console.error(e);
-  showToast('⚠ チャンピオンデータの取得に失敗しました。時間を置いてもう一度試してね');
+  showToast('⚠ データの取得に失敗しました。時間を置いてもう一度試してね');
 });

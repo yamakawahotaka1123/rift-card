@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>大会ポイント計算ツール｜SUMMONER CARD</title>
+  <meta name="robots" content="noindex">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=M+PLUS+1p:wght@400;500;700;800&display=swap">
+  <style>
+    :root {
+      --bg: #06090d; --panel: #0b1016; --panel2: #111822; --line: #22303e;
+      --gold: #c8aa6e; --gold2: #f0e6d2; --text: #e8e2d4; --muted: #7c8794;
+      --ok: #57f287; --ng: #ed4245; --gold-rgb: 200, 170, 110;
+    }
+    * { box-sizing: border-box; }
+    ::selection { background: var(--gold); color: #140a00; }
+    :focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+    body {
+      margin: 0; min-height: 100vh; color: var(--text);
+      background: radial-gradient(900px 500px at 50% -10%, #122235 0%, transparent 60%), var(--bg);
+      font-family: "M PLUS 1p", "Hiragino Sans", "Yu Gothic", sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+    select, button { font-family: inherit; }
+    .wrap { max-width: 880px; margin: 0 auto; padding: 14px 10px 48px; }
+
+    header { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 14px; padding-bottom: 12px; border-bottom: 1px solid var(--line); flex-wrap: wrap; }
+    .brand { display: flex; align-items: center; gap: 8px; font-family: "Cinzel", serif; letter-spacing: .08em; text-transform: uppercase; font-weight: 700; color: var(--gold2); font-size: 17px; }
+    .brand small { font-family: "M PLUS 1p", sans-serif; letter-spacing: 0; text-transform: none; color: var(--muted); font-size: 12px; font-weight: 500; }
+    a.home-link { color: var(--muted); font-size: 12px; text-decoration: none; border-bottom: 1px dotted var(--muted); }
+    a.home-link:hover { color: var(--gold2); }
+
+    h2 { font-size: 14px; color: var(--gold2); margin: 0 0 10px; }
+
+    #rule-note {
+      background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 12px 16px; margin-bottom: 18px;
+      font-size: 12px; color: var(--muted); line-height: 1.7;
+    }
+    #rule-note strong { color: var(--gold2); }
+
+    #slots { display: flex; flex-direction: column; gap: 10px; margin-bottom: 16px; }
+    .slot {
+      display: flex; align-items: center; gap: 10px; background: var(--panel); border: 1px solid var(--line);
+      border-radius: 12px; padding: 10px 14px; flex-wrap: wrap;
+    }
+    .slot .num { flex: none; width: 22px; color: var(--muted); font-weight: 700; font-size: 13px; }
+    .slot select {
+      padding: 8px 10px; border-radius: 8px; border: 1px solid var(--line); background: var(--panel2); color: var(--text); font-size: 13px;
+    }
+    .slot .pt {
+      margin-left: auto; font-weight: 800; font-size: 15px; min-width: 64px; text-align: right; font-variant-numeric: tabular-nums;
+    }
+    .slot .pt.ng { color: var(--ng); }
+    .slot .pt.ok { color: var(--gold2); }
+    .slot .pt.unknown { color: var(--muted); font-size: 12px; font-weight: 500; }
+
+    #result {
+      display: flex; align-items: center; justify-content: space-between; gap: 14px; flex-wrap: wrap;
+      background: var(--panel); border: 2px solid var(--line); border-radius: 14px; padding: 18px 22px; margin-bottom: 20px;
+      transition: border-color .15s ease;
+    }
+    #result.ok { border-color: var(--ok); }
+    #result.ng { border-color: var(--ng); }
+    #result .total { font-size: 15px; color: var(--muted); }
+    #result .total b { font-size: 30px; color: var(--gold2); font-variant-numeric: tabular-nums; }
+    #result .verdict { font-size: 22px; font-weight: 800; }
+    #result.ok .verdict { color: var(--ok); }
+    #result.ng .verdict { color: var(--ng); }
+    #result .reason { flex-basis: 100%; font-size: 12px; color: var(--muted); }
+
+    table.pt-table { width: 100%; border-collapse: collapse; font-size: 13px; margin-bottom: 24px; }
+    table.pt-table th, table.pt-table td {
+      border: 1px solid var(--line); padding: 7px 10px; text-align: center;
+    }
+    table.pt-table th { background: var(--panel2); color: var(--gold2); font-weight: 700; }
+    table.pt-table td { background: var(--panel); }
+    table.pt-table td.ng { color: var(--ng); font-weight: 700; }
+
+    button.btn {
+      padding: 9px 16px; border-radius: 10px; border: 1px solid var(--line); background: var(--panel2); color: var(--text);
+      font-size: 13px; font-weight: 700; cursor: pointer;
+    }
+    button.btn:hover { border-color: var(--gold); }
+
+    footer { margin-top: 10px; text-align: center; color: var(--muted); font-size: 11px; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="brand">SUMMONER CARD <small>大会ポイント計算ツール</small></div>
+      <a class="home-link" href="/">← トップに戻る</a>
+    </header>
+
+    <div id="rule-note">
+      <strong>ルール</strong>：出場する5人の合計ポイントが<strong>30点以下</strong>のチームのみ参加OK。点数は<strong>本人の全アカウント（サブ垢含む）の中でいちばん高い、過去最高到達ランク</strong>で計算します（今のランクではありません）。アンランクの人は前シーズンの最終ランクで計算してください（わからない場合は運営判断）。
+    </div>
+
+    <h2>5人のランクを選んでください</h2>
+    <div id="slots"></div>
+
+    <div id="result">
+      <div class="total">合計 <b id="total-pt">0</b> 点（上限30点）</div>
+      <div class="verdict" id="verdict">—</div>
+      <div class="reason" id="reason"></div>
+    </div>
+
+    <button type="button" class="btn" id="reset-btn" style="margin-bottom:24px;">リセット</button>
+
+    <h2>ランク別ポイント表</h2>
+    <table class="pt-table">
+      <thead><tr><th>ランク</th><th>ポイント</th></tr></thead>
+      <tbody>
+        <tr><td>アイアン（全段階）</td><td>1点</td></tr>
+        <tr><td>ブロンズ IV・III</td><td>2点</td></tr>
+        <tr><td>ブロンズ II・I</td><td>3点</td></tr>
+        <tr><td>シルバー IV・III</td><td>4点</td></tr>
+        <tr><td>シルバー II・I</td><td>5点</td></tr>
+        <tr><td>ゴールド IV・III</td><td>6点</td></tr>
+        <tr><td>ゴールド II・I</td><td>7点</td></tr>
+        <tr><td>プラチナ IV・III</td><td>9点</td></tr>
+        <tr><td>プラチナ II・I</td><td>10点</td></tr>
+        <tr><td>エメラルド以上</td><td class="ng">参加不可</td></tr>
+      </tbody>
+    </table>
+
+    <footer>summonercard.com　計算に迷ったら #大会-質問 へ</footer>
+  </div>
+  <script type="module" src="/js/pointcalc.js"></script>
+</body>
+</html>
