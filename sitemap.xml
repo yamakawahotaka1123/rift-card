@@ -181,36 +181,6 @@
     <image:image><image:loc>https://summonercard.com/img/th/theme-wafu.jpg</image:loc></image:image>
   </url>
   <url>
-    <loc>https://summonercard.com/vi/</loc>
-    <lastmod>2026-10-30</lastmod>
-    <image:image><image:loc>https://summonercard.com/og-vi.jpg</image:loc></image:image>
-    <image:image><image:loc>https://summonercard.com/img/vi/banner.jpg</image:loc></image:image>
-    <image:image><image:loc>https://summonercard.com/img/vi/banner-pastel.jpg</image:loc></image:image>
-    <image:image><image:loc>https://summonercard.com/img/vi/theme-halloween.jpg</image:loc></image:image>
-    <image:image><image:loc>https://summonercard.com/img/vi/theme-christmas.jpg</image:loc></image:image>
-    <image:image><image:loc>https://summonercard.com/img/vi/theme-newyear.jpg</image:loc></image:image>
-    <image:image><image:loc>https://summonercard.com/img/vi/theme-lunar.jpg</image:loc></image:image>
-    <image:image><image:loc>https://summonercard.com/img/vi/theme-valentine.jpg</image:loc></image:image>
-    <image:image><image:loc>https://summonercard.com/img/vi/theme-yozakura.jpg</image:loc></image:image>
-    <image:image><image:loc>https://summonercard.com/img/vi/theme-songkran.jpg</image:loc></image:image>
-    <image:image><image:loc>https://summonercard.com/img/vi/theme-hanabi.jpg</image:loc></image:image>
-    <image:image><image:loc>https://summonercard.com/img/vi/theme-hextech.jpg</image:loc></image:image>
-    <image:image><image:loc>https://summonercard.com/img/vi/theme-noxus.jpg</image:loc></image:image>
-    <image:image><image:loc>https://summonercard.com/img/vi/theme-freljord.jpg</image:loc></image:image>
-    <image:image><image:loc>https://summonercard.com/img/vi/theme-shadow.jpg</image:loc></image:image>
-    <image:image><image:loc>https://summonercard.com/img/vi/theme-ionia.jpg</image:loc></image:image>
-    <image:image><image:loc>https://summonercard.com/img/vi/theme-fairy.jpg</image:loc></image:image>
-    <image:image><image:loc>https://summonercard.com/img/vi/theme-fairy-mint.jpg</image:loc></image:image>
-    <image:image><image:loc>https://summonercard.com/img/vi/theme-guardian.jpg</image:loc></image:image>
-    <image:image><image:loc>https://summonercard.com/img/vi/theme-jirai.jpg</image:loc></image:image>
-    <image:image><image:loc>https://summonercard.com/img/vi/theme-ryousan.jpg</image:loc></image:image>
-    <image:image><image:loc>https://summonercard.com/img/vi/theme-yamikawa.jpg</image:loc></image:image>
-    <image:image><image:loc>https://summonercard.com/img/vi/theme-gothloli.jpg</image:loc></image:image>
-    <image:image><image:loc>https://summonercard.com/img/vi/theme-y2k.jpg</image:loc></image:image>
-    <image:image><image:loc>https://summonercard.com/img/vi/theme-gaming.jpg</image:loc></image:image>
-    <image:image><image:loc>https://summonercard.com/img/vi/theme-wafu.jpg</image:loc></image:image>
-  </url>
-  <url>
     <loc>https://summonercard.com/es/</loc>
     <lastmod>2026-10-30</lastmod>
     <image:image><image:loc>https://summonercard.com/og-es.jpg</image:loc></image:image>
@@ -544,34 +514,6 @@
   </url>
   <url>
     <loc>https://summonercard.com/th/about/</loc>
-    <lastmod>2026-10-30</lastmod>
-  </url>
-  <url>
-    <loc>https://summonercard.com/vi/guide/</loc>
-    <lastmod>2026-10-30</lastmod>
-  </url>
-  <url>
-    <loc>https://summonercard.com/vi/templates/</loc>
-    <lastmod>2026-10-30</lastmod>
-  </url>
-  <url>
-    <loc>https://summonercard.com/vi/banner/</loc>
-    <lastmod>2026-10-30</lastmod>
-  </url>
-  <url>
-    <loc>https://summonercard.com/vi/faq/</loc>
-    <lastmod>2026-10-30</lastmod>
-  </url>
-  <url>
-    <loc>https://summonercard.com/vi/privacy/</loc>
-    <lastmod>2026-10-30</lastmod>
-  </url>
-  <url>
-    <loc>https://summonercard.com/vi/terms/</loc>
-    <lastmod>2026-10-30</lastmod>
-  </url>
-  <url>
-    <loc>https://summonercard.com/vi/about/</loc>
     <lastmod>2026-10-30</lastmod>
   </url>
   <url>

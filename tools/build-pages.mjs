@@ -11,7 +11,6 @@ import ko from './pages/ko.mjs';
 import zhCn from './pages/zh-cn.mjs';
 import zhTw from './pages/zh-tw.mjs';
 import th from './pages/th.mjs';
-import vi from './pages/vi.mjs';
 import es from './pages/es.mjs';
 import ptBr from './pages/pt-br.mjs';
 import de from './pages/de.mjs';
@@ -34,7 +33,6 @@ const LANGS = [
   { prefix: 'zh-cn', id: 'zh-CN', hreflang: 'zh-Hans', label: '简体中文', content: zhCn, cjk: 'Noto Sans SC' },
   { prefix: 'zh-tw', id: 'zh-TW', hreflang: 'zh-Hant', label: '繁體中文', content: zhTw, cjk: 'Noto Sans TC' },
   { prefix: 'th', id: 'th', hreflang: 'th', label: 'ไทย', content: th, cjk: 'Noto Sans Thai' },
-  { prefix: 'vi', id: 'vi', hreflang: 'vi', label: 'Tiếng Việt', content: vi },
   { prefix: 'es', id: 'es', hreflang: 'es', label: 'Español', content: es },
   { prefix: 'pt-br', id: 'pt-BR', hreflang: 'pt-BR', label: 'Português', content: ptBr },
   { prefix: 'de', id: 'de', hreflang: 'de', label: 'Deutsch', content: de },
@@ -331,16 +329,6 @@ const LANG_PAGES = [
     appDescription: 'เว็บแอปฟรีสำหรับสร้างการ์ดซัมมอนเนอร์ (การ์ดแนะนำตัว) League of Legends',
   },
   {
-    slug: 'vi', lang: 'vi', locale: 'vi_VN',
-    title: 'Summoner Card Maker | Tạo thẻ giới thiệu LMHT miễn phí - SUMMONER CARD',
-    description: 'Tạo thẻ triệu hồi sư (thẻ giới thiệu) Liên Minh Huyền Thoại miễn phí. Chọn rank, vị trí, tướng tủ và hình nền trang phục là xong ảnh. Không cần đăng ký, dùng được trên điện thoại. Hợp để tìm duo trên X và Discord.',
-    ogTitle: 'Summoner Card Maker | Tạo thẻ giới thiệu LMHT miễn phí',
-    ogDescription: 'Điền rank, vị trí và tướng tủ để tạo thẻ giới thiệu LMHT miễn phí.',
-    alt: 'Ví dụ thẻ giới thiệu LMHT tạo bằng SUMMONER CARD',
-    name: 'SUMMONER CARD (Summoner Card Maker)',
-    appDescription: 'Ứng dụng web miễn phí để tạo thẻ triệu hồi sư (thẻ giới thiệu) Liên Minh Huyền Thoại.',
-  },
-  {
     slug: 'es', lang: 'es', locale: 'es_LA',
     title: 'Summoner Card Maker | Crea tu tarjeta de perfil de LoL gratis - SUMMONER CARD',
     description: 'Crea gratis tu tarjeta de invocador (tarjeta de perfil) de League of Legends. Elige tu rango, roles, campeones principales y un fondo de skin y la imagen está lista. Sin registro y funciona en el móvil. Ideal para buscar dúo en X y Discord.',
@@ -404,9 +392,9 @@ for (const p of LANG_PAGES) {
   set(/(<meta name="twitter:description" content=")[^"]*/, `$1${attr(p.ogDescription)}`);
   set(/(<meta name="twitter:image" content=")[^"]*/, `$1${SITE}/og-${p.slug}.jpg`);
   set(/(<meta name="twitter:image:alt" content=")[^"]*/, `$1${attr(p.alt)}`);
-  set(/"name": "SUMMONER CARD（サモナーカード作成メーカー）",\n\s*"alternateName": \[[^\]]*\],/, `"name": ${JSON.stringify(p.name)},`);
+  set(/"name": "SUMMONER CARD（サモナーカード作成メーカー）",\s*"alternateName": \[[^\]]*\],/, `"name": ${JSON.stringify(p.name)},`);
   set(/("url": ")https:\/\/summonercard\.com\/(",)/, `$1${SITE}/${p.slug}/$2`);
-  set(/("description": ")[^"]*(",\n\s*"applicationCategory")/, `$1${p.appDescription}$2`);
+  set(/("description": ")[^"]*(",\s*"applicationCategory")/, `$1${p.appDescription}$2`);
   set(/"inLanguage": "ja"/, `"inLanguage": "${p.lang}"`);
   set(/"image": "https:\/\/summonercard\.com\/og\.jpg"/, `"image": "${SITE}/og-${p.slug}.jpg"`);
   // Static links on the tool page point at the same language's pages.

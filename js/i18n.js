@@ -13,7 +13,6 @@ export const LANGS = [
   { id: 'zh-CN', label: '简体中文', path: '/zh-cn/', ddragon: 'zh_CN', cdragon: 'zh_cn' },
   { id: 'zh-TW', label: '繁體中文', path: '/zh-tw/', ddragon: 'zh_TW', cdragon: 'zh_tw' },
   { id: 'th', label: 'ไทย', path: '/th/', ddragon: 'th_TH', cdragon: 'th_th' },
-  { id: 'vi', label: 'Tiếng Việt', path: '/vi/', ddragon: 'vi_VN', cdragon: 'vi_vn' },
   { id: 'es', label: 'Español', path: '/es/', ddragon: 'es_MX', cdragon: 'es_mx' },
   { id: 'pt-BR', label: 'Português', path: '/pt-br/', ddragon: 'pt_BR', cdragon: 'pt_br' },
   { id: 'de', label: 'Deutsch', path: '/de/', ddragon: 'de_DE', cdragon: 'de_de' },
@@ -29,7 +28,7 @@ function fromTag(tag) {
   if (/^zh-(tw|hk|mo)|^zh-hant/.test(t)) return 'zh-TW';
   if (t.startsWith('zh')) return 'zh-CN';
   if (t.startsWith('pt')) return 'pt-BR';
-  for (const id of ['th', 'vi', 'es', 'de', 'fr']) if (t.startsWith(id)) return id;
+  for (const id of ['th', 'es', 'de', 'fr']) if (t.startsWith(id)) return id;
   if (t) return 'en';
   return '';
 }
