@@ -32,23 +32,44 @@
   <link rel="stylesheet" href="/css/style.css">
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2105839437802724" crossorigin="anonymous"></script>
   <style>
-    .hub-hero { text-align: center; padding: 30px 16px 8px; }
-    .hub-hero h2 { font-size: 15px; color: var(--muted); font-weight: 500; margin: 0; }
-    .hub-main { padding: 0 16px 40px; max-width: 980px; margin: 0 auto; }
-    .hub-group { margin-top: 30px; }
-    .hub-group h3 { font-size: 13px; color: var(--muted); letter-spacing: .04em; margin: 0 0 12px; }
-    .hub-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 14px; }
-    .hub-cards a {
-      display: flex; flex-direction: column; gap: 6px; padding: 18px 18px 16px; border-radius: 14px;
-      border: 1px solid var(--line, #2a2a33); text-decoration: none; background: var(--panel, #15151b);
-      transition: border-color .15s ease, transform .1s ease;
+    .hub-main { padding: 0 24px 40px; max-width: 1000px; margin: 0 auto; }
+
+    .hub-hero {
+      display: grid; grid-template-columns: minmax(0, 1fr) minmax(280px, 420px);
+      gap: 36px; align-items: center; padding: 48px 0 16px;
     }
-    .hub-cards a:hover { border-color: var(--gold); transform: translateY(-1px); }
-    .hub-cards .emoji { font-size: 26px; line-height: 1; }
-    .hub-cards strong { color: var(--gold); font-size: 16px; }
-    .hub-cards span { font-size: 13px; color: var(--muted); line-height: 1.6; }
-    .hub-cards a.primary { border-color: var(--gold); background: linear-gradient(160deg, rgba(200,170,110,.14), transparent); }
-    .hub-cards a.primary strong { font-size: 18px; }
+    .hub-hero .kicker {
+      font-family: "Cinzel", serif; letter-spacing: .14em; font-size: 12px; color: var(--teal);
+      text-transform: uppercase; margin: 0 0 10px;
+    }
+    .hub-hero h2 { margin: 0 0 14px; font-size: 30px; line-height: 1.4; }
+    .hub-hero h2 b { color: var(--gold); font-weight: 800; }
+    .hub-hero p.lead { margin: 0; color: var(--muted); font-size: 15px; line-height: 1.8; }
+    .hub-hero .cta { margin-top: 22px; }
+    .hub-hero .card-shot { display: block; width: 100%; height: auto; border-radius: 12px; box-shadow: 0 18px 50px -20px rgba(0,0,0,.7); }
+
+    .hub-tools { margin-top: 34px; padding-top: 28px; border-top: 1px solid var(--line); }
+    .hub-tools h3 {
+      font-family: "Cinzel", serif; letter-spacing: .1em; font-size: 12px; text-transform: uppercase;
+      color: var(--muted); margin: 0 0 4px;
+    }
+    .hub-tools .row {
+      display: flex; gap: 18px; align-items: baseline; padding: 16px 0; border-top: 1px solid var(--line);
+      text-decoration: none; color: inherit;
+    }
+    .hub-tools .row:first-of-type { border-top: none; }
+    .hub-tools .row .name { flex: none; width: 18em; color: var(--gold2); font-weight: 700; font-size: 15px; }
+    .hub-tools .row .desc { flex: 1; min-width: 0; color: var(--muted); font-size: 13px; line-height: 1.7; }
+    .hub-tools .row .arrow { flex: none; color: var(--muted); transition: transform .15s ease, color .15s ease; }
+    .hub-tools .row:hover .name { color: var(--gold); }
+    .hub-tools .row:hover .arrow { color: var(--gold); transform: translateX(3px); }
+
+    @media (max-width: 720px) {
+      .hub-hero { grid-template-columns: 1fr; padding-top: 28px; }
+      .hub-hero h2 { font-size: 24px; }
+      .hub-tools .row { flex-wrap: wrap; }
+      .hub-tools .row .name { width: 100%; }
+    }
   </style>
 </head>
 <body>
@@ -59,38 +80,32 @@
 
   <main class="hub-main">
     <div class="hub-hero">
-      <h2>LoL（League of Legends）向けの無料ツールまとめ</h2>
-    </div>
-
-    <div class="hub-group">
-      <div class="hub-cards">
-        <a class="primary" href="/card/">
-          <span class="emoji">🪪</span>
-          <strong>サモナーカード作成メーカー</strong>
-          <span>ランク・ロール・得意チャンピオンを入れるだけで、LoLの自己紹介カードを無料で作れます。</span>
-        </a>
+      <div>
+        <p class="kicker">Rift Toolkit</p>
+        <h2>サモナーカードを作って、<br><b>そのままDiscordに貼る。</b></h2>
+        <p class="lead">ランク・ロール・得意チャンピオンを選ぶだけで、LoLの自己紹介カードが完成します。テンプレ不要、登録不要、スマホでもOK。カスタムの募集やフレンド募集に。</p>
+        <p class="cta"><a class="btn primary" href="/card/">サモナーカードを作る →</a></p>
       </div>
+      <img class="card-shot" src="/og.jpg" width="1200" height="675" alt="SUMMONER CARDで作った自己紹介カードの例" loading="eager">
     </div>
 
-    <div class="hub-group">
+    <div class="hub-tools">
       <h3>そのほかのツール</h3>
-      <div class="hub-cards">
-        <a href="/draft/">
-          <span class="emoji">🗡️</span>
-          <strong>フィアレスドラフトツール</strong>
-          <span>BAN/PICKを専用画面で進行。同じチームで連戦するときのフィアレスルールに対応。観戦リンクも発行できます。</span>
-        </a>
-        <a href="/tierlist/">
-          <span class="emoji">📊</span>
-          <strong>チャンピオン/アイテム ティアリストメーカー</strong>
-          <span>ドラッグ＆ドロップでS〜Fにランク分けして、画像として保存・共有できます。</span>
-        </a>
-        <a href="/pointcalc/">
-          <span class="emoji">🧮</span>
-          <strong>大会ポイント計算ツール</strong>
-          <span>5人分のランクを選ぶと、ポイント合計と参加可否がすぐわかります。</span>
-        </a>
-      </div>
+      <a class="row" href="/draft/">
+        <span class="name">フィアレスドラフト</span>
+        <span class="desc">同じ2チームで連戦するときの、一度ピックしたチャンピオンを次戦で使えなくするBAN/PICK進行ツール。観戦リンクも発行。</span>
+        <span class="arrow">→</span>
+      </a>
+      <a class="row" href="/tierlist/">
+        <span class="name">ティアリストメーカー</span>
+        <span class="desc">チャンピオン・アイテムをドラッグ＆ドロップでS〜Fにランク分けして、画像として保存・共有できます。</span>
+        <span class="arrow">→</span>
+      </a>
+      <a class="row" href="/pointcalc/">
+        <span class="name">大会ポイント計算ツール</span>
+        <span class="desc">5人分のランクを選ぶだけで、合計ポイントと参加可否がすぐわかります。</span>
+        <span class="arrow">→</span>
+      </a>
     </div>
   </main>
 
