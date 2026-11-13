@@ -2,6 +2,10 @@
 // Runs on Cloudflare Workers; the Riot API key lives in the RIOT_KEY secret and never reaches the browser.
 //   GET /lookup?id=<gameName#tagLine>&platform=<jp1|kr|na1|...>
 // Responses are cached for CACHE_SECONDS so repeated lookups cost no Riot requests.
+//
+// このファイルは /draft/* （フィアレスドラフト、draft.js の Durable Object）も同じ Worker でまとめて配信する。
+
+export { DraftSession } from './draft.js';
 
 const PLATFORMS = {
   jp1: 'asia', kr: 'asia',
@@ -105,16 +109,35 @@ async function lookup(env, gameName, tagLine, wanted) {
   };
 }
 
-function json(body, status, origin) {
+function json(body, status, origin, cacheable = true) {
   return new Response(JSON.stringify(body), {
     status,
     headers: {
       'content-type': 'application/json; charset=utf-8',
       'access-control-allow-origin': origin,
       vary: 'Origin',
-      'cache-control': status === 200 ? `public, max-age=${CACHE_SECONDS}` : 'no-store',
+      'cache-control': status === 200 && cacheable ? `public, max-age=${CACHE_SECONDS}` : 'no-store',
     },
   });
+}
+
+// /draft/<id>/... を、その ID 専用の Durable Object インスタンスへ中継する
+async function routeDraft(request, env, url, origin) {
+  const parts = url.pathname.split('/').filter(Boolean); // ['draft', '<id>', 'create' | 'ws']
+  const id = parts[1];
+  if (!id) return json({ error: 'bad_request' }, 400, origin);
+
+  if (parts[2] === 'create' && request.method === 'POST') {
+    const stub = env.DRAFT_SESSION.get(env.DRAFT_SESSION.idFromName(id));
+    const res = await stub.fetch(new Request(`https://draft/create`, { method: 'POST', body: request.body }));
+    const body = await res.json();
+    return json(body, res.status, origin, false);
+  }
+  if (parts[2] === 'ws') {
+    const stub = env.DRAFT_SESSION.get(env.DRAFT_SESSION.idFromName(id));
+    return stub.fetch(new Request(`https://draft/ws${url.search}`, request));
+  }
+  return json({ error: 'not_found' }, 404, origin);
 }
 
 export default {
@@ -122,7 +145,19 @@ export default {
     const reqOrigin = request.headers.get('Origin') || '';
     const origin = ALLOWED_ORIGINS.includes(reqOrigin) ? reqOrigin : ALLOWED_ORIGINS[0];
     const url = new URL(request.url);
-    if (request.method === 'OPTIONS') return json(null, 204, origin);
+    if (request.method === 'OPTIONS') {
+      return new Response(null, {
+        status: 204,
+        headers: {
+          'access-control-allow-origin': origin,
+          'access-control-allow-methods': 'GET, POST, OPTIONS',
+          'access-control-allow-headers': 'content-type',
+          'access-control-max-age': '86400',
+          vary: 'Origin',
+        },
+      });
+    }
+    if (url.pathname.startsWith('/draft/')) return routeDraft(request, env, url, origin);
     if (url.pathname !== '/lookup') return json({ error: 'not_found' }, 404, origin);
 
     const [gameName, tagLine] = (url.searchParams.get('id') || '').split('#').map((s) => s.trim());

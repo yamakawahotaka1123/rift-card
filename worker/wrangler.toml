@@ -7,3 +7,12 @@ compatibility_date = "2026-10-01"
 MATCH_COUNT = "20"
 
 # The Riot API key is a secret: npx wrangler secret put RIOT_KEY
+
+# フィアレスドラフト（/draft/*）: 1セッション = 1 Durable Object
+[[durable_objects.bindings]]
+name = "DRAFT_SESSION"
+class_name = "DraftSession"
+
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["DraftSession"]

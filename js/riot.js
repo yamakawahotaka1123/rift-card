@@ -5,8 +5,7 @@ import { champSquareUrl } from './card.js';
 import { track } from './analytics.js';
 import { LANG, t } from './i18n.js';
 
-// Empty until the Worker is deployed; the section stays hidden without it.
-const API = location.hostname === 'localhost' ? 'http://localhost:8787' : '';
+const API = location.hostname === 'localhost' ? 'http://localhost:8787' : 'https://summonercard-api.summonercard.workers.dev';
 
 const PLATFORMS = [
   ['jp1', 'JP'], ['kr', 'KR'], ['sg2', 'SEA'], ['vn2', 'VN'], ['tw2', 'TW'], ['oc1', 'OCE'],
