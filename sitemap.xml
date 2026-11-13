@@ -3,6 +3,10 @@
   <url>
     <loc>https://summonercard.com/</loc>
     <lastmod>2026-10-30</lastmod>
+  </url>
+  <url>
+    <loc>https://summonercard.com/card/</loc>
+    <lastmod>2026-10-30</lastmod>
     <image:image><image:loc>https://summonercard.com/og.jpg</image:loc></image:image>
     <image:image><image:loc>https://summonercard.com/img/banner.jpg</image:loc></image:image>
     <image:image><image:loc>https://summonercard.com/img/banner-pastel.jpg</image:loc></image:image>

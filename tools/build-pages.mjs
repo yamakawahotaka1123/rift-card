@@ -68,18 +68,35 @@ function seasonLabel(lang, id) {
 
 const SLUGS = ['guide', 'templates', 'banner', 'faq', 'privacy', 'terms', 'about'];
 const base = (lang) => (lang.prefix ? `/${lang.prefix}` : '');
+// Japanese's card maker moved to /card/ (the root is now a tools hub), so "the home page" splits
+// into two concepts for ja only: cardHome (the card maker itself) and siteTop (the hub). For every
+// other language they're identical (both equal base(lang) + '/'), since those languages have no hub.
+const cardHome = (lang) => (lang.prefix ? `${base(lang)}/` : '/card/');
+const siteTop = (lang) => (lang.prefix ? `${base(lang)}/` : '/');
 const pageUrl = (lang, slug) => `${SITE}${base(lang)}/${slug ? `${slug}/` : ''}`;
 const ogImage = (lang) => `${SITE}/og${lang.prefix ? `-${lang.prefix}` : ''}.jpg`;
 const imgDir = (lang) => (lang.prefix ? `/img/${lang.prefix}` : '/img');
 
 // Internal page links are written as Japanese paths; point them at the same language.
-const PAGE_LINK = new RegExp(`href="/((?:${[...SLUGS, 'articles', 'server'].join('|')})/[^"]*)?(\\?[^"]*)?"`, 'g');
+// (Links to "the home page" itself — bare "/" or "/?query" — are NOT handled here: they're written
+// directly via cardHome()/siteTop() at generation time, since those two now differ for ja.)
+const PAGE_LINK = new RegExp(`href="/((?:${[...SLUGS, 'articles', 'server'].join('|')})/[^"]*?)(\\?[^"]*)?"`, 'g');
+const HOME_QUERY_LINK = /href="\/(\?[^"]*)"/g;
+// The card-maker template (card/index.html) is written as ja's own output, with its self-link
+// as literal "/card/" and its logo as literal "/" (ja's logo deliberately goes to the hub); when
+// deriving another language's copy, both become that language's own home (it has no hub).
+const CARD_LINK = /href="\/card\/"/g;
+const BARE_HOME_LINK = /href="\/"/g;
 // /articles/ and /server/ exist only in some languages; elsewhere those links go to the English page.
-const localizeLinks = (html, lang) => html.replace(PAGE_LINK, (_, p = '', q = '') => {
-  const kind = p.split('/')[0];
-  const target = (kind === 'articles' || kind === 'server') && !lang[kind] ? LANGS.find((l) => l.id === 'en') : lang;
-  return `href="${base(target)}/${p}${q}"`;
-});
+const localizeLinks = (html, lang) => html
+  .replace(PAGE_LINK, (_, p, q = '') => {
+    const kind = p.split('/')[0];
+    const target = (kind === 'articles' || kind === 'server') && !lang[kind] ? LANGS.find((l) => l.id === 'en') : lang;
+    return `href="${base(target)}/${p}${q}"`;
+  })
+  .replace(HOME_QUERY_LINK, (_, q) => `href="${cardHome(lang)}${q}"`)
+  .replace(CARD_LINK, () => `href="${cardHome(lang)}"`)
+  .replace(BARE_HOME_LINK, () => `href="${cardHome(lang)}"`);
 
 // Pages that draw cards (the server card maker) also need every theme's fonts.
 const THEME_FONTS = '&family=Dancing+Script:wght@700&family=M+PLUS+Rounded+1c:wght@500;700;800&family=Orbitron:wght@700&family=Bungee&family=Creepster&family=Shippori+Mincho:wght@700;800';
@@ -87,11 +104,11 @@ const fontsUrl = (lang, themes = false) => `https://fonts.googleapis.com/css2?fa
 
 function header(lang, c, slug, langs = LANGS) {
   const nav = [['', c.nav.make], ...(lang.server ? [['server', lang.server.nav]] : []), ['guide', c.nav.guide], ['templates', c.nav.templates], ['banner', c.nav.banner], ['faq', c.nav.faq]]
-    .map(([s, label]) => `<a href="/${s ? `${s}/` : ''}"${s === slug ? ' aria-current="page"' : ''}>${label}</a>`).join('');
-  const options = LANGS.map((l) => `<option value="${pageUrl(l, langs.includes(l) ? slug : '').replace(SITE, '')}" data-lang="${l.id}"${l === lang ? ' selected' : ''}>${l.label}</option>`).join('');
+    .map(([s, label]) => `<a href="${s ? `/${s}/` : cardHome(lang)}"${s === slug ? ' aria-current="page"' : ''}>${label}</a>`).join('');
+  const options = LANGS.map((l) => `<option value="${(langs.includes(l) ? pageUrl(l, slug) : `${SITE}${cardHome(l)}`).replace(SITE, '')}" data-lang="${l.id}"${l === lang ? ' selected' : ''}>${l.label}</option>`).join('');
   return `<header class="site-header">
     <select class="lang-select" id="lang-pages" aria-label="Language">${options}</select>
-    <a class="logo" href="/">SUMMONER CARD <span>${c.siteSub}</span></a>
+    <a class="logo" href="${siteTop(lang)}">SUMMONER CARD <span>${c.siteSub}</span></a>
     <nav class="site-nav" aria-label="${c.aria.menu}">${nav}</nav>
   </header>`;
 }
@@ -160,11 +177,11 @@ ${ld}
   ${header(lang, c, slug, langs)}
 
   <main class="doc">
-    <nav class="breadcrumbs" aria-label="${c.aria.breadcrumbs}"><a href="/">${c.top}</a> › ${parent ? `<a href="/${parent[1]}/">${parent[0]}</a> › ` : ''}<span>${h1}</span></nav>
+    <nav class="breadcrumbs" aria-label="${c.aria.breadcrumbs}"><a href="${siteTop(lang)}">${c.top}</a> › ${parent ? `<a href="/${parent[1]}/">${parent[0]}</a> › ` : ''}<span>${h1}</span></nav>
     <article class="guide">
       <h1>${h1}</h1>
 ${body.trim()}
-      <p class="cta"><a class="btn primary" href="/">${c.cta}</a></p>
+      <p class="cta"><a class="btn primary" href="${cardHome(lang)}">${c.cta}</a></p>
     </article>
 ${hasAd(slug) ? '    <div class="ad-slot" data-ad="page" hidden></div>\n' : ''}  </main>
 
@@ -221,7 +238,7 @@ ${c.faq.items.map(([q, a]) => `        <dt>${q}</dt>\n        <dd>${a}</dd>`).jo
 
 const sitemap = [];
 for (const lang of LANGS) {
-  const c = lang.content({ UPDATED, LEGAL, IMG: imgDir(lang), HOME: pageUrl(lang, '') });
+  const c = lang.content({ UPDATED, LEGAL, IMG: imgDir(lang), HOME: `${SITE}${cardHome(lang)}` });
   const pages = pagesFor(lang, c);
   for (const slug of SLUGS) {
     const dir = path.join(ROOT, lang.prefix, slug);
@@ -370,7 +387,7 @@ const LANG_PAGES = [
   },
 ];
 
-const top = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
+const top = fs.readFileSync(path.join(ROOT, 'card', 'index.html'), 'utf8');
 const attr = (s) => s.replace(/&/g, '&amp;').replace(/"/g, '&quot;');
 for (const p of LANG_PAGES) {
   let html = top;
@@ -393,7 +410,7 @@ for (const p of LANG_PAGES) {
   set(/(<meta name="twitter:image" content=")[^"]*/, `$1${SITE}/og-${p.slug}.jpg`);
   set(/(<meta name="twitter:image:alt" content=")[^"]*/, `$1${attr(p.alt)}`);
   set(/"name": "SUMMONER CARD（サモナーカード作成メーカー）",\s*"alternateName": \[[^\]]*\],/, `"name": ${JSON.stringify(p.name)},`);
-  set(/("url": ")https:\/\/summonercard\.com\/(",)/, `$1${SITE}/${p.slug}/$2`);
+  set(/("url": ")https:\/\/summonercard\.com\/card\/(",)/, `$1${SITE}/${p.slug}/$2`);
   set(/("description": ")[^"]*(",\s*"applicationCategory")/, `$1${p.appDescription}$2`);
   set(/"inLanguage": "ja"/, `"inLanguage": "${p.lang}"`);
   set(/"image": "https:\/\/summonercard\.com\/og\.jpg"/, `"image": "${SITE}/og-${p.slug}.jpg"`);
@@ -413,8 +430,12 @@ const topImages = (lang) => {
   return [ogImage(lang).replace(`${SITE}/`, ''), `${dir}/banner.jpg`, `${dir}/banner-pastel.jpg`, ...themes];
 };
 const urls = [
+  `  <url>
+    <loc>${SITE}/</loc>
+    <lastmod>${UPDATED}</lastmod>
+  </url>`,
   ...LANGS.map((lang) => `  <url>
-    <loc>${pageUrl(lang, '')}</loc>
+    <loc>${SITE}${cardHome(lang)}</loc>
     <lastmod>${UPDATED}</lastmod>
 ${topImages(lang).map((i) => `    <image:image><image:loc>${SITE}/${i}</image:loc></image:image>`).join('\n')}
   </url>`),
