@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>作戦ボード（マップツール）｜SUMMONER CARD</title>
+  <meta name="robots" content="noindex">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=M+PLUS+1p:wght@400;500;700;800&display=swap">
+  <style>
+    :root {
+      --bg: #06090d;
+      --panel: #0b1016;
+      --panel2: #111822;
+      --line: #22303e;
+      --gold: #c8aa6e;
+      --gold2: #f0e6d2;
+      --text: #e8e2d4;
+      --muted: #7c8794;
+      --gold-rgb: 200, 170, 110;
+    }
+    * { box-sizing: border-box; }
+    ::selection { background: var(--gold); color: #140a00; }
+    :focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+    body {
+      margin: 0; min-height: 100vh; color: var(--text);
+      background: radial-gradient(900px 500px at 50% -10%, #122235 0%, transparent 60%), var(--bg);
+      font-family: "M PLUS 1p", "Hiragino Sans", "Yu Gothic", sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+    button, input { font-family: inherit; }
+    .wrap { max-width: 1100px; margin: 0 auto; padding: 14px 10px 48px; }
+
+    header { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 14px; padding-bottom: 12px; border-bottom: 1px solid var(--line); flex-wrap: wrap; }
+    .brand { display: flex; align-items: center; gap: 8px; font-family: "Cinzel", serif; letter-spacing: .08em; text-transform: uppercase; font-weight: 700; color: var(--gold2); font-size: 17px; }
+    .brand small { font-family: "M PLUS 1p", sans-serif; letter-spacing: 0; text-transform: none; color: var(--muted); font-size: 12px; font-weight: 500; }
+    a.home-link { color: var(--muted); font-size: 12px; text-decoration: none; border-bottom: 1px dotted var(--muted); }
+    a.home-link:hover { color: var(--gold2); }
+
+    #title-input {
+      width: 100%; margin-bottom: 14px; padding: 10px 14px; border-radius: 10px;
+      background: var(--panel); border: 1px solid var(--line); color: var(--gold2); font-size: 15px; font-weight: 700;
+    }
+    #title-input::placeholder { color: var(--muted); font-weight: 500; }
+
+    .toolbar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-bottom: 10px; }
+    .toolbar .sep { width: 1px; align-self: stretch; background: var(--line); margin: 0 2px; }
+    .toolbar .spacer { flex: 1; }
+    button.btn {
+      padding: 9px 14px; border-radius: 10px; border: 1px solid var(--line); background: var(--panel2); color: var(--text);
+      font-size: 13px; font-weight: 700; cursor: pointer; transition: border-color .15s ease, background-color .15s ease, transform .1s ease; white-space: nowrap;
+    }
+    button.btn:hover { border-color: var(--gold); }
+    button.btn:active { transform: scale(.97); }
+    button.btn.primary { background: var(--gold); border-color: var(--gold); color: #1a1406; }
+    button.btn.primary:hover { filter: brightness(1.08); }
+    button.btn.tool { display: flex; align-items: center; gap: 6px; }
+    button.btn.tool.active { background: var(--gold); border-color: var(--gold); color: #1a1406; }
+
+    .color-palette { display: flex; align-items: center; gap: 6px; }
+    .swatch {
+      width: 26px; height: 26px; border-radius: 50%; border: 2px solid var(--line); cursor: pointer; padding: 0;
+      transition: transform .1s ease, border-color .15s ease;
+    }
+    .swatch:hover { transform: scale(1.1); }
+    .swatch.active { border-color: var(--gold2); box-shadow: 0 0 0 2px var(--gold); }
+    #custom-color { width: 30px; height: 30px; padding: 0; border: 2px solid var(--line); border-radius: 50%; cursor: pointer; background: none; }
+
+    #armed-badge {
+      display: none; align-items: center; gap: 6px; padding: 6px 10px; border-radius: 999px;
+      background: var(--panel2); border: 1px solid var(--gold); color: var(--gold2); font-size: 12px; font-weight: 700;
+    }
+    #armed-badge img { width: 20px; height: 20px; border-radius: 50%; object-fit: cover; }
+    #armed-badge button { border: none; background: none; color: var(--muted); font-size: 14px; cursor: pointer; line-height: 1; padding: 2px; }
+    #armed-badge button:hover { color: #ff8f8f; }
+
+    .board-wrap { display: flex; justify-content: center; margin-bottom: 14px; }
+    #board {
+      position: relative; width: 100%; max-width: 760px; aspect-ratio: 1 / 1;
+      border-radius: 14px; overflow: hidden; border: 1px solid var(--line);
+      background: #04070b;
+      touch-action: none;
+    }
+    #board canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; cursor: crosshair; }
+
+    #hint { color: var(--muted); font-size: 12px; margin-bottom: 18px; line-height: 1.6; }
+    #toast {
+      position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%) translateY(20px); opacity: 0;
+      background: var(--panel2); border: 1px solid var(--gold); color: var(--gold2); padding: 10px 18px; border-radius: 10px;
+      font-size: 13px; transition: opacity .2s ease, transform .2s ease; pointer-events: none; z-index: 1000;
+    }
+    #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+    footer { margin-top: 30px; text-align: center; color: var(--muted); font-size: 11px; }
+
+    .modal-overlay {
+      position: fixed; inset: 0; z-index: 2000; display: flex; align-items: center; justify-content: center; padding: 16px;
+    }
+    .modal-overlay[hidden] { display: none; }
+    .modal-backdrop { position: absolute; inset: 0; background: rgba(0,0,0,.6); }
+    .modal {
+      position: relative; width: 100%; max-width: 360px; background: var(--panel2); border: 1px solid var(--line);
+      border-radius: 14px; padding: 20px; box-shadow: 0 20px 60px -20px rgba(0,0,0,.8);
+    }
+    .modal.wide { max-width: 480px; }
+    .modal h3 { margin: 0 0 16px; font-size: 15px; color: var(--gold2); }
+    .modal label { display: block; font-size: 12px; color: var(--muted); margin-bottom: 6px; }
+    .modal .field { margin-bottom: 16px; }
+    .modal input[type="text"] {
+      width: 100%; padding: 9px 12px; border-radius: 8px; border: 1px solid var(--line); background: var(--panel);
+      color: var(--text); font-size: 14px;
+    }
+    .modal-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 4px; }
+
+    #champ-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(52px, 1fr)); gap: 6px;
+      max-height: 280px; overflow-y: auto; padding: 2px;
+    }
+    #champ-grid button {
+      border: 1px solid var(--line); background: var(--panel); border-radius: 8px; padding: 4px; cursor: pointer;
+      display: flex; flex-direction: column; align-items: center; gap: 2px;
+    }
+    #champ-grid button:hover { border-color: var(--gold); }
+    #champ-grid img { width: 40px; height: 40px; border-radius: 6px; object-fit: cover; }
+    #champ-grid span { font-size: 8px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 48px; }
+
+    @media (max-width: 560px) {
+      button.btn { padding: 8px 10px; font-size: 12px; }
+      .swatch { width: 22px; height: 22px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="brand">SUMMONER CARD <small>作戦ボード（マップツール）</small></div>
+      <a class="home-link" href="/">← トップに戻る</a>
+    </header>
+
+    <input id="title-input" type="text" maxlength="40" placeholder="タイトル（例: 〇〇戦 序盤ローテーション）">
+
+    <div class="toolbar">
+      <button class="btn tool active" id="tool-pen" data-tool="pen">✏️ ペン</button>
+      <button class="btn tool" id="tool-arrow" data-tool="arrow">➚ 矢印</button>
+      <button class="btn tool" id="tool-pin" data-tool="pin">● ピン</button>
+      <button class="btn tool" id="tool-champ" data-tool="champ">チャンピオン</button>
+      <button class="btn tool" id="tool-text" data-tool="text">Aa テキスト</button>
+      <div class="sep"></div>
+      <div class="color-palette" id="color-palette"></div>
+      <input type="color" id="custom-color" title="色を自由に選ぶ">
+      <div id="armed-badge"><img id="armed-badge-img" alt=""><span id="armed-badge-name"></span><button id="armed-badge-cancel" title="配置をやめる">×</button></div>
+      <div class="spacer"></div>
+      <button class="btn" id="undo-btn">↶ 元に戻す</button>
+      <button class="btn" id="clear-btn">全部消す</button>
+      <button class="btn primary" id="save-btn">画像として保存</button>
+    </div>
+
+    <div class="board-wrap">
+      <div id="board">
+        <canvas id="map-canvas"></canvas>
+      </div>
+    </div>
+
+    <p id="hint">地図の上でドラッグするとペンで描けます。「矢印」「ピン」「チャンピオン」「テキスト」はツールを選んでから地図をクリック。色はパレットかカラーピッカーで自由に変えられます。ローテーション・ダイブ・オブジェクト取りの作戦を図にして、画像として保存・共有できます。内容はこの端末に自動保存されます。</p>
+
+    <footer>summonercard.com</footer>
+  </div>
+  <div id="toast"></div>
+
+  <div id="champ-modal" class="modal-overlay" hidden>
+    <div class="modal-backdrop" id="champ-modal-backdrop"></div>
+    <div class="modal wide">
+      <h3>配置するチャンピオンを選ぶ</h3>
+      <div class="field">
+        <input id="champ-search" type="text" placeholder="チャンピオン検索…">
+      </div>
+      <div id="champ-grid"></div>
+    </div>
+  </div>
+
+  <div id="text-modal" class="modal-overlay" hidden>
+    <div class="modal-backdrop" id="text-modal-backdrop"></div>
+    <div class="modal">
+      <h3>テキストを配置</h3>
+      <div class="field">
+        <label for="text-modal-input">内容</label>
+        <input id="text-modal-input" type="text" maxlength="24" placeholder="例: 20分凸">
+      </div>
+      <div class="modal-actions">
+        <button class="btn" id="text-modal-cancel">キャンセル</button>
+        <button class="btn primary" id="text-modal-save">配置</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="/js/map.js"></script>
+</body>
+</html>
