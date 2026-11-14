@@ -10,6 +10,11 @@ const TIERS = [
   { id: 'D', color: '#bfff7f' },
   { id: 'F', color: '#7fbfff' },
 ];
+const LABEL_MAX = 12;
+const LABEL_TEMPLATES = [
+  { id: 'default', name: 'デフォルト（S/A/B/C/D/F）', labels: ['S', 'A', 'B', 'C', 'D', 'F'] },
+  { id: 'pickpool', name: 'ピックプール紹介（得意〜NG）', labels: ['得意', 'できる', 'できなくもない', '微妙', '苦手', 'NG'] },
+];
 const STORAGE_KEY = 'sc-tierlist-v2';
 const MODE_LABEL = { champ: 'チャンピオン', item: 'アイテム' };
 
@@ -24,10 +29,16 @@ function idsOf(m) {
   return m === 'champ' ? ctx.champList.map((c) => c.id) : ctx.itemList.map((it) => it.id);
 }
 
+function defaultLabels() {
+  const labels = {};
+  for (const t of TIERS) labels[t.id] = t.id;
+  return labels;
+}
+
 function defaultBoard(ids) {
   const tiers = {};
   for (const t of TIERS) tiers[t.id] = [];
-  return { title: '', tiers, pool: [...ids] };
+  return { title: '', labels: defaultLabels(), tiers, pool: [...ids] };
 }
 
 function defaultState() {
@@ -45,7 +56,14 @@ function sanitizeBoard(saved, ids) {
     tiers[t.id] = arr;
   }
   const pool = ids.filter((id) => !placed.has(id));
-  return { title: typeof saved.title === 'string' ? saved.title.slice(0, 40) : '', tiers, pool };
+  const labels = defaultLabels();
+  if (saved.labels && typeof saved.labels === 'object') {
+    for (const t of TIERS) {
+      const v = saved.labels[t.id];
+      if (typeof v === 'string' && v.trim()) labels[t.id] = v.trim().slice(0, LABEL_MAX);
+    }
+  }
+  return { title: typeof saved.title === 'string' ? saved.title.slice(0, 40) : '', labels, tiers, pool };
 }
 
 function loadSavedState() {
@@ -137,6 +155,17 @@ function buildTileEl(id, removable) {
   return tile;
 }
 
+function commitLabel(t, label) {
+  const board = state[mode];
+  let text = label.textContent.replace(/\s+/g, ' ').trim().slice(0, LABEL_MAX);
+  if (!text) text = t.id;
+  if (board.labels[t.id] !== text) {
+    board.labels[t.id] = text;
+    save();
+  }
+  if (label.textContent !== text) label.textContent = text;
+}
+
 function renderTiers() {
   const wrap = $('#tiers');
   wrap.innerHTML = '';
@@ -147,7 +176,19 @@ function renderTiers() {
     const label = document.createElement('div');
     label.className = 'tier-label';
     label.style.background = t.color;
-    label.textContent = t.id;
+    label.contentEditable = 'true';
+    label.spellcheck = false;
+    label.textContent = board.labels[t.id] ?? t.id;
+    label.title = 'クリックしてラベルを書きかえられます';
+    label.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') { e.preventDefault(); label.blur(); }
+    });
+    label.addEventListener('paste', (e) => {
+      e.preventDefault();
+      const text = (e.clipboardData || window.clipboardData).getData('text/plain');
+      document.execCommand('insertText', false, text);
+    });
+    label.addEventListener('blur', () => commitLabel(t, label));
     const zone = document.createElement('div');
     zone.className = 'tier-zone';
     zone.dataset.zone = t.id;
@@ -156,6 +197,16 @@ function renderTiers() {
     row.appendChild(zone);
     wrap.appendChild(row);
   }
+}
+
+function applyLabelTemplate(templateId) {
+  const tpl = LABEL_TEMPLATES.find((x) => x.id === templateId);
+  if (!tpl) return;
+  const board = state[mode];
+  TIERS.forEach((t, i) => { board.labels[t.id] = tpl.labels[i] ?? t.id; });
+  renderTiers();
+  save();
+  showToast(`ラベルを「${tpl.name}」にしたよ`);
 }
 
 function renderPool(filter = '') {
@@ -301,6 +352,22 @@ function onTilePointerUp(e) {
 
 // ------------------------------------------------------------ 画像として保存
 
+function wrapLabelLines(g, text, maxWidth) {
+  const lines = [];
+  let cur = '';
+  for (const ch of text) {
+    const test = cur + ch;
+    if (cur && g.measureText(test).width > maxWidth) {
+      lines.push(cur);
+      cur = ch;
+    } else {
+      cur = test;
+    }
+  }
+  if (cur) lines.push(cur);
+  return lines;
+}
+
 async function loadImage(src) {
   return new Promise((resolve) => {
     const img = new Image();
@@ -354,10 +421,17 @@ async function exportImage() {
     g.fillStyle = r.color;
     g.fillRect(PAD, y, LABEL_W, r.height);
     g.fillStyle = '#1a1406';
-    g.font = '700 28px Georgia, serif';
+    const labelText = board.labels[r.id] ?? r.id;
+    const isAlnum = /^[A-Za-z0-9+\-]{1,3}$/.test(labelText);
+    const fontFamily = isAlnum ? 'Georgia, serif' : '"M PLUS 1p", sans-serif';
+    const fontPx = labelText.length <= 2 ? 28 : labelText.length <= 4 ? 20 : 15;
+    g.font = `700 ${fontPx}px ${fontFamily}`;
     g.textAlign = 'center';
     g.textBaseline = 'middle';
-    g.fillText(r.id, PAD + LABEL_W / 2, y + r.height / 2);
+    const lines = wrapLabelLines(g, labelText, LABEL_W - 12);
+    const lineH = fontPx * 1.15;
+    const startY = y + r.height / 2 - ((lines.length - 1) * lineH) / 2;
+    lines.forEach((ln, i) => g.fillText(ln, PAD + LABEL_W / 2, startY + i * lineH));
     g.textAlign = 'left';
     g.textBaseline = 'alphabetic';
 
@@ -440,6 +514,17 @@ async function main() {
     save();
   });
   $('#save-btn').addEventListener('click', onSaveClick);
+
+  const tplSelect = $('#label-template');
+  for (const tpl of LABEL_TEMPLATES) {
+    const opt = document.createElement('option');
+    opt.value = tpl.id;
+    opt.textContent = tpl.name;
+    tplSelect.appendChild(opt);
+  }
+  tplSelect.addEventListener('change', (e) => {
+    if (e.target.value) applyLabelTemplate(e.target.value);
+  });
 
   renderAll();
 }
