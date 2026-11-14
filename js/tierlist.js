@@ -2,15 +2,16 @@
 // データ取得は summonercard.com 本体・フィアレスドラフトと同じく Data Dragon から直接。
 import { DDRAGON } from './data.js';
 
-const TIERS = [
-  { id: 'S', color: '#ff7f7f' },
-  { id: 'A', color: '#ffbf7f' },
-  { id: 'B', color: '#ffdf7f' },
-  { id: 'C', color: '#ffff7f' },
-  { id: 'D', color: '#bfff7f' },
-  { id: 'F', color: '#7fbfff' },
+const DEFAULT_TIERS = [
+  { key: 'S', color: '#ff7f7f' },
+  { key: 'A', color: '#ffbf7f' },
+  { key: 'B', color: '#ffdf7f' },
+  { key: 'C', color: '#ffff7f' },
+  { key: 'D', color: '#bfff7f' },
+  { key: 'F', color: '#7fbfff' },
 ];
 const LABEL_MAX = 12;
+const NEW_TIER_COLOR = '#7f9fff';
 const LABEL_TEMPLATES = [
   { id: 'default', name: 'デフォルト（S/A/B/C/D/F）', labels: ['S', 'A', 'B', 'C', 'D', 'F'] },
   { id: 'pickpool', name: 'ピックプール紹介（得意〜NG）', labels: ['得意', 'できる', 'できなくもない', '微妙', '苦手', 'NG'] },
@@ -20,50 +21,75 @@ const MODE_LABEL = { champ: 'チャンピオン', item: 'アイテム' };
 
 const $ = (sel) => document.querySelector(sel);
 
+function newTierKey() {
+  return `c${Date.now().toString(36)}${Math.random().toString(36).slice(2, 6)}`;
+}
+
 const ctx = { version: '', champions: {}, champList: [], items: {}, itemList: [] };
 let mode = 'champ';
-// state[mode].tiers: { S: [id...], ... }、state[mode].pool: [id...]、state[mode].title: string
+// state[mode].rows: [{key, label, color}, ...]（表示順）、state[mode].tiers: { [key]: [id...] }、state[mode].pool: [id...]、state[mode].title: string
 let state = null;
 
 function idsOf(m) {
   return m === 'champ' ? ctx.champList.map((c) => c.id) : ctx.itemList.map((it) => it.id);
 }
 
-function defaultLabels() {
-  const labels = {};
-  for (const t of TIERS) labels[t.id] = t.id;
-  return labels;
+function defaultRows() {
+  return DEFAULT_TIERS.map((t) => ({ key: t.key, label: t.key, color: t.color }));
 }
 
 function defaultBoard(ids) {
+  const rows = defaultRows();
   const tiers = {};
-  for (const t of TIERS) tiers[t.id] = [];
-  return { title: '', labels: defaultLabels(), tiers, pool: [...ids] };
+  for (const r of rows) tiers[r.key] = [];
+  return { title: '', rows, tiers, pool: [...ids] };
 }
 
 function defaultState() {
   return { champ: defaultBoard(idsOf('champ')), item: defaultBoard(idsOf('item')) };
 }
 
+function isHexColor(v) {
+  return typeof v === 'string' && /^#[0-9a-fA-F]{6}$/.test(v);
+}
+
 function sanitizeBoard(saved, ids) {
-  if (!saved || typeof saved !== 'object' || !saved.tiers || !Array.isArray(saved.pool)) return null;
+  if (!saved || typeof saved !== 'object' || !Array.isArray(saved.pool)) return null;
+
+  let rows;
+  if (Array.isArray(saved.rows) && saved.rows.length) {
+    rows = saved.rows
+      .filter((r) => r && typeof r.key === 'string' && r.key)
+      .map((r) => ({
+        key: r.key,
+        label: typeof r.label === 'string' && r.label.trim() ? r.label.trim().slice(0, LABEL_MAX) : r.key,
+        color: isHexColor(r.color) ? r.color : NEW_TIER_COLOR,
+      }));
+  } else if (saved.tiers && typeof saved.tiers === 'object') {
+    // 旧バージョン（固定S/A/B/C/D/F + labels）からの移行
+    rows = DEFAULT_TIERS.map((t) => ({
+      key: t.key,
+      label: (saved.labels && typeof saved.labels[t.key] === 'string' && saved.labels[t.key].trim())
+        ? saved.labels[t.key].trim().slice(0, LABEL_MAX)
+        : t.key,
+      color: t.color,
+    }));
+  } else {
+    rows = [];
+  }
+  if (!rows.length) rows = defaultRows();
+
   const known = new Set(ids);
   const placed = new Set();
   const tiers = {};
-  for (const t of TIERS) {
-    const arr = Array.isArray(saved.tiers[t.id]) ? saved.tiers[t.id].filter((id) => known.has(id) && !placed.has(id)) : [];
+  for (const r of rows) {
+    const savedArr = saved.tiers && Array.isArray(saved.tiers[r.key]) ? saved.tiers[r.key] : [];
+    const arr = savedArr.filter((id) => known.has(id) && !placed.has(id));
     arr.forEach((id) => placed.add(id));
-    tiers[t.id] = arr;
+    tiers[r.key] = arr;
   }
   const pool = ids.filter((id) => !placed.has(id));
-  const labels = defaultLabels();
-  if (saved.labels && typeof saved.labels === 'object') {
-    for (const t of TIERS) {
-      const v = saved.labels[t.id];
-      if (typeof v === 'string' && v.trim()) labels[t.id] = v.trim().slice(0, LABEL_MAX);
-    }
-  }
-  return { title: typeof saved.title === 'string' ? saved.title.slice(0, 40) : '', labels, tiers, pool };
+  return { title: typeof saved.title === 'string' ? saved.title.slice(0, 40) : '', rows, tiers, pool };
 }
 
 function loadSavedState() {
@@ -155,58 +181,104 @@ function buildTileEl(id, removable) {
   return tile;
 }
 
-function commitLabel(t, label) {
-  const board = state[mode];
-  let text = label.textContent.replace(/\s+/g, ' ').trim().slice(0, LABEL_MAX);
-  if (!text) text = t.id;
-  if (board.labels[t.id] !== text) {
-    board.labels[t.id] = text;
-    save();
-  }
-  if (label.textContent !== text) label.textContent = text;
-}
-
 function renderTiers() {
   const wrap = $('#tiers');
   wrap.innerHTML = '';
   const board = state[mode];
-  for (const t of TIERS) {
+  board.rows.forEach((r, i) => {
     const row = document.createElement('div');
     row.className = 'tier-row';
-    const label = document.createElement('div');
+
+    const label = document.createElement('button');
+    label.type = 'button';
     label.className = 'tier-label';
-    label.style.background = t.color;
-    label.contentEditable = 'true';
-    label.spellcheck = false;
-    label.textContent = board.labels[t.id] ?? t.id;
-    label.title = 'クリックしてラベルを書きかえられます';
-    label.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') { e.preventDefault(); label.blur(); }
-    });
-    label.addEventListener('paste', (e) => {
-      e.preventDefault();
-      const text = (e.clipboardData || window.clipboardData).getData('text/plain');
-      document.execCommand('insertText', false, text);
-    });
-    label.addEventListener('blur', () => commitLabel(t, label));
+    label.style.background = r.color;
+    label.textContent = r.label;
+    label.title = 'クリックしてラベルと色を編集';
+    label.addEventListener('click', () => openTierModal('edit', r));
+
     const zone = document.createElement('div');
     zone.className = 'tier-zone';
-    zone.dataset.zone = t.id;
-    for (const id of board.tiers[t.id]) zone.appendChild(buildTileEl(id, true));
+    zone.dataset.zone = r.key;
+    for (const id of board.tiers[r.key] || []) zone.appendChild(buildTileEl(id, true));
+
+    const controls = document.createElement('div');
+    controls.className = 'tier-controls';
+    const up = document.createElement('button');
+    up.type = 'button';
+    up.className = 'tier-ctl';
+    up.textContent = '↑';
+    up.title = '上に移動';
+    up.disabled = i === 0;
+    up.addEventListener('click', () => moveTierRow(r.key, -1));
+    const down = document.createElement('button');
+    down.type = 'button';
+    down.className = 'tier-ctl';
+    down.textContent = '↓';
+    down.title = '下に移動';
+    down.disabled = i === board.rows.length - 1;
+    down.addEventListener('click', () => moveTierRow(r.key, 1));
+    const del = document.createElement('button');
+    del.type = 'button';
+    del.className = 'tier-ctl tier-ctl-del';
+    del.textContent = '×';
+    del.title = 'このティアを削除';
+    del.addEventListener('click', () => deleteTierRow(r.key));
+    controls.appendChild(up);
+    controls.appendChild(down);
+    controls.appendChild(del);
+
     row.appendChild(label);
     row.appendChild(zone);
+    row.appendChild(controls);
     wrap.appendChild(row);
-  }
+  });
 }
 
 function applyLabelTemplate(templateId) {
   const tpl = LABEL_TEMPLATES.find((x) => x.id === templateId);
   if (!tpl) return;
   const board = state[mode];
-  TIERS.forEach((t, i) => { board.labels[t.id] = tpl.labels[i] ?? t.id; });
+  board.rows.forEach((r, i) => { if (tpl.labels[i]) r.label = tpl.labels[i]; });
   renderTiers();
   save();
   showToast(`ラベルを「${tpl.name}」にしたよ`);
+}
+
+function addTierRow(label, color) {
+  const board = state[mode];
+  const key = newTierKey();
+  board.rows.push({ key, label: (label || '新ティア').slice(0, LABEL_MAX), color });
+  board.tiers[key] = [];
+  renderTiers();
+  save();
+}
+
+function deleteTierRow(key) {
+  const board = state[mode];
+  if (board.rows.length <= 1) {
+    showToast('ティアを全部消すことはできないよ');
+    return;
+  }
+  if (!confirm('このティアを削除するよ。中に入っているものは一覧に戻すけど、いい？')) return;
+  const idx = board.rows.findIndex((r) => r.key === key);
+  if (idx === -1) return;
+  const ids = board.tiers[key] || [];
+  board.pool.push(...ids);
+  delete board.tiers[key];
+  board.rows.splice(idx, 1);
+  renderAll();
+  save();
+}
+
+function moveTierRow(key, dir) {
+  const board = state[mode];
+  const idx = board.rows.findIndex((r) => r.key === key);
+  const target = idx + dir;
+  if (idx === -1 || target < 0 || target >= board.rows.length) return;
+  [board.rows[idx], board.rows[target]] = [board.rows[target], board.rows[idx]];
+  renderTiers();
+  save();
 }
 
 function renderPool(filter = '') {
@@ -240,6 +312,41 @@ function renderAll() {
   renderPool($('#search').value);
 }
 
+// ------------------------------------------------------------ ティア編集モーダル
+
+let modalTarget = null; // 'add' | 編集中の row オブジェクト
+
+function openTierModal(kind, row) {
+  modalTarget = kind === 'add' ? 'add' : row;
+  $('#tier-modal-title').textContent = kind === 'add' ? 'ティアを追加' : 'ティアを編集';
+  $('#tier-modal-name').value = kind === 'add' ? '' : row.label;
+  const color = kind === 'add' ? NEW_TIER_COLOR : row.color;
+  $('#tier-modal-color').value = color;
+  $('#tier-modal-color-hex').value = color;
+  $('#tier-modal').hidden = false;
+  $('#tier-modal-name').focus();
+}
+
+function closeTierModal() {
+  $('#tier-modal').hidden = true;
+  modalTarget = null;
+}
+
+function saveTierModal() {
+  const name = $('#tier-modal-name').value.trim().slice(0, LABEL_MAX);
+  let color = $('#tier-modal-color-hex').value.trim();
+  if (!isHexColor(color)) color = $('#tier-modal-color').value;
+  if (modalTarget === 'add') {
+    addTierRow(name, color);
+  } else if (modalTarget) {
+    if (name) modalTarget.label = name;
+    modalTarget.color = color;
+    renderTiers();
+    save();
+  }
+  closeTierModal();
+}
+
 // ------------------------------------------------------------ データ操作
 
 function zoneArray(zoneId) {
@@ -249,9 +356,10 @@ function zoneArray(zoneId) {
 
 function moveItem(id, toZone, toIndex = -1) {
   const board = state[mode];
-  for (const t of TIERS) {
-    const i = board.tiers[t.id].indexOf(id);
-    if (i !== -1) board.tiers[t.id].splice(i, 1);
+  for (const r of board.rows) {
+    const arr = board.tiers[r.key];
+    const i = arr.indexOf(id);
+    if (i !== -1) arr.splice(i, 1);
   }
   const pi = board.pool.indexOf(id);
   if (pi !== -1) board.pool.splice(pi, 1);
@@ -388,10 +496,10 @@ async function exportImage() {
   const CANVAS_W = 960;
   const cols = Math.max(1, Math.floor((CANVAS_W - LABEL_W - PAD * 2) / (TILE + GAP)));
 
-  const rows = TIERS.map((t) => {
-    const ids = board.tiers[t.id];
+  const rows = board.rows.map((r) => {
+    const ids = board.tiers[r.key] || [];
     const lineCount = Math.max(1, Math.ceil(ids.length / cols));
-    return { ...t, ids, height: lineCount * (TILE + GAP) + GAP };
+    return { ...r, ids, height: lineCount * (TILE + GAP) + GAP };
   });
   const totalH = PAD * 2 + TITLE_H + rows.reduce((s, r) => s + r.height, 0) + 28;
 
@@ -421,7 +529,7 @@ async function exportImage() {
     g.fillStyle = r.color;
     g.fillRect(PAD, y, LABEL_W, r.height);
     g.fillStyle = '#1a1406';
-    const labelText = board.labels[r.id] ?? r.id;
+    const labelText = r.label;
     const isAlnum = /^[A-Za-z0-9+\-]{1,3}$/.test(labelText);
     const fontFamily = isAlnum ? 'Georgia, serif' : '"M PLUS 1p", sans-serif';
     const fontPx = labelText.length <= 2 ? 28 : labelText.length <= 4 ? 20 : 15;
@@ -514,6 +622,7 @@ async function main() {
     save();
   });
   $('#save-btn').addEventListener('click', onSaveClick);
+  $('#add-tier-btn').addEventListener('click', () => openTierModal('add', null));
 
   const tplSelect = $('#label-template');
   for (const tpl of LABEL_TEMPLATES) {
@@ -525,6 +634,19 @@ async function main() {
   tplSelect.addEventListener('change', (e) => {
     if (e.target.value) applyLabelTemplate(e.target.value);
   });
+
+  $('#tier-modal-color').addEventListener('input', (e) => {
+    $('#tier-modal-color-hex').value = e.target.value;
+  });
+  $('#tier-modal-color-hex').addEventListener('input', (e) => {
+    if (isHexColor(e.target.value)) $('#tier-modal-color').value = e.target.value;
+  });
+  $('#tier-modal-name').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') saveTierModal();
+  });
+  $('#tier-modal-cancel').addEventListener('click', closeTierModal);
+  $('#tier-modal-save').addEventListener('click', saveTierModal);
+  $('#tier-modal-backdrop').addEventListener('click', closeTierModal);
 
   renderAll();
 }
