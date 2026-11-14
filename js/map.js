@@ -8,6 +8,7 @@ const LW_PEN = 0.006;
 const LW_ARROW = 0.008;
 const PIN_R = 0.018;
 const CHAMP_R = 0.05;
+const WARD_R = 0.03;
 const TEXT_SIZE = 0.032;
 const ARROWHEAD_LEN = 0.03;
 const MOVE_THRESHOLD = 6;
@@ -25,6 +26,7 @@ let canvas, cctx;
 let drawingObj = null; // ペンで描画中のオブジェクト
 let arrowDraft = null; // 矢印のプレビュー
 let pointerDownPt = null;
+let tokenDrag = null; // 既に置いたチャンピオン/ワードを動かしている最中
 
 function defaultState() {
   return { title: '', objects: [] };
@@ -195,9 +197,48 @@ function drawObject(g, L, obj) {
     g.lineWidth = Math.max(2, r * .16);
     g.strokeStyle = obj.color;
     g.stroke();
+  } else if (obj.type === 'ward') {
+    const r = Math.max(11, WARD_R * L);
+    const x = obj.x * L, y = obj.y * L;
+    g.beginPath();
+    g.arc(x, y, r, 0, Math.PI * 2);
+    g.fillStyle = 'rgba(6,9,13,.85)';
+    g.fill();
+    g.lineWidth = Math.max(2, r * .16);
+    g.strokeStyle = obj.color;
+    g.stroke();
+    g.beginPath();
+    g.moveTo(x - r * 0.6, y);
+    g.quadraticCurveTo(x, y - r * 0.55, x + r * 0.6, y);
+    g.quadraticCurveTo(x, y + r * 0.55, x - r * 0.6, y);
+    g.closePath();
+    g.fillStyle = '#f0e6d2';
+    g.fill();
+    g.beginPath();
+    g.arc(x, y, r * 0.24, 0, Math.PI * 2);
+    g.fillStyle = obj.color;
+    g.fill();
   } else if (obj.type === 'text') {
     drawTextLabel(g, L, obj);
   }
+}
+
+function tokenRadiusPx(obj, L) {
+  if (obj.type === 'champ') return Math.max(14, CHAMP_R * L);
+  if (obj.type === 'ward') return Math.max(11, WARD_R * L);
+  return 0;
+}
+
+function findTokenAt(pt) {
+  const L = canvas.getBoundingClientRect().width;
+  for (let i = state.objects.length - 1; i >= 0; i--) {
+    const obj = state.objects[i];
+    if (obj.type !== 'champ' && obj.type !== 'ward') continue;
+    const r = tokenRadiusPx(obj, L);
+    const dx = (obj.x - pt.x) * L, dy = (obj.y - pt.y) * L;
+    if (Math.hypot(dx, dy) <= r) return obj;
+  }
+  return null;
 }
 
 function render() {
@@ -313,12 +354,24 @@ function onPointerDown(e) {
   const pt = ptFromEvent(e);
   pointerDownPt = pt;
 
+  const hit = findTokenAt(pt);
+  if (hit) {
+    tokenDrag = { obj: hit, dx: hit.x - pt.x, dy: hit.y - pt.y };
+    canvas.style.cursor = 'grabbing';
+    e.preventDefault();
+    return;
+  }
+
   if (currentTool === 'pen') {
     drawingObj = { type: 'pen', color: currentColor, pts: [pt] };
   } else if (currentTool === 'arrow') {
     arrowDraft = { type: 'arrow', color: currentColor, x1: pt.x, y1: pt.y, x2: pt.x, y2: pt.y };
   } else if (currentTool === 'pin') {
     state.objects.push({ type: 'pin', color: currentColor, x: pt.x, y: pt.y });
+    render();
+    save();
+  } else if (currentTool === 'ward') {
+    state.objects.push({ type: 'ward', color: currentColor, x: pt.x, y: pt.y });
     render();
     save();
   } else if (currentTool === 'champ') {
@@ -333,7 +386,17 @@ function onPointerDown(e) {
 }
 
 function onPointerMove(e) {
-  if (!drawingObj && !arrowDraft) return;
+  if (tokenDrag) {
+    const pt = ptFromEvent(e);
+    tokenDrag.obj.x = Math.min(1, Math.max(0, pt.x + tokenDrag.dx));
+    tokenDrag.obj.y = Math.min(1, Math.max(0, pt.y + tokenDrag.dy));
+    render();
+    return;
+  }
+  if (!drawingObj && !arrowDraft) {
+    canvas.style.cursor = findTokenAt(ptFromEvent(e)) ? 'grab' : 'crosshair';
+    return;
+  }
   const pt = ptFromEvent(e);
   if (drawingObj) {
     drawingObj.pts.push(pt);
@@ -346,6 +409,12 @@ function onPointerMove(e) {
 }
 
 function onPointerUp(e) {
+  if (tokenDrag) {
+    tokenDrag = null;
+    canvas.style.cursor = 'crosshair';
+    save();
+    return;
+  }
   if (drawingObj) {
     if (drawingObj.pts.length > 1) state.objects.push(drawingObj);
     drawingObj = null;
