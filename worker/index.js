@@ -140,6 +140,14 @@ async function routeDraft(request, env, url, origin) {
   return json({ error: 'not_found' }, 404, origin);
 }
 
+// 「@example」「example」「https://x.com/example」などの入力から、プロフィールURLを組み立てる
+function xProfileUrl(input) {
+  let h = String(input || '').trim();
+  h = h.replace(/^https?:\/\/(www\.)?(x|twitter)\.com\//i, '');
+  h = h.split(/[/?#]/)[0].replace(/^@/, '');
+  return h ? `https://x.com/${encodeURIComponent(h)}` : null;
+}
+
 // /apply: 参加応募フォームの送信を受け取り、Discordの応募チャンネルに転送する
 async function routeApply(request, env, origin) {
   if (request.method !== 'POST') return json({ error: 'method_not_allowed' }, 405, origin, false);
@@ -171,10 +179,14 @@ async function routeApply(request, env, origin) {
     ],
     timestamp: new Date().toISOString(),
   };
+  const profileUrl = xProfileUrl(xAccount);
+  const components = profileUrl
+    ? [{ type: 1, components: [{ type: 2, style: 5, label: '🔗 Xのプロフィールを開く', url: profileUrl }] }]
+    : [];
   const res = await fetch(webhookUrl, {
     method: 'POST',
     headers: { 'content-type': 'application/json' },
-    body: JSON.stringify({ embeds: [embed] }),
+    body: JSON.stringify({ embeds: [embed], components }),
   });
   if (!res.ok) return json({ error: 'failed' }, 502, origin, false);
   return json({ ok: true }, 200, origin, false);
