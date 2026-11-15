@@ -140,58 +140,6 @@ async function routeDraft(request, env, url, origin) {
   return json({ error: 'not_found' }, 404, origin);
 }
 
-// 「@example」「example」「https://x.com/example」などの入力から、プロフィールURLを組み立てる
-function xProfileUrl(input) {
-  let h = String(input || '').trim();
-  h = h.replace(/^https?:\/\/(www\.)?(x|twitter)\.com\//i, '');
-  h = h.split(/[/?#]/)[0].replace(/^@/, '');
-  return h ? `https://x.com/${encodeURIComponent(h)}` : null;
-}
-
-// /apply: 参加応募フォームの送信を受け取り、Discordの応募チャンネルに転送する
-async function routeApply(request, env, origin) {
-  if (request.method !== 'POST') return json({ error: 'method_not_allowed' }, 405, origin, false);
-  let body;
-  try {
-    body = await request.json();
-  } catch {
-    return json({ error: 'bad_request' }, 400, origin, false);
-  }
-  const xAccount = String(body.xAccount || '').trim().slice(0, 100);
-  const riotId = String(body.riotId || '').trim().slice(0, 100);
-  const highestRank = String(body.highestRank || '').trim().slice(0, 50);
-  const otherQuestion = String(body.otherQuestion || '').trim().slice(0, 1000);
-  const followConfirmed = body.followConfirmed === true;
-  if (!xAccount || !riotId || !highestRank || !followConfirmed) {
-    return json({ error: 'bad_request' }, 400, origin, false);
-  }
-  const webhookUrl = String(env.DISCORD_APPLY_WEBHOOK || '').trim();
-  if (!webhookUrl) return json({ error: 'not_configured' }, 500, origin, false);
-
-  const embed = {
-    title: '📝 新しい参加応募',
-    color: 0xc8aa6e,
-    fields: [
-      { name: 'Xアカウント', value: xAccount, inline: true },
-      { name: 'メインアカウントのRiot ID', value: riotId, inline: true },
-      { name: '過去最高レート', value: highestRank, inline: true },
-      { name: 'その他質問・コメント', value: otherQuestion || '（なし）' },
-    ],
-    timestamp: new Date().toISOString(),
-  };
-  const profileUrl = xProfileUrl(xAccount);
-  const components = profileUrl
-    ? [{ type: 1, components: [{ type: 2, style: 5, label: '🔗 Xのプロフィールを開く', url: profileUrl }] }]
-    : [];
-  const res = await fetch(webhookUrl, {
-    method: 'POST',
-    headers: { 'content-type': 'application/json' },
-    body: JSON.stringify({ embeds: [embed], components }),
-  });
-  if (!res.ok) return json({ error: 'failed' }, 502, origin, false);
-  return json({ ok: true }, 200, origin, false);
-}
-
 export default {
   async fetch(request, env, ctx) {
     const reqOrigin = request.headers.get('Origin') || '';
@@ -210,7 +158,6 @@ export default {
       });
     }
     if (url.pathname.startsWith('/draft/')) return routeDraft(request, env, url, origin);
-    if (url.pathname === '/apply') return routeApply(request, env, origin);
     if (url.pathname !== '/lookup') return json({ error: 'not_found' }, 404, origin);
 
     const [gameName, tagLine] = (url.searchParams.get('id') || '').split('#').map((s) => s.trim());
