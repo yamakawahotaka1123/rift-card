@@ -1,0 +1,297 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script>
+    if (location.protocol === 'http:' && location.hostname !== 'localhost') location.replace(`https://${location.host}${location.pathname}${location.search}${location.hash}`);
+  </script>
+  <title>出場チーム・メンバー｜あぐ鯖カスタム大会</title>
+  <meta name="description" content="あぐ鯖 LoLカスタム大会に出場する16チーム・80人の名簿。各メンバーのRiot IDとOP.GGリンク付き。">
+  <meta name="robots" content="noindex, follow">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <meta property="og:title" content="出場チーム・メンバー｜あぐ鯖カスタム大会">
+  <meta property="og:description" content="あぐ鯖 LoLカスタム大会に出場する16チーム・80人の名簿。各メンバーのRiot IDとOP.GGリンク付き。">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="SUMMONER CARD">
+  <meta name="theme-color" content="#c8aa6e">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=M+PLUS+1p:wght@400;500;700;800&display=swap">
+  <link rel="stylesheet" href="/css/style.css">
+  <style>
+    .tourney { max-width: 1300px; margin: 0 auto; padding: 28px 24px 60px; }
+    .tourney .eyebrow { color: var(--gold); font-size: 12px; letter-spacing: .12em; text-transform: uppercase; font-weight: 700; }
+    .tourney h1 { font-family: "Cinzel", "M PLUS 1p", serif; font-size: clamp(22px, 4vw, 32px); margin: 8px 0 6px; color: var(--gold2); }
+    .tourney > p.lead { color: var(--muted); margin: 0 0 22px; font-size: 14px; }
+    .tabs { display: flex; gap: 8px; margin-bottom: 22px; }
+    .tabs a { padding: 8px 16px; border: 1px solid var(--line); border-radius: 999px; color: var(--muted); text-decoration: none; font-size: 13px; }
+    .tabs a[aria-current="page"] { color: var(--gold2); border-color: var(--gold); background: rgba(200,170,110,.08); }
+    .toolbar { display: flex; gap: 10px; margin: 0 0 20px; flex-wrap: wrap; }
+    #search { flex: 1; min-width: 200px; background: var(--panel); border: 1px solid var(--line); color: var(--text); padding: 10px 14px; border-radius: 8px; font-size: 14px; outline: none; }
+    #search:focus { border-color: var(--gold); }
+    .count { color: var(--muted); font-size: 13px; align-self: center; white-space: nowrap; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; }
+    .card { background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); padding: 16px 16px 6px; min-width: 0; }
+    .card .teamname { font-family: "Cinzel", "M PLUS 1p", serif; font-weight: 700; font-size: 15px; display: flex; align-items: baseline; gap: 8px; margin-bottom: 10px; color: var(--gold2); }
+    .card .teamname .no { color: var(--gold); font-size: 12px; font-variant-numeric: tabular-nums; }
+    table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    tr.member { border-top: 1px solid var(--line); }
+    tr.member td { padding: 8px 4px; vertical-align: top; min-width: 0; }
+    td.who a.disc { color: var(--text); text-decoration: none; font-weight: 500; }
+    td.who a.disc:hover { color: var(--gold2); text-decoration: underline; }
+    td.who .uname { color: var(--muted); font-size: 11px; display: block; }
+    td.riot { text-align: right; white-space: nowrap; }
+    td.riot .riotid { color: var(--muted); font-size: 11px; display: block; }
+    td.riot a.opgg { color: var(--teal); text-decoration: none; font-weight: 600; font-size: 12px; }
+    td.riot a.opgg:hover { text-decoration: underline; }
+    .hidden-row { display: none; }
+    .note { margin-top: 24px; font-size: 13px; color: var(--muted); }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <a class="logo" href="/card/">SUMMONER CARD <span>サモナーカード作成メーカー</span></a>
+    <nav class="site-nav" aria-label="メニュー"><a href="/card/">カードを作る</a><a href="/server/">サーバー紹介</a><a href="/guide/">使い方</a></nav>
+  </header>
+
+  <main class="tourney">
+    <nav class="breadcrumbs" aria-label="パンくずリスト"><a href="/card/">トップ</a> › <a href="/tournament/">あぐ鯖カスタム大会</a> › <span>出場チーム・メンバー</span></nav>
+    <div class="eyebrow">あぐ鯖 カスタム大会</div>
+    <h1>出場チーム・メンバー</h1>
+    <p class="lead">16チーム・80人の名簿。Discordの表示名はプロフィールへ、Riot IDはOP.GGの戦績ページへリンク。</p>
+    <nav class="tabs">
+      <a href="/tournament/">トーナメント表</a>
+      <a href="/tournament/teams/" aria-current="page">出場チーム・メンバー</a>
+    </nav>
+
+    <div class="toolbar">
+      <input id="search" type="text" placeholder="チーム名・Discord名・Riot ID で検索…">
+      <span class="count" id="count"></span>
+    </div>
+    <div class="grid" id="grid"></div>
+    <p class="note">OP.GGのリンクは本人の自己申告Riot IDから自動生成しています。表記ミスや未登録のアカウントではリンク先が見つからない場合があります。</p>
+  </main>
+
+  <footer class="site-footer">
+    <nav class="footer-nav" aria-label="サイト情報"><a href="/tournament/">トーナメント表</a><a href="/tournament/teams/">出場チーム</a><a href="/card/">サモナーカードを作る</a></nav>
+    <p class="legal">SUMMONER CARD isn't endorsed by Riot Games and doesn't reflect the views or opinions of Riot Games or anyone officially involved in producing or managing Riot Games properties. Riot Games, and all associated properties are trademarks or registered trademarks of Riot Games, Inc.</p>
+  </footer>
+
+  <script>
+    const teams = [
+  {
+    "name": "チーム①(がーちゃん)",
+    "members": [
+      { "id": "505616744736489493", "display": "がーちゃん", "uname": "gachan.", "riot": "GDR#3034", "opgg": "https://www.op.gg/summoners/jp/GDR-3034" },
+      { "id": "1103631574576136194", "display": "ryopiino", "uname": "ryopiino", "riot": "ryopiino#5679", "opgg": "https://www.op.gg/summoners/jp/ryopiino-5679" },
+      { "id": "632570434285600768", "display": "銀鮭（しゃけR）", "uname": "buleprotocol", "riot": "shAckEr36#6924", "opgg": "https://www.op.gg/summoners/jp/shAckEr36-6924" },
+      { "id": "574195267285286925", "display": "ぽんざうるす", "uname": "ponkichi8463", "riot": "pompon1204#7070", "opgg": "https://www.op.gg/summoners/jp/pompon1204-7070" },
+      { "id": "746751739780399115", "display": "sushiboy83", "uname": "sushiboy83", "riot": "sushiboy83#0404", "opgg": "https://www.op.gg/summoners/jp/sushiboy83-0404" }
+    ]
+  },
+  {
+    "name": "チーム②(ヤングやまちゃん)",
+    "members": [
+      { "id": "262397859234578432", "display": "りんご@LisKyE", "uname": "mashiroringo", "riot": "LisKyE#JKJK", "opgg": "https://www.op.gg/summoners/jp/LisKyE-JKJK" },
+      { "id": "1099977963434418187", "display": "あしたも", "uname": "asitamo", "riot": "asitamo#2618", "opgg": "https://www.op.gg/summoners/jp/asitamo-2618" },
+      { "id": "1473261628219855023", "display": "佐藤", "uname": "satooo121", "riot": "佐藤と申します#nani", "opgg": "https://www.op.gg/summoners/jp/%E4%BD%90%E8%97%A4%E3%81%A8%E7%94%B3%E3%81%97%E3%81%BE%E3%81%99-nani" },
+      { "id": "803264534147235891", "display": "かみぃ", "uname": "kam.1y", "riot": "kmaiyさまさま#ぱぱらいや", "opgg": "https://www.op.gg/summoners/jp/kmaiy%E3%81%95%E3%81%BE%E3%81%95%E3%81%BE-%E3%81%B1%E3%81%B1%E3%82%89%E3%81%84%E3%82%84" },
+      { "id": "491273275125792779", "display": "ヤングやまちゃん", "uname": "youngyamachan", "riot": "夏のヤングやまちゃん#505", "opgg": "https://www.op.gg/summoners/jp/%E5%A4%8F%E3%81%AE%E3%83%A4%E3%83%B3%E3%82%B0%E3%82%84%E3%81%BE%E3%81%A1%E3%82%83%E3%82%93-505" }
+    ]
+  },
+  {
+    "name": "マッコリ揺蕩う",
+    "members": [
+      { "id": "250970129494441994", "display": "うるまっく", "uname": "_ultron", "riot": "うるまっく#2988", "opgg": "https://www.op.gg/summoners/jp/%E3%81%86%E3%82%8B%E3%81%BE%E3%81%A3%E3%81%8F-2988" },
+      { "id": "708266388237844531", "display": "Makkori", "uname": "_makkari", "riot": "makkoritomato#tbk", "opgg": "https://www.op.gg/summoners/jp/makkoritomato-tbk" },
+      { "id": "461448209869438996", "display": "ゆう", "uname": "yuukaihan", "riot": "yuukaihan#JP1", "opgg": "https://www.op.gg/summoners/jp/yuukaihan-JP1" },
+      { "id": "1285247214481838203", "display": "タタタット", "uname": "perfect_pillow", "riot": "sleeping beautyy#zzz", "opgg": "https://www.op.gg/summoners/jp/sleeping%20beautyy-zzz" },
+      { "id": "635509364932739083", "display": "たまねぎ！", "uname": "tamanegi_onion", "riot": "我が肺は二個である名前は#たぶん肺", "opgg": "https://www.op.gg/summoners/jp/%E6%88%91%E3%81%8C%E8%82%BA%E3%81%AF%E4%BA%8C%E5%80%8B%E3%81%A7%E3%81%82%E3%82%8B%E5%90%8D%E5%89%8D%E3%81%AF-%E3%81%9F%E3%81%B6%E3%82%93%E8%82%BA" }
+    ]
+  },
+  {
+    "name": "チーム④(カル買ってGO)",
+    "members": [
+      { "id": "904285466822582352", "display": "yugen6666", "uname": "yugen6666", "riot": "yugen666#9405", "opgg": "https://www.op.gg/summoners/jp/yugen666-9405" },
+      { "id": "803168330345218050", "display": "げーみんぐばぶ", "uname": ".bab_bu", "riot": "げーみんぐばぶ#bub64", "opgg": "https://www.op.gg/summoners/jp/%E3%81%92%E3%83%BC%E3%81%BF%E3%82%93%E3%81%90%E3%81%B0%E3%81%B6-bub64" },
+      { "id": "1068828894653857802", "display": "カル買ってGO", "uname": "santaorou", "riot": "カル買ってGO#1416", "opgg": "https://www.op.gg/summoners/jp/%E3%82%AB%E3%83%AB%E8%B2%B7%E3%81%A3%E3%81%A6GO-1416" },
+      { "id": "673479630589657088", "display": "saigoku", "uname": ".saigoku", "riot": "saigoku#3333", "opgg": "https://www.op.gg/summoners/jp/saigoku-3333" },
+      { "id": "651772711848247307", "display": "やまもん", "uname": "yamamon", "riot": "mount gate#JPI", "opgg": "https://www.op.gg/summoners/jp/mount%20gate-JPI" }
+    ]
+  },
+  {
+    "name": "チームカースト",
+    "members": [
+      { "id": "814157817342066734", "display": "寄生虫", "uname": "kiseithu", "riot": "セトに投げられ隊#寄生虫", "opgg": "https://www.op.gg/summoners/jp/%E3%82%BB%E3%83%88%E3%81%AB%E6%8A%95%E3%81%92%E3%82%89%E3%82%8C%E9%9A%8A-%E5%AF%84%E7%94%9F%E8%99%AB" },
+      { "id": "822766811355414548", "display": "ハイレグアデガエル#アラハダカ", "uname": "gohan_umaize", "riot": "ハイレグアデガエル#アラハダカ", "opgg": "https://www.op.gg/summoners/jp/%E3%83%8F%E3%82%A4%E3%83%AC%E3%82%B0%E3%82%A2%E3%83%87%E3%82%AC%E3%82%A8%E3%83%AB-%E3%82%A2%E3%83%A9%E3%83%8F%E3%83%80%E3%82%AB" },
+      { "id": "697078556567535746", "display": "analog", "uname": "analog0514", "riot": "analog#3094", "opgg": "https://www.op.gg/summoners/jp/analog-3094" },
+      { "id": "532053214355521546", "display": "かえで", "uname": "kaede2155", "riot": "onionmal#5419", "opgg": "https://www.op.gg/summoners/jp/onionmal-5419" },
+      { "id": "698898571658919967", "display": "カースト", "uname": "kazuto1356", "riot": "kasuto#112", "opgg": "https://www.op.gg/summoners/jp/kasuto-112" }
+    ]
+  },
+  {
+    "name": "iron carry",
+    "members": [
+      { "id": "405029418470211605", "display": "きょう", "uname": "petrov_211", "riot": "звук#9595", "opgg": "https://www.op.gg/summoners/jp/%D0%B7%D0%B2%D1%83%D0%BA-9595" },
+      { "id": "695257922854453358", "display": "iro", "uname": "oichi_05", "riot": "iro#0507", "opgg": "https://www.op.gg/summoners/jp/iro-0507" },
+      { "id": "622105658065682432", "display": "NICOTIN", "uname": "nattu677", "riot": "溺れる鰯#25TN", "opgg": "https://www.op.gg/summoners/jp/%E6%BA%BA%E3%82%8C%E3%82%8B%E9%B0%AF-25TN" },
+      { "id": "691588468345929738", "display": "Nexa", "uname": "nexagg", "riot": "Nexa#2505", "opgg": "https://www.op.gg/summoners/jp/Nexa-2505" },
+      { "id": "871714770271760394", "display": "hasutado", "uname": "hasutado", "riot": "胴撃ち#PRO", "opgg": "https://www.op.gg/summoners/jp/%E8%83%B4%E6%92%83%E3%81%A1-PRO" }
+    ]
+  },
+  {
+    "name": "Knock Knock",
+    "members": [
+      { "id": "861032653687488562", "display": "キオクシア", "uname": "vexanq_", "riot": "qioxia#962", "opgg": "https://www.op.gg/summoners/jp/qioxia-962" },
+      { "id": "952215463008550922", "display": "AMA", "uname": "gon_chan_", "riot": "AMA#0222", "opgg": "https://www.op.gg/summoners/jp/AMA-0222" },
+      { "id": "994188899322699837", "display": "おさだ", "uname": "osada_0510", "riot": "おさだ#JP1", "opgg": "https://www.op.gg/summoners/jp/%E3%81%8A%E3%81%95%E3%81%A0-JP1" },
+      { "id": "888931256329469963", "display": "まなくん", "uname": ".manakun", "riot": "manakun0625#9346", "opgg": "https://www.op.gg/summoners/jp/manakun0625-9346" },
+      { "id": "733635741564796968", "display": "eNter", "uname": "enter7209", "riot": "eNterrr#8900", "opgg": "https://www.op.gg/summoners/jp/eNterrr-8900" }
+    ]
+  },
+  {
+    "name": "なつき",
+    "members": [
+      { "id": "877778667059699802", "display": "Yoo", "uname": "yaoyao333", "riot": "Yoo#3333", "opgg": "https://www.op.gg/summoners/jp/Yoo-3333" },
+      { "id": "962690840189362176", "display": "ふゆの（Fuyuno）", "uname": "fuyuno_wt", "riot": "Fuyuno#千発百中", "opgg": "https://www.op.gg/summoners/jp/Fuyuno-%E5%8D%83%E7%99%BA%E7%99%BE%E4%B8%AD" },
+      { "id": "794923796070400000", "display": "red", "uname": "red_mofu", "riot": "red#mofu", "opgg": "https://www.op.gg/summoners/jp/red-mofu" },
+      { "id": "374494718203133953", "display": "ぽてと", "uname": "theequater", "riot": "The equater#JP1", "opgg": "https://www.op.gg/summoners/jp/The%20equater-JP1" },
+      { "id": "591882231652548648", "display": "なつき(地雷系魔法美少女)", "uname": "napinapi01", "riot": "地雷系魔法美少女#危険動物", "opgg": "https://www.op.gg/summoners/jp/%E5%9C%B0%E9%9B%B7%E7%B3%BB%E9%AD%94%E6%B3%95%E7%BE%8E%E5%B0%91%E5%A5%B3-%E5%8D%B1%E9%99%BA%E5%8B%95%E7%89%A9" }
+    ]
+  },
+  {
+    "name": "GoldDemons",
+    "members": [
+      { "id": "583263751072120862", "display": "こ", "uname": "ural_0", "riot": "こーらいと#2536", "opgg": "https://www.op.gg/summoners/jp/%E3%81%93%E3%83%BC%E3%82%89%E3%81%84%E3%81%A8-2536" },
+      { "id": "947480918405292113", "display": "yo_shi_non", "uname": "yo_shi_non", "riot": "よしのん#1106", "opgg": "https://www.op.gg/summoners/jp/%E3%82%88%E3%81%97%E3%81%AE%E3%82%93-1106" },
+      { "id": "431747528552218626", "display": "HOPE", "uname": "hope0817", "riot": "hope hinataba#Moko2", "opgg": "https://www.op.gg/summoners/jp/hope%20hinataba-Moko2" },
+      { "id": "752425016154521611", "display": "alta", "uname": "alta5993", "riot": "リノOTKしか狙いません#SVWB", "opgg": "https://www.op.gg/summoners/jp/%E3%83%AA%E3%83%8EOTK%E3%81%97%E3%81%8B%E7%8B%99%E3%81%84%E3%81%BE%E3%81%9B%E3%82%93-SVWB" },
+      { "id": "787344967491518465", "display": "ma_cha", "uname": "ma_cha", "riot": "macha#0206", "opgg": "https://www.op.gg/summoners/jp/macha-0206" }
+    ]
+  },
+  {
+    "name": "5ADC",
+    "members": [
+      { "id": "1017412893391724554", "display": "KASIKI", "uname": "ka_si_ki", "riot": "PRX Lynae#noob", "opgg": "https://www.op.gg/summoners/jp/PRX%20Lynae-noob" },
+      { "id": "992710374753308752", "display": "Himagine", "uname": "himagine_1", "riot": "LunaЯ#JP0", "opgg": "https://www.op.gg/summoners/jp/Luna%D0%AF-JP0" },
+      { "id": "711614984370520104", "display": "りんご", "uname": "ringo1643", "riot": "Devil Ringotch杯#ramen", "opgg": "https://www.op.gg/summoners/jp/Devil%20Ringotch%E6%9D%AF-ramen" },
+      { "id": "993987325744914574", "display": "うすしっく", "uname": "ichigo_usushikku", "riot": "神の世界への引導を渡してやる#うすしっく", "opgg": "https://www.op.gg/summoners/jp/%E7%A5%9E%E3%81%AE%E4%B8%96%E7%95%8C%E3%81%B8%E3%81%AE%E5%BC%95%E5%B0%8E%E3%82%92%E6%B8%A1%E3%81%97%E3%81%A6%E3%82%84%E3%82%8B-%E3%81%86%E3%81%99%E3%81%97%E3%81%A3%E3%81%8F" },
+      { "id": "1130386632302919751", "display": "wizy", "uname": "wizyfishy", "riot": "NUMA aimer#wizy", "opgg": "https://www.op.gg/summoners/jp/NUMA%20aimer-wizy" }
+    ]
+  },
+  {
+    "name": "ハゲモニ蛙",
+    "members": [
+      { "id": "1334860433957589102", "display": "もみの樹", "uname": "mominoki.8068_46639", "riot": "もみの樹#5718", "opgg": "https://www.op.gg/summoners/jp/%E3%82%82%E3%81%BF%E3%81%AE%E6%A8%B9-5718" },
+      { "id": "723558001310564392", "display": "にーす", "uname": "duchesnea", "riot": "対タレット勝率5割#1492", "opgg": "https://www.op.gg/summoners/jp/%E5%AF%BE%E3%82%BF%E3%83%AC%E3%83%83%E3%83%88%E5%8B%9D%E7%8E%875%E5%89%B2-1492" },
+      { "id": "720969646446084175", "display": "はかせ", "uname": "hakase1129", "riot": "はかせ#1129", "opgg": "https://www.op.gg/summoners/jp/%E3%81%AF%E3%81%8B%E3%81%9B-1129" },
+      { "id": "339637713118429195", "display": "井の中の蛙", "uname": "inonakanokawazu", "riot": "井の中の蛙#JP2", "opgg": "https://www.op.gg/summoners/jp/%E4%BA%95%E3%81%AE%E4%B8%AD%E3%81%AE%E8%9B%99-JP2" },
+      { "id": "498532365409320972", "display": "ハーゲン", "uname": "harugen.", "riot": "HAGEN02#Derke", "opgg": "https://www.op.gg/summoners/jp/HAGEN02-Derke" }
+    ]
+  },
+  {
+    "name": "ティモフィズケイトセラウコンOTP",
+    "members": [
+      { "id": "1270187303536431115", "display": "てぃな", "uname": "gomasan03", "riot": "DJ台パン#EDM", "opgg": "https://www.op.gg/summoners/jp/DJ%E5%8F%B0%E3%83%91%E3%83%B3-EDM" },
+      { "id": "1570207308670177502", "display": "おほた", "uname": "ohota_kb", "riot": "KINGBAKA#8959", "opgg": "https://www.op.gg/summoners/jp/KINGBAKA-8959" },
+      { "id": "764696829425221642", "display": "存在S", "uname": "sonzaiesu", "riot": "存在S#0221", "opgg": "https://www.op.gg/summoners/jp/%E5%AD%98%E5%9C%A8S-0221" },
+      { "id": "379989890105999361", "display": "せるみん", "uname": "serumin.", "riot": "せるみん#JP1", "opgg": "https://www.op.gg/summoners/jp/%E3%81%9B%E3%82%8B%E3%81%BF%E3%82%93-JP1" },
+      { "id": "946754809824948224", "display": "Carope", "uname": "carope0611", "riot": "Carope#777", "opgg": "https://www.op.gg/summoners/jp/Carope-777" }
+    ]
+  },
+  {
+    "name": "BOMBA",
+    "members": [
+      { "id": "1145699535956488292", "display": "しかばね", "uname": "skbanebane", "riot": "skbane#6263", "opgg": "https://www.op.gg/summoners/jp/skbane-6263" },
+      { "id": "628606774286614548", "display": "アド・リビトゥム", "uname": "abo302", "riot": "カプリチョーソ#77777", "opgg": "https://www.op.gg/summoners/jp/%E3%82%AB%E3%83%97%E3%83%AA%E3%83%81%E3%83%A7%E3%83%BC%E3%82%BD-77777" },
+      { "id": "966727046292201533", "display": "十六夜", "uname": "izayoi984", "riot": "十六夜#984", "opgg": "https://www.op.gg/summoners/jp/%E5%8D%81%E5%85%AD%E5%A4%9C-984" },
+      { "id": "1314951589949345803", "display": "ととと", "uname": "tototo_84471", "riot": "ととと#0801", "opgg": "https://www.op.gg/summoners/jp/%E3%81%A8%E3%81%A8%E3%81%A8-0801" },
+      { "id": "333513086990286849", "display": "Yozora9029", "uname": "yozora9029", "riot": "Yozora9029#9029", "opgg": "https://www.op.gg/summoners/jp/Yozora9029-9029" }
+    ]
+  },
+  {
+    "name": "in the huton",
+    "members": [
+      { "id": "131336767012864000", "display": "だしん", "uname": "dashin0912", "riot": "だしん#JP1", "opgg": "https://www.op.gg/summoners/jp/%E3%81%A0%E3%81%97%E3%82%93-JP1" },
+      { "id": "761208013042221066", "display": "Era", "uname": "era_nose", "riot": "さくらもち#8965", "opgg": "https://www.op.gg/summoners/jp/%E3%81%95%E3%81%8F%E3%82%89%E3%82%82%E3%81%A1-8965" },
+      { "id": "880618118437802026", "display": "k4edayfff", "uname": "forever__love", "riot": "forever love#laugh", "opgg": "https://www.op.gg/summoners/jp/forever%20love-laugh" },
+      { "id": "830650465485455395", "display": "こくまろ", "uname": "k0kumaro", "riot": "K0kumaro#JP1", "opgg": "https://www.op.gg/summoners/jp/K0kumaro-JP1" },
+      { "id": "784811076431773736", "display": "ここのえ", "uname": "coconoezensen", "riot": "Mini Rex#mimi", "opgg": "https://www.op.gg/summoners/jp/Mini%20Rex-mimi" }
+    ]
+  },
+  {
+    "name": "メンタルエメラルド",
+    "members": [
+      { "id": "636167323526496257", "display": "tubo", "uname": "tsubo7589", "riot": "tubo#8106", "opgg": "https://www.op.gg/summoners/jp/tubo-8106" },
+      { "id": "1553682240892838030", "display": "だるの極み乙女", "uname": "go_go_1_", "riot": "だるの極み乙女#いんでぃご", "opgg": "https://www.op.gg/summoners/jp/%E3%81%A0%E3%82%8B%E3%81%AE%E6%A5%B5%E3%81%BF%E4%B9%99%E5%A5%B3-%E3%81%84%E3%82%93%E3%81%A7%E3%81%83%E3%81%94" },
+      { "id": "819777596485140480", "display": "INEEDYOU", "uname": "l_l_needyou_l_l", "riot": "事故る奴は不運と踊っちまったん#鰐淵春樹", "opgg": "https://www.op.gg/summoners/jp/%E4%BA%8B%E6%95%85%E3%82%8B%E5%A5%B4%E3%81%AF%E4%B8%8D%E9%81%8B%E3%81%A8%E8%B8%8A%E3%81%A3%E3%81%A1%E3%81%BE%E3%81%A3%E3%81%9F%E3%82%93-%E9%B0%90%E6%B7%B5%E6%98%A5%E6%A8%B9" },
+      { "id": "688321264154050561", "display": "K.K", "uname": "k.k5810", "riot": "KK493#4737", "opgg": "https://www.op.gg/summoners/jp/KK493-4737" },
+      { "id": "159176397141704704", "display": "tarky", "uname": "tarky6164", "riot": "tarky#JP1", "opgg": "https://www.op.gg/summoners/jp/tarky-JP1" }
+    ]
+  },
+  {
+    "name": "KHMRD(カムラッド)",
+    "members": [
+      { "id": "817031035468382228", "display": "shikao_", "uname": "shikao_", "riot": "KANTARAKETI#2252", "opgg": "https://www.op.gg/summoners/jp/KANTARAKETI-2252" },
+      { "id": "226827720200290304", "display": "オパール", "uname": "yuwshi", "riot": "Remilia#Supp", "opgg": "https://www.op.gg/summoners/jp/Remilia-Supp" },
+      { "id": "749505510318932029", "display": "Mrデーモン", "uname": "mrdemon4649.", "riot": "Mrデーモン#JP1", "opgg": "https://www.op.gg/summoners/jp/Mr%E3%83%87%E3%83%BC%E3%83%A2%E3%83%B3-JP1" },
+      { "id": "563155973129240605", "display": "御薬袋(みない)", "uname": "minai_0402", "riot": "御薬袋#0402", "opgg": "https://www.op.gg/summoners/jp/%E5%BE%A1%E8%96%AC%E8%A2%8B-0402" },
+      { "id": "1399636782777110538", "display": "もつ煮", "uname": "harawatanonimono", "riot": "はらわたの煮物twitch#ついっち", "opgg": "https://www.op.gg/summoners/jp/%E3%81%AF%E3%82%89%E3%82%8F%E3%81%9F%E3%81%AE%E7%85%AE%E7%89%A9twitch-%E3%81%A4%E3%81%84%E3%81%A3%E3%81%A1" }
+    ]
+  }
+];
+
+    const grid = document.getElementById('grid');
+    const search = document.getElementById('search');
+    const countEl = document.getElementById('count');
+    const totalMembers = teams.reduce((n, t) => n + t.members.length, 0);
+
+    function esc(s) {
+      return String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+    }
+
+    teams.forEach((t, i) => {
+      const card = document.createElement('div');
+      card.className = 'card';
+      card.dataset.haystack = (t.name + ' ' + t.members.map(m => (m.display || '') + ' ' + m.uname + ' ' + m.riot).join(' ')).toLowerCase();
+      const rowsHtml = t.members.map(m => `
+        <tr class="member" data-row-haystack="${esc(((m.display || '') + ' ' + m.uname + ' ' + m.riot).toLowerCase())}">
+          <td class="who">
+            <a class="disc" href="https://discord.com/users/${m.id}" target="_blank" rel="noopener">${esc(m.display)}</a>
+            <span class="uname">@${esc(m.uname)}</span>
+          </td>
+          <td class="riot">
+            <span class="riotid">${esc(m.riot)}</span>
+            <a class="opgg" href="${m.opgg}" target="_blank" rel="noopener">OP.GG →</a>
+          </td>
+        </tr>`).join('');
+      card.innerHTML = `
+        <div class="teamname"><span class="no">${String(i + 1).padStart(2, '0')}</span>${esc(t.name)}</div>
+        <table><tbody>${rowsHtml}</tbody></table>
+      `;
+      grid.appendChild(card);
+    });
+
+    function applyFilter() {
+      const q = search.value.trim().toLowerCase();
+      let visibleTeams = 0, visibleMembers = 0;
+      document.querySelectorAll('.card').forEach(card => {
+        const teamMatches = !q || card.dataset.haystack.includes(q);
+        let anyRow = false;
+        card.querySelectorAll('tr.member').forEach(row => {
+          const show = teamMatches || row.dataset.rowHaystack.includes(q);
+          row.classList.toggle('hidden-row', !show);
+          if (show) { anyRow = true; visibleMembers++; }
+        });
+        card.style.display = anyRow ? '' : 'none';
+        if (anyRow) visibleTeams++;
+      });
+      countEl.textContent = q ? `${visibleTeams}チーム / ${visibleMembers}人` : `${teams.length}チーム / ${totalMembers}人`;
+    }
+    search.addEventListener('input', applyFilter);
+    applyFilter();
+  </script>
+</body>
+</html>

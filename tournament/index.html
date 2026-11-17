@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script>
+    if (location.protocol === 'http:' && location.hostname !== 'localhost') location.replace(`https://${location.host}${location.pathname}${location.search}${location.hash}`);
+  </script>
+  <title>トーナメント表｜あぐ鯖カスタム大会</title>
+  <meta name="description" content="あぐ鯖 LoLカスタム大会のトーナメント表。16チームの対戦表を掲載。">
+  <meta name="robots" content="noindex, follow">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <meta property="og:title" content="トーナメント表｜あぐ鯖カスタム大会">
+  <meta property="og:description" content="あぐ鯖 LoLカスタム大会のトーナメント表。16チームの対戦表を掲載。">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="SUMMONER CARD">
+  <meta name="theme-color" content="#c8aa6e">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=M+PLUS+1p:wght@400;500;700;800&display=swap">
+  <link rel="stylesheet" href="/css/style.css">
+  <style>
+    .tourney { max-width: 1300px; margin: 0 auto; padding: 28px 24px 60px; }
+    .tourney .eyebrow { color: var(--gold); font-size: 12px; letter-spacing: .12em; text-transform: uppercase; font-weight: 700; }
+    .tourney h1 { font-family: "Cinzel", "M PLUS 1p", serif; font-size: clamp(22px, 4vw, 32px); margin: 8px 0 6px; color: var(--gold2); }
+    .tourney > p.lead { color: var(--muted); margin: 0 0 22px; font-size: 14px; }
+    .tabs { display: flex; gap: 8px; margin-bottom: 24px; }
+    .tabs a { padding: 8px 16px; border: 1px solid var(--line); border-radius: 999px; color: var(--muted); text-decoration: none; font-size: 13px; }
+    .tabs a[aria-current="page"] { color: var(--gold2); border-color: var(--gold); background: rgba(200,170,110,.08); }
+    .scroller { overflow-x: auto; padding-bottom: 12px; }
+    .bracket { display: flex; gap: 48px; min-width: 1180px; align-items: center; }
+    .round { display: flex; flex-direction: column; justify-content: center; gap: 28px; flex: 1; }
+    .round-title { font-family: "Cinzel", "M PLUS 1p", serif; color: var(--muted); font-size: 12px; letter-spacing: .08em; text-transform: uppercase; text-align: center; margin-bottom: 4px; }
+    .match { position: relative; display: flex; flex-direction: column; gap: 0; --pair-gap: 28px; }
+    .match::after { content: ""; position: absolute; right: -24px; top: 50%; width: 24px; height: 1px; background: var(--line); }
+    .round:last-child .match::after { display: none; }
+    .round:not(:first-child) .match::before {
+      content: ""; position: absolute; left: -24px; width: 1px; background: var(--line);
+      top: calc(-1 * (var(--pair-gap) / 2) - 1px); height: calc(100% + var(--pair-gap) + 2px);
+    }
+    .slot { background: var(--panel); border: 1px solid var(--line); border-radius: 7px; padding: 9px 12px; font-size: 13px; font-weight: 500; min-height: 18px; line-height: 1.3; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .slot:first-child { border-bottom-left-radius: 0; border-bottom-right-radius: 0; }
+    .slot + .slot { border-top: none; border-top-left-radius: 0; border-top-right-radius: 0; }
+    .slot.tbd { color: var(--muted); font-style: italic; font-weight: 400; }
+    .champion-box { display: flex; flex-direction: column; align-items: center; gap: 10px; text-align: center; }
+    .champion-box .label { color: var(--muted); font-size: 12px; letter-spacing: .1em; text-transform: uppercase; }
+    .champion-box .name { font-family: "Cinzel", "M PLUS 1p", serif; font-size: 20px; font-weight: 700; color: var(--gold2); border: 1px solid var(--gold); border-radius: 8px; padding: 14px 20px; background: var(--panel); white-space: nowrap; }
+    .note { margin-top: 24px; font-size: 13px; color: var(--muted); }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <a class="logo" href="/card/">SUMMONER CARD <span>サモナーカード作成メーカー</span></a>
+    <nav class="site-nav" aria-label="メニュー"><a href="/card/">カードを作る</a><a href="/server/">サーバー紹介</a><a href="/guide/">使い方</a></nav>
+  </header>
+
+  <main class="tourney">
+    <nav class="breadcrumbs" aria-label="パンくずリスト"><a href="/card/">トップ</a> › <span>あぐ鯖カスタム大会</span></nav>
+    <div class="eyebrow">あぐ鯖 カスタム大会</div>
+    <h1>トーナメント表</h1>
+    <p class="lead">16チームによるシングルエリミネーション。1回戦の組み合わせはランダム抽選。</p>
+    <nav class="tabs">
+      <a href="/tournament/" aria-current="page">トーナメント表</a>
+      <a href="/tournament/teams/">出場チーム・メンバー</a>
+    </nav>
+
+    <div class="scroller">
+      <div class="bracket" id="bracket"></div>
+    </div>
+    <p class="note">結果が確定したラウンドから順に更新します。出場メンバーのRiot ID・OP.GGリンクは<a href="/tournament/teams/">出場チーム・メンバー</a>のページに掲載。</p>
+  </main>
+
+  <footer class="site-footer">
+    <nav class="footer-nav" aria-label="サイト情報"><a href="/tournament/">トーナメント表</a><a href="/tournament/teams/">出場チーム</a><a href="/card/">サモナーカードを作る</a></nav>
+    <p class="legal">SUMMONER CARD isn't endorsed by Riot Games and doesn't reflect the views or opinions of Riot Games or anyone officially involved in producing or managing Riot Games properties. Riot Games, and all associated properties are trademarks or registered trademarks of Riot Games, Inc.</p>
+  </footer>
+
+  <script>
+    const round1 = [
+      ["in the huton", "Knock Knock"],
+      ["KHMRD(カムラッド)", "iron carry"],
+      ["BOMBA", "5ADC"],
+      ["GoldDemons", "ティモフィズケイトセラウコンOTP"],
+      ["チームカースト", "チーム④(カル買ってGO)"],
+      ["ハゲモニ蛙", "マッコリ揺蕩う"],
+      ["メンタルエメラルド", "なつき"],
+      ["チーム①(がーちゃん)", "チーム②(ヤングやまちゃん)"],
+    ];
+    const roundTitles = ["1回戦", "準々決勝", "準決勝"];
+    const bracket = document.getElementById('bracket');
+
+    function slot(text, cls) {
+      const d = document.createElement('div');
+      d.className = 'slot' + (cls ? ' ' + cls : '');
+      d.textContent = text;
+      return d;
+    }
+
+    const matchCounts = [8, 4, 2];
+    roundTitles.forEach((title, ri) => {
+      const col = document.createElement('div');
+      col.className = 'round';
+      const t = document.createElement('div');
+      t.className = 'round-title';
+      t.textContent = title;
+      col.appendChild(t);
+      for (let m = 0; m < matchCounts[ri]; m++) {
+        const match = document.createElement('div');
+        match.className = 'match';
+        if (ri === 0) {
+          match.appendChild(slot(round1[m][0]));
+          match.appendChild(slot(round1[m][1]));
+        } else {
+          match.appendChild(slot('TBD', 'tbd'));
+          match.appendChild(slot('TBD', 'tbd'));
+        }
+        col.appendChild(match);
+      }
+      bracket.appendChild(col);
+    });
+
+    const finalCol = document.createElement('div');
+    finalCol.className = 'round';
+    finalCol.innerHTML = '<div class="round-title">決勝</div>';
+    const finalMatch = document.createElement('div');
+    finalMatch.className = 'match';
+    finalMatch.appendChild(slot('TBD', 'tbd'));
+    finalMatch.appendChild(slot('TBD', 'tbd'));
+    finalCol.appendChild(finalMatch);
+    bracket.appendChild(finalCol);
+
+    const champCol = document.createElement('div');
+    champCol.className = 'round';
+    champCol.innerHTML = `
+      <div class="round-title">優勝</div>
+      <div class="champion-box">
+        <div class="label">Champion</div>
+        <div class="name">？？？</div>
+      </div>
+    `;
+    bracket.appendChild(champCol);
+  </script>
+</body>
+</html>
