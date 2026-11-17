@@ -36,14 +36,23 @@
     .card { background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); padding: 16px 16px 6px; min-width: 0; }
     .card .teamname { font-family: "Cinzel", "M PLUS 1p", serif; font-weight: 700; font-size: 15px; display: flex; align-items: baseline; gap: 8px; margin-bottom: 10px; color: var(--gold2); }
     .card .teamname .no { color: var(--gold); font-size: 12px; font-variant-numeric: tabular-nums; }
-    table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    table { width: 100%; table-layout: fixed; border-collapse: collapse; font-size: 13px; }
     tr.member { border-top: 1px solid var(--line); }
     tr.member td { padding: 8px 4px; vertical-align: top; min-width: 0; }
+    td.who { width: 58%; }
+    td.riot { width: 42%; text-align: right; }
+    /* 長い名前・Riot IDは1行に収めて揃え、ホバー中だけ横スクロールで全体を読めるようにする */
+    td.who a.disc, td.who .uname, td.riot .riotid {
+      display: block; max-width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    td.who a.disc, td.riot .riotid { scrollbar-width: thin; }
+    td.who a.disc:hover, td.riot .riotid:hover { overflow-x: auto; text-overflow: clip; cursor: ew-resize; }
+    td.who a.disc::-webkit-scrollbar, td.riot .riotid::-webkit-scrollbar { height: 3px; }
+    td.who a.disc::-webkit-scrollbar-thumb, td.riot .riotid::-webkit-scrollbar-thumb { background: var(--line); }
     td.who a.disc { color: var(--text); text-decoration: none; font-weight: 500; }
     td.who a.disc:hover { color: var(--gold2); text-decoration: underline; }
-    td.who .uname { color: var(--muted); font-size: 11px; display: block; }
-    td.riot { text-align: right; white-space: nowrap; }
-    td.riot .riotid { color: var(--muted); font-size: 11px; display: block; }
+    td.who .uname { color: var(--muted); font-size: 11px; }
+    td.riot .riotid { color: var(--muted); font-size: 11px; }
     td.riot a.opgg { color: var(--teal); text-decoration: none; font-weight: 600; font-size: 12px; }
     td.riot a.opgg:hover { text-decoration: underline; }
     .hidden-row { display: none; }
