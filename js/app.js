@@ -985,7 +985,8 @@ async function init() {
   syncUI();
   syncSkins();
   scheduleRender();
-  initRiotImport({ getState: () => state, update, ctxData, toast });
+  // Riotの本番APIキーが審査待ちで失敗するだけになるため、承認が下りるまで無効化（#riot-importはHTML側で元々hidden）。
+  // initRiotImport({ getState: () => state, update, ctxData, toast });
   // Re-render whenever web fonts finish loading so the preview isn't stuck on a fallback font.
   document.fonts?.ready.then(scheduleRender);
   document.fonts?.addEventListener('loadingdone', scheduleRender);
