@@ -1,0 +1,209 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script>
+    if (location.protocol === 'http:' && location.hostname !== 'localhost') location.replace(`https://${location.host}${location.pathname}${location.search}${location.hash}`);
+  </script>
+  <title>進行管理｜あぐ鯖カスタム大会</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <meta name="theme-color" content="#c8aa6e">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=M+PLUS+1p:wght@400;500;700;800&display=swap">
+  <link rel="stylesheet" href="/css/style.css">
+  <style>
+    .admin { max-width: 760px; margin: 0 auto; padding: 28px 24px 60px; }
+    .admin .eyebrow { color: var(--gold); font-size: 12px; letter-spacing: .12em; text-transform: uppercase; font-weight: 700; }
+    .admin h1 { font-family: "Cinzel", "M PLUS 1p", serif; font-size: clamp(22px, 4vw, 30px); margin: 8px 0 6px; color: var(--gold2); }
+    .admin > p.lead { color: var(--muted); margin: 0 0 22px; font-size: 14px; }
+    .status { font-size: 13px; color: var(--muted); margin-bottom: 20px; }
+    .status.err { color: #e06060; }
+    .round-block { margin-bottom: 30px; }
+    .round-block h2 { font-family: "Cinzel", "M PLUS 1p", serif; font-size: 14px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin: 0 0 10px; }
+    .match-card { background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); padding: 12px 14px; margin-bottom: 10px; }
+    .match-row { display: flex; align-items: center; gap: 10px; }
+    .team-btn {
+      flex: 1; text-align: left; padding: 10px 14px; border-radius: 8px; border: 1px solid var(--line);
+      background: var(--bg2); color: var(--text); font-size: 14px; font-weight: 600; cursor: pointer;
+      font-family: inherit; transition: border-color .15s, background .15s;
+    }
+    .team-btn:disabled { color: var(--muted); font-style: italic; font-weight: 400; cursor: default; }
+    .team-btn.win { border-color: var(--gold); background: rgba(200,170,110,.12); color: var(--gold2); }
+    .team-btn:not(:disabled):hover { border-color: var(--teal); }
+    .vs { color: var(--muted); font-size: 12px; }
+    .undo { margin-left: 8px; background: none; border: none; color: var(--muted); font-size: 12px; cursor: pointer; text-decoration: underline; font-family: inherit; }
+    .undo:hover { color: var(--text); }
+    .champion-line { margin-top: 24px; padding: 16px; text-align: center; border: 1px solid var(--gold); border-radius: var(--radius); background: rgba(200,170,110,.08); }
+    .champion-line .label { font-size: 12px; color: var(--muted); letter-spacing: .1em; text-transform: uppercase; }
+    .champion-line .name { font-family: "Cinzel", "M PLUS 1p", serif; font-size: 22px; color: var(--gold2); margin-top: 6px; }
+    .danger { margin-top: 32px; }
+    .danger button { font-size: 12px; color: #e06060; background: none; border: 1px solid #e06060; border-radius: 6px; padding: 6px 12px; cursor: pointer; font-family: inherit; }
+    .danger button:hover { background: rgba(224,96,96,.1); }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <a class="logo" href="/card/">SUMMONER CARD <span>サモナーカード作成メーカー</span></a>
+    <nav class="site-nav" aria-label="メニュー"><a href="/card/">カードを作る</a><a href="/server/">サーバー紹介</a><a href="/guide/">使い方</a></nav>
+  </header>
+
+  <main class="admin">
+    <nav class="breadcrumbs" aria-label="パンくずリスト"><a href="/card/">トップ</a> › <a href="/tournament/">あぐ鯖カスタム大会</a> › <span>進行管理</span></nav>
+    <div class="eyebrow">あぐ鯖 カスタム大会</div>
+    <h1>進行管理画面</h1>
+    <p class="lead">勝ったチームのボタンを押すと、<a href="/tournament/">トーナメント表</a>が全員の画面で自動的に更新されます。</p>
+    <p class="status" id="status">読み込み中…</p>
+    <div id="rounds"></div>
+    <div class="danger" id="resetWrap" hidden>
+      <button id="resetBtn" type="button">大会全体をリセットする</button>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <nav class="footer-nav" aria-label="サイト情報"><a href="/tournament/">トーナメント表</a><a href="/tournament/teams/">出場チーム</a><a href="/card/">サモナーカードを作る</a></nav>
+    <p class="legal">SUMMONER CARD isn't endorsed by Riot Games and doesn't reflect the views or opinions of Riot Games or anyone officially involved in producing or managing Riot Games properties. Riot Games, and all associated properties are trademarks or registered trademarks of Riot Games, Inc.</p>
+  </footer>
+
+  <script>
+    const API = location.hostname === 'localhost' ? 'http://localhost:8787' : 'https://summonercard-api.summonercard.workers.dev';
+    const roundsEl = document.getElementById('rounds');
+    const statusEl = document.getElementById('status');
+    const resetWrap = document.getElementById('resetWrap');
+
+    function esc(s) {
+      return String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+    }
+
+    function getKey() {
+      let key = sessionStorage.getItem('tournamentAdminKey');
+      if (!key) {
+        key = window.prompt('管理キーを入力してください');
+        if (key) sessionStorage.setItem('tournamentAdminKey', key);
+      }
+      return key || '';
+    }
+
+    async function api(path, body) {
+      const res = await fetch(`${API}${path}`, {
+        method: 'POST',
+        headers: { 'content-type': 'application/json', 'X-Admin-Key': getKey() },
+        body: JSON.stringify(body),
+      });
+      if (res.status === 401) {
+        sessionStorage.removeItem('tournamentAdminKey');
+        throw new Error('管理キーが違います。もう一度試してください');
+      }
+      if (!res.ok) {
+        const e = await res.json().catch(() => ({}));
+        throw new Error(e.error || `エラー (${res.status})`);
+      }
+      return res.json();
+    }
+
+    async function fetchState() {
+      const res = await fetch(`${API}/tournament/state`, { cache: 'no-store' });
+      if (!res.ok) throw new Error('取得に失敗しました');
+      return res.json();
+    }
+
+    function render(state) {
+      roundsEl.innerHTML = '';
+      let anyDecided = false;
+      state.rounds.forEach((round) => {
+        const block = document.createElement('div');
+        block.className = 'round-block';
+        const h = document.createElement('h2');
+        h.textContent = round.title;
+        block.appendChild(h);
+
+        round.matches.forEach((m) => {
+          if (m.winner) anyDecided = true;
+          const card = document.createElement('div');
+          card.className = 'match-card';
+          const row = document.createElement('div');
+          row.className = 'match-row';
+
+          const makeBtn = (team, idx) => {
+            const b = document.createElement('button');
+            b.type = 'button';
+            b.className = 'team-btn' + (m.winner && m.winner === team ? ' win' : '');
+            b.textContent = team || 'TBD';
+            b.disabled = !team;
+            if (team) b.onclick = () => decide(m.id, idx);
+            return b;
+          };
+
+          row.appendChild(makeBtn(m.team1, 0));
+          const vs = document.createElement('span');
+          vs.className = 'vs';
+          vs.textContent = 'vs';
+          row.appendChild(vs);
+          row.appendChild(makeBtn(m.team2, 1));
+
+          if (m.winner) {
+            const undo = document.createElement('button');
+            undo.type = 'button';
+            undo.className = 'undo';
+            undo.textContent = '取り消し';
+            undo.onclick = () => decide(m.id, null);
+            row.appendChild(undo);
+          }
+
+          card.appendChild(row);
+          block.appendChild(card);
+        });
+        roundsEl.appendChild(block);
+      });
+
+      if (state.champion) {
+        const line = document.createElement('div');
+        line.className = 'champion-line';
+        line.innerHTML = `<div class="label">優勝</div><div class="name">${esc(state.champion)}</div>`;
+        roundsEl.appendChild(line);
+      }
+
+      resetWrap.hidden = !anyDecided;
+      statusEl.className = 'status';
+      statusEl.textContent = state.updatedAt ? `最終更新: ${new Date(state.updatedAt).toLocaleString('ja-JP')}` : 'まだ結果は入力されていません';
+    }
+
+    async function refresh() {
+      try {
+        render(await fetchState());
+      } catch (e) {
+        statusEl.className = 'status err';
+        statusEl.textContent = e.message || '取得に失敗しました';
+      }
+    }
+
+    async function decide(matchId, winnerIndex) {
+      try {
+        statusEl.className = 'status';
+        statusEl.textContent = '更新中…';
+        const state = await api('/tournament/decide', { matchId, winnerIndex });
+        render(state);
+      } catch (e) {
+        statusEl.className = 'status err';
+        statusEl.textContent = e.message || '更新に失敗しました';
+      }
+    }
+
+    document.getElementById('resetBtn').addEventListener('click', async () => {
+      if (!window.confirm('本当に大会全体をリセットしますか？すべての結果が消えます。')) return;
+      try {
+        const state = await api('/tournament/reset', {});
+        render(state);
+      } catch (e) {
+        statusEl.className = 'status err';
+        statusEl.textContent = e.message || 'リセットに失敗しました';
+      }
+    });
+
+    refresh();
+  </script>
+</body>
+</html>

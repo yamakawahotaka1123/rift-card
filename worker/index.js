@@ -6,6 +6,9 @@
 // このファイルは /draft/* （フィアレスドラフト、draft.js の Durable Object）も同じ Worker でまとめて配信する。
 
 export { DraftSession } from './draft.js';
+export { TournamentBoard } from './tournament.js';
+
+const TOURNAMENT_ID = 'agusaba-custom-2026';
 
 const PLATFORMS = {
   jp1: 'asia', kr: 'asia',
@@ -121,6 +124,34 @@ function json(body, status, origin, cacheable = true) {
   });
 }
 
+// /tournament/state は誰でも見られる。/tournament/decide, /tournament/reset は管理キー必須。
+async function routeTournament(request, env, url, origin) {
+  const parts = url.pathname.split('/').filter(Boolean); // ['tournament', 'state' | 'decide' | 'reset']
+  const action = parts[1];
+  if (action === 'state' && request.method === 'GET') {
+    const stub = env.TOURNAMENT_BOARD.get(env.TOURNAMENT_BOARD.idFromName(TOURNAMENT_ID));
+    const res = await stub.fetch(new Request('https://tournament/state'));
+    const body = await res.json();
+    return json(body, res.status, origin, false);
+  }
+  if ((action === 'decide' || action === 'reset') && request.method === 'POST') {
+    const key = request.headers.get('X-Admin-Key') || '';
+    if (!env.TOURNAMENT_ADMIN_KEY || key !== env.TOURNAMENT_ADMIN_KEY) {
+      return json({ error: 'unauthorized' }, 401, origin, false);
+    }
+    const payload = await request.json().catch(() => ({}));
+    const stub = env.TOURNAMENT_BOARD.get(env.TOURNAMENT_BOARD.idFromName(TOURNAMENT_ID));
+    const res = await stub.fetch(new Request(`https://tournament/${action}`, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify(payload),
+    }));
+    const body = await res.json();
+    return json(body, res.status, origin, false);
+  }
+  return json({ error: 'not_found' }, 404, origin);
+}
+
 // /draft/<id>/... を、その ID 専用の Durable Object インスタンスへ中継する
 async function routeDraft(request, env, url, origin) {
   const parts = url.pathname.split('/').filter(Boolean); // ['draft', '<id>', 'create' | 'ws']
@@ -151,13 +182,14 @@ export default {
         headers: {
           'access-control-allow-origin': origin,
           'access-control-allow-methods': 'GET, POST, OPTIONS',
-          'access-control-allow-headers': 'content-type',
+          'access-control-allow-headers': 'content-type, x-admin-key',
           'access-control-max-age': '86400',
           vary: 'Origin',
         },
       });
     }
     if (url.pathname.startsWith('/draft/')) return routeDraft(request, env, url, origin);
+    if (url.pathname.startsWith('/tournament/')) return routeTournament(request, env, url, origin);
     if (url.pathname !== '/lookup') return json({ error: 'not_found' }, 404, origin);
 
     const [gameName, tagLine] = (url.searchParams.get('id') || '').split('#').map((s) => s.trim());

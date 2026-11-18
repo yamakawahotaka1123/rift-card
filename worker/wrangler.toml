@@ -13,6 +13,15 @@ MATCH_COUNT = "20"
 name = "DRAFT_SESSION"
 class_name = "DraftSession"
 
+# 大会トーナメントの進行ボード（あぐ鯖カスタム大会、1大会=1インスタンス固定ID）
+[[durable_objects.bindings]]
+name = "TOURNAMENT_BOARD"
+class_name = "TournamentBoard"
+
 [[migrations]]
 tag = "v1"
 new_sqlite_classes = ["DraftSession"]
+
+[[migrations]]
+tag = "v2"
+new_sqlite_classes = ["TournamentBoard"]

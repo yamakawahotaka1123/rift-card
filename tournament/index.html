@@ -54,6 +54,8 @@
     .champion-box .label { color: var(--muted); font-size: 12px; letter-spacing: .1em; text-transform: uppercase; }
     .champion-box .name { font-family: "Cinzel", "M PLUS 1p", serif; font-size: 20px; font-weight: 700; color: var(--gold2); border: 1px solid var(--gold); border-radius: 8px; padding: 14px 20px; background: var(--panel); white-space: nowrap; }
     .note { margin-top: 24px; font-size: 13px; color: var(--muted); }
+    .live-status { margin: 0 0 14px; font-size: 12px; color: var(--teal); }
+    .live-status::before { content: "●"; margin-right: 6px; }
   </style>
 </head>
 <body>
@@ -72,10 +74,11 @@
       <a href="/tournament/teams/">出場チーム・メンバー</a>
     </nav>
 
+    <p class="live-status" id="liveStatus"></p>
     <div class="scroller">
       <div class="bracket" id="bracket"></div>
     </div>
-    <p class="note">結果が確定したラウンドから順に更新します。出場メンバーのRiot ID・OP.GGリンクは<a href="/tournament/teams/">出場チーム・メンバー</a>のページに掲載。</p>
+    <p class="note">結果が確定したラウンドから順に自動で更新されます。出場メンバーのRiot ID・OP.GGリンクは<a href="/tournament/teams/">出場チーム・メンバー</a>のページに掲載。</p>
   </main>
 
   <footer class="site-footer">
@@ -84,7 +87,8 @@
   </footer>
 
   <script>
-    const round1 = [
+    // 1回戦の固定組み合わせ（APIが取れないときの表示用フォールバック）
+    const FALLBACK_ROUND1 = [
       ["in the huton", "Knock Knock"],
       ["KHMRD(カムラッド)", "iron carry"],
       ["BOMBA", "5ADC"],
@@ -97,7 +101,9 @@
     const roundTitles = ["1回戦", "準々決勝", "準決勝", "決勝"];
     const matchCounts = [8, 4, 2, 1];
     const D1 = 100; // 1回戦の試合どうしの中心間隔(px)。以降のラウンドは2倍ずつ広がる
+    const API = location.hostname === 'localhost' ? 'http://localhost:8787' : 'https://summonercard-api.summonercard.workers.dev';
     const bracket = document.getElementById('bracket');
+    const liveStatus = document.getElementById('liveStatus');
 
     function slot(text, cls) {
       const d = document.createElement('div');
@@ -106,50 +112,71 @@
       return d;
     }
 
-    roundTitles.forEach((title, ri) => {
-      const D = D1 * Math.pow(2, ri);
-      const col = document.createElement('div');
-      col.className = 'round';
-      const t = document.createElement('div');
-      t.className = 'round-title';
-      t.textContent = title;
-      col.appendChild(t);
-      for (let m = 0; m < matchCounts[ri]; m++) {
-        const wrap = document.createElement('div');
-        wrap.className = 'slot-wrap';
-        wrap.style.height = D + 'px';
-        const match = document.createElement('div');
-        match.className = 'match' + (ri > 0 ? ' has-conn' : '');
-        if (ri > 0) match.style.setProperty('--conn-h', (D1 * Math.pow(2, ri - 1)) + 'px');
-        const box = document.createElement('div');
-        box.className = 'match-box';
-        if (ri === 0) {
-          box.appendChild(slot(round1[m][0]));
-          box.appendChild(slot(round1[m][1]));
-        } else {
-          box.appendChild(slot('TBD', 'tbd'));
-          box.appendChild(slot('TBD', 'tbd'));
-        }
-        match.appendChild(box);
-        wrap.appendChild(match);
-        col.appendChild(wrap);
-      }
-      bracket.appendChild(col);
-    });
+    function render(state) {
+      bracket.innerHTML = '';
+      roundTitles.forEach((title, ri) => {
+        const D = D1 * Math.pow(2, ri);
+        const col = document.createElement('div');
+        col.className = 'round';
+        const t = document.createElement('div');
+        t.className = 'round-title';
+        t.textContent = title;
+        col.appendChild(t);
+        for (let m = 0; m < matchCounts[ri]; m++) {
+          const rMatch = state?.rounds?.[ri]?.matches?.[m];
+          const team1 = rMatch ? rMatch.team1 : (ri === 0 ? FALLBACK_ROUND1[m][0] : null);
+          const team2 = rMatch ? rMatch.team2 : (ri === 0 ? FALLBACK_ROUND1[m][1] : null);
+          const winner = rMatch ? rMatch.winner : null;
 
-    const champD = D1 * Math.pow(2, roundTitles.length - 1);
-    const champCol = document.createElement('div');
-    champCol.className = 'round';
-    champCol.innerHTML = `
-      <div class="round-title">優勝</div>
-      <div class="champion-wrap" style="height:${champD}px">
-        <div class="champion-box">
-          <div class="label">Champion</div>
-          <div class="name">？？？</div>
+          const wrap = document.createElement('div');
+          wrap.className = 'slot-wrap';
+          wrap.style.height = D + 'px';
+          const match = document.createElement('div');
+          match.className = 'match' + (ri > 0 ? ' has-conn' : '');
+          if (ri > 0) match.style.setProperty('--conn-h', (D1 * Math.pow(2, ri - 1)) + 'px');
+          const box = document.createElement('div');
+          box.className = 'match-box';
+          box.appendChild(slot(team1 || 'TBD', team1 ? (winner === team1 ? 'winner' : null) : 'tbd'));
+          box.appendChild(slot(team2 || 'TBD', team2 ? (winner === team2 ? 'winner' : null) : 'tbd'));
+          match.appendChild(box);
+          wrap.appendChild(match);
+          col.appendChild(wrap);
+        }
+        bracket.appendChild(col);
+      });
+
+      const champD = D1 * Math.pow(2, roundTitles.length - 1);
+      const champion = state?.champion || null;
+      const champCol = document.createElement('div');
+      champCol.className = 'round';
+      champCol.innerHTML = `
+        <div class="round-title">優勝</div>
+        <div class="champion-wrap" style="height:${champD}px">
+          <div class="champion-box">
+            <div class="label">Champion</div>
+            <div class="name">${champion ? champion.replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])) : '？？？'}</div>
+          </div>
         </div>
-      </div>
-    `;
-    bracket.appendChild(champCol);
+      `;
+      bracket.appendChild(champCol);
+    }
+
+    async function refresh() {
+      try {
+        const res = await fetch(`${API}/tournament/state`, { cache: 'no-store' });
+        if (!res.ok) throw new Error('bad status');
+        const state = await res.json();
+        render(state);
+        const t = state.updatedAt ? new Date(state.updatedAt) : null;
+        liveStatus.textContent = t ? `最終更新: ${t.toLocaleTimeString('ja-JP')}（自動更新中）` : 'ライブ更新中';
+      } catch (e) {
+        render(null); // 取れないときは1回戦の固定カードだけ表示
+        liveStatus.textContent = '';
+      }
+    }
+
+    refresh();
+    setInterval(refresh, 15000);
   </script>
 </body>
 </html>
