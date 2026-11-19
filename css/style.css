@@ -395,7 +395,7 @@ input[type=range] { width: 100%; accent-color: var(--gold); }
 .segmented button { border: 0; background: transparent; padding: 8px 18px; color: var(--muted); }
 .segmented button.on { background: rgba(200, 170, 110, 0.18); color: var(--gold2); }
 
-.roles { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 8px; }
+.roles { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 8px; }
 .role {
   display: flex;
   flex-direction: column;
@@ -407,6 +407,10 @@ input[type=range] { width: 100%; accent-color: var(--gold); }
   border-radius: 8px;
 }
 .role img { width: 32px; height: 32px; opacity: 0.55; }
+.role span.role-fill-icon {
+  width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;
+  font-size: 10px; letter-spacing: 0.02em; border: 1.5px dashed currentColor; border-radius: 7px;
+}
 .role span { font-weight: 700; font-size: 13px; opacity: 0.55; }
 .role.sub img, .role.sub span, .role.main img, .role.main span { opacity: 1; }
 .role.sub { border-color: rgba(200, 170, 110, 0.5); }

@@ -1,6 +1,6 @@
 import {
   CDRAGON_GAME, DDRAGON, DEFAULT_STATE, DIVISIONS, MAX_CHAMPS, MAX_COMMENT, MAX_TAG_LENGTH, MAX_TAGS, NAME_PRESETS,
-  ROLE_LEVELS, ROLES, SAMPLE_STATE, TAGS, TIERS, availableThemes, mainRoleOf,
+  ROLE_LEVELS, ROLES, PLAYER_ROLES, SAMPLE_STATE, TAGS, TIERS, availableThemes, mainRoleOf,
 } from './data.js';
 import { CARD_H, CARD_W, SITE_URL, champSquareUrl, loadSplash, profileIconUrl, renderCard } from './card.js';
 import { cropImage } from './cropper.js';
@@ -139,9 +139,11 @@ function buildStaticUI() {
   $('#tier').innerHTML = TIERS.map((tier) => `<option value="${tier.id}">${tierName(tier)}</option>`).join('');
   $('#division').innerHTML = DIVISIONS.map((d) => `<option value="${d}">${d}</option>`).join('');
 
-  $('#roles').innerHTML = ROLES.map((r) => `
+  $('#roles').innerHTML = PLAYER_ROLES.map((r) => `
     <div class="role" data-role="${r.id}">
-      <img src="https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-static-assets/global/default/svg/position-${r.id}.svg" alt="">
+      ${r.id === 'fill'
+        ? '<span class="role-fill-icon" aria-hidden="true">ANY</span>'
+        : `<img src="https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-static-assets/global/default/svg/position-${r.id}.svg" alt="">`}
       <span>${r.label}</span>
       <div class="role-btns">
         ${ROLE_LEVELS.map((l) => `<button type="button" data-setrole="${l.id}" data-role-id="${r.id}">${levelLabel(l)}</button>`).join('')}
@@ -568,7 +570,8 @@ function openPicker(target) {
   $('#picker-tabs').hidden = target !== 'icon';
   $('#picker-roles').hidden = target !== 'champs';
   if (target === 'champs') {
-    pickRole = mainRoleOf(state);
+    const main = mainRoleOf(state);
+    pickRole = ROLES.some((r) => r.id === main) ? main : '';
     renderPickerRoles();
   }
   $('#picker-search').value = '';

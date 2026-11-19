@@ -28,6 +28,11 @@ export const ROLES = [
   { id: 'utility', label: 'SUP' },
 ];
 
+// Extra tile shown alongside the 5 lanes in the role-willingness grid, for players whose
+// main shifts around. Not a real lane, so it's never offered when tagging a favorite champion.
+export const FILL_ROLE = { id: 'fill', label: 'ANY' };
+export const PLAYER_ROLES = [...ROLES, FILL_ROLE];
+
 // For people who'd rather not show their Riot ID on the card.
 export const NAME_PRESETS = ['非公開', 'やるとき教えます', 'DMで教えます', '仲良くなったら教えます'];
 

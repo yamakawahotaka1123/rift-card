@@ -1,5 +1,5 @@
 // Draws the summoner card onto a canvas. Everything happens in the browser.
-import { CDRAGON, CDRAGON_GAME, DDRAGON, ROLE_LEVELS, ROLES, THEMES, TIERS } from './data.js';
+import { CDRAGON, CDRAGON_GAME, DDRAGON, PLAYER_ROLES, ROLE_LEVELS, ROLES, THEMES, TIERS } from './data.js';
 import { DECOS } from './decos.js';
 import { CJK_FAMILY, LANG, levelBadge, t, tagName, tierName, withCjk } from './i18n.js';
 
@@ -384,7 +384,8 @@ export async function renderCard(canvas, state, ctxData) {
     iconSrc ? loadImage(iconSrc) : null,
     tier.id !== 'UNRANKED' ? loadImage(emblemUrl(tier.id)) : null,
     Promise.all(state.champs.map((c) => loadImage(c.img || champSquareUrl(version, c.id)))),
-    Promise.all(ROLES.map((r) => {
+    Promise.all(PLAYER_ROLES.map((r) => {
+      if (r.id === 'fill') return null; // no CDN icon for "anywhere"; drawn as a text badge instead
       const level = state.roleLevels?.[r.id];
       const active = level === 'main' || level === 'sub' || level === 'normal';
       return loadRoleIcon(r.id, active ? theme.accent : theme.sub);
@@ -521,7 +522,7 @@ export async function renderCard(canvas, state, ctxData) {
     ng: { alpha: 0.6, fill: theme.panel, stroke: hexToRgba(NG_COLOR, 0.5), width: 1.5 },
     none: { alpha: 0.3, fill: theme.panel, stroke: hexToRgba(theme.accent, 0.3), width: 1.5 },
   };
-  ROLES.forEach((r, i) => {
+  PLAYER_ROLES.forEach((r, i) => {
     const x = 60 + i * 74;
     const levelId = state.roleLevels?.[r.id] || 'none';
     const level = ROLE_LEVELS.find((l) => l.id === levelId);
@@ -533,7 +534,16 @@ export async function renderCard(canvas, state, ctxData) {
     ctx.strokeStyle = style.stroke;
     ctx.lineWidth = style.width;
     ctx.stroke();
-    if (roleImgs[i]) ctx.drawImage(roleImgs[i], x + 11, ry + 11, 40, 40);
+    if (roleImgs[i]) {
+      ctx.drawImage(roleImgs[i], x + 11, ry + 11, 40, 40);
+    } else if (r.id === 'fill') {
+      const active = levelId === 'main' || levelId === 'sub' || levelId === 'normal';
+      ctx.fillStyle = active ? theme.accent : theme.sub;
+      ctx.font = `800 17px ${FONT_EN}`;
+      ctx.textAlign = 'center';
+      ctx.fillText('ANY', x + 31, ry + 37);
+      ctx.textAlign = 'left';
+    }
     if (levelId === 'ng') {
       ctx.strokeStyle = hexToRgba(NG_COLOR, 0.85);
       ctx.lineWidth = 3;
