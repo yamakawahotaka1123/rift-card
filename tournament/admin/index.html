@@ -78,25 +78,12 @@
       return String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
     }
 
-    function getKey() {
-      let key = sessionStorage.getItem('tournamentAdminKey');
-      if (!key) {
-        key = window.prompt('管理キーを入力してください');
-        if (key) sessionStorage.setItem('tournamentAdminKey', key);
-      }
-      return key || '';
-    }
-
     async function api(path, body) {
       const res = await fetch(`${API}${path}`, {
         method: 'POST',
-        headers: { 'content-type': 'application/json', 'X-Admin-Key': getKey() },
+        headers: { 'content-type': 'application/json' },
         body: JSON.stringify(body),
       });
-      if (res.status === 401) {
-        sessionStorage.removeItem('tournamentAdminKey');
-        throw new Error('管理キーが違います。もう一度試してください');
-      }
       if (!res.ok) {
         const e = await res.json().catch(() => ({}));
         throw new Error(e.error || `エラー (${res.status})`);

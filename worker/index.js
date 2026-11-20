@@ -124,7 +124,7 @@ function json(body, status, origin, cacheable = true) {
   });
 }
 
-// /tournament/state は誰でも見られる。/tournament/decide, /tournament/reset は管理キー必須。
+// /tournament/state, /tournament/decide, /tournament/reset はすべて誰でも操作できる（身内運用のため鍵なし）。
 async function routeTournament(request, env, url, origin) {
   const parts = url.pathname.split('/').filter(Boolean); // ['tournament', 'state' | 'decide' | 'reset']
   const action = parts[1];
@@ -135,10 +135,6 @@ async function routeTournament(request, env, url, origin) {
     return json(body, res.status, origin, false);
   }
   if ((action === 'decide' || action === 'reset') && request.method === 'POST') {
-    const key = request.headers.get('X-Admin-Key') || '';
-    if (!env.TOURNAMENT_ADMIN_KEY || key !== env.TOURNAMENT_ADMIN_KEY) {
-      return json({ error: 'unauthorized' }, 401, origin, false);
-    }
     const payload = await request.json().catch(() => ({}));
     const stub = env.TOURNAMENT_BOARD.get(env.TOURNAMENT_BOARD.idFromName(TOURNAMENT_ID));
     const res = await stub.fetch(new Request(`https://tournament/${action}`, {
