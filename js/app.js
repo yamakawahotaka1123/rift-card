@@ -139,16 +139,22 @@ function buildStaticUI() {
   $('#tier').innerHTML = TIERS.map((tier) => `<option value="${tier.id}">${tierName(tier)}</option>`).join('');
   $('#division').innerHTML = DIVISIONS.map((d) => `<option value="${d}">${d}</option>`).join('');
 
-  $('#roles').innerHTML = PLAYER_ROLES.map((r) => `
+  // "ANY" (fill) isn't a lane, so it gets a single on/off button instead of the
+  // main/sub/ノマ可/無理 ladder the real lanes use.
+  $('#roles').innerHTML = PLAYER_ROLES.map((r) => (r.id === 'fill' ? `
     <div class="role" data-role="${r.id}">
-      ${r.id === 'fill'
-        ? '<span class="role-fill-icon" aria-hidden="true">ANY</span>'
-        : `<img src="https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-static-assets/global/default/svg/position-${r.id}.svg" alt="">`}
+      <button type="button" class="role-fill-btn" data-fillrole>
+        <span class="role-fill-icon" aria-hidden="true">ANY</span>
+        <span>${r.label}</span>
+      </button>
+    </div>` : `
+    <div class="role" data-role="${r.id}">
+      <img src="https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-static-assets/global/default/svg/position-${r.id}.svg" alt="">
       <span>${r.label}</span>
       <div class="role-btns">
         ${ROLE_LEVELS.map((l) => `<button type="button" data-setrole="${l.id}" data-role-id="${r.id}">${levelLabel(l)}</button>`).join('')}
       </div>
-    </div>`).join('');
+    </div>`)).join('');
 
   $('#name-presets').innerHTML = namePresets(NAME_PRESETS)
     .map((p) => `<button type="button" class="chip" data-name-preset="${p}">${p}</button>`).join('');
@@ -316,12 +322,18 @@ form.addEventListener('click', (e) => {
     startAddTag(btn);
   } else if (btn.parentElement?.dataset.radio) {
     update({ [btn.parentElement.dataset.radio]: btn.dataset.value });
+  } else if (btn.dataset.fillrole !== undefined) {
+    // "ANY" replaces any lane preference entirely rather than sitting alongside it.
+    const turningOn = state.roleLevels?.fill !== 'main';
+    update({ roleLevels: turningOn ? { fill: 'main' } : {} });
   } else if (btn.dataset.setrole) {
     // Pressing the active button again turns the role off. Only one main role:
-    // choosing a new main clears the previous one.
+    // choosing a new main clears the previous one. Picking a real lane also clears
+    // "ANY", since the two aren't meant to be set at the same time.
     const id = btn.dataset.roleId;
     const level = btn.dataset.setrole;
     const roleLevels = { ...state.roleLevels };
+    delete roleLevels.fill;
     if (roleLevels[id] === level) {
       delete roleLevels[id];
     } else {

@@ -411,6 +411,7 @@ input[type=range] { width: 100%; accent-color: var(--gold); }
   width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;
   font-size: 10px; letter-spacing: 0.02em; border: 1.5px dashed currentColor; border-radius: 7px;
 }
+.role-fill-btn { all: unset; display: contents; cursor: pointer; }
 .role span { font-weight: 700; font-size: 13px; opacity: 0.55; }
 .role.sub img, .role.sub span, .role.main img, .role.main span { opacity: 1; }
 .role.sub { border-color: rgba(200, 170, 110, 0.5); }
